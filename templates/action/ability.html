@@ -1,0 +1,172 @@
+﻿{% extends "main.html" %}
+
+
+{% block title %}Modify Ability - {% endblock %}
+
+{% block css %}
+<style>
+#image
+{
+    float:right;
+}
+
+#inv_frame
+{
+    width:420px;
+    margin-right:16px;
+    text-align:center;
+}
+
+.inv_item
+{
+    margin:auto;
+    margin-top:8px;
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+    border-radius:15px;
+    width:72px;
+    height:72px;
+    padding:2px;
+    display:inline-block;
+    vertical-align:top;
+    text-align:center;
+    position:relative;
+    cursor:pointer;
+}
+
+.item_frame_selected
+{
+    background-color:#FFE8AA;
+    border:2px solid #9F5145;
+    cursor:pointer;
+}
+
+.inv_item .image, .inv_item .image img
+{
+    margin-top:2px;
+    width:64px;
+    height:64px;
+}
+
+.inv_icons
+{
+    position:absolute;
+    top: 2px;
+    left: 8px;
+}
+
+.choices
+{
+    text-align:center;
+    height:440px;
+    overflow:auto;
+}
+
+#step1
+{
+    width:440px;
+    height:500px;
+}
+
+#step2, #step3
+{
+    width:250px;
+    height:500px;
+}
+
+input
+{
+    border:1px solid #A05246;
+    background-color:#E6DDBF;
+    width:160px;
+}
+
+input.xs
+{
+    width:25px;
+    text-align:center;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    
+    $(".from").click(function (){
+        $(".from").each(function (){
+            $(this).removeClass("item_frame_selected");
+            $(this).addClass("grayscale");
+        });
+        $(this).addClass("item_frame_selected");
+        $(this).removeClass("grayscale");
+        
+        $("input[name=pokemon_id]").val($(this).data("id"));
+    });
+    
+    $("#submit").click(function (){
+        return submit();
+    });
+    
+    {% if pokemon|length == 1 %}
+    $(".from").click();
+    {% endif %}
+});
+
+function submit()
+{
+    var errors = "";
+
+    if (! $("input[name=ability]").val().trim())
+        errors += "No new ability was set!\n";
+    if (! $("input[name=pokemon_id]").val().trim())
+        errors += "No Pokémon selected!\n";
+
+    if (errors)
+    {
+        alert(errors);
+        return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content" style="text-align:center">
+<form method="POST">
+<div id="step1" class="col">
+    <h1 style="text-align:center">Teammate</h1>
+
+    <div class="choices">
+        {% for poke in pokemon %}
+        <div class="col">
+            <div class="from inv_item grayscale" data-id="{{poke.id}}" data-from="{{poke.species}}" data-shiny="{{poke.shiny}}" data-stats="{{poke.strength}}:{{poke.bonus_strength}}:{{poke.intelligence}}:{{poke.bonus_intelligence}}:{{poke.agility}}:{{poke.bonus_agility}}:{{poke.charisma}}:{{poke.bonus_charisma}}" data-ability="{{poke.ability}}" data-move1="{{poke.move1}}" data-move2="{{poke.move2}}" data-move3="{{poke.move3}}" data-move4="{{poke.move4}}" style="width:200px;height:200px;">
+                <img src="/assets/images/sprites/x-y/{% if poke.shiny %}shiny/{% endif %}{{poke.species}}.png">
+                <h3>{{poke.name}}</h3>
+                - {{poke.ability}} -
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<div id="step2" class="col">
+    <h1 style="text-align:center">New Ability</h1>
+    
+    {% csrf_token %}
+    <br><br>
+    <input name="ability">
+    <input name="action" type="hidden" value="ability">
+    <input name="pokemon_id" type="hidden">
+    <br><br>
+    <input id="submit" class="button" type="submit" value="Change Ability!">
+</div>
+<div>
+<b>Once your choice is made, it is final.</b>
+</div>
+</form>
+</div>
+{% endblock %}
+

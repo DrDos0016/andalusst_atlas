@@ -1,0 +1,66 @@
+{% extends "main.html" %}
+
+{% block title %}Twitter - {% endblock %}
+
+{% block css %}
+<style>
+.section
+{
+    display:inline-block;
+    vertical-align:top;
+    width:49%;
+}
+
+textarea, input[type=text]
+{
+    border:1px solid #A05246;
+    background-color:#E6D298;
+}
+
+textarea
+{
+    width:250px;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h2>Tweet From @pmdunity</h2>
+<h2>{{msg}}</h2>
+<form method="POST">
+{% csrf_token %}
+<input name="action" value="tweet" type="hidden">
+<textarea name="tweet" type="text" maxlength="140"></textarea><br><input type="submit" value="Tweet">
+</form>
+<hr>
+
+<h2>Tweet Timers</h2>
+<div class="field"><label>Current Server Time:<div>{{now_dt|date:"r"}}</div></label></div>
+<div class="field"><label>Current Unix Time:<div>{{now}}</div></label></div>
+
+<form method="POST">
+{% csrf_token %}
+<input name="action" value="timer" type="hidden">
+<table class="dataTable">
+<tr>
+    <th>Unix Time</th>
+    <th>End Time</th>
+    <th>For What</th>
+</tr>
+{% for timer in timers %}
+<tr>
+    <td>{{timer.end_time}}</td>
+    <td>{{timer.dt|date:"r"}}</td>
+    <td>{{timer.what}}</td>
+</tr>
+{% endfor %}
+<tr>
+    <td><input type="text" name="end_time"></td>
+    <td>-</td>
+    <td><input type="text" name="what"></td>
+</tr>
+</table>
+</div>
+{% endblock %}
+

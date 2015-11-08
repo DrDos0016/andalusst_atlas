@@ -1,0 +1,14 @@
+{% extends "main.html" %}
+
+{% block title %}Bookmarked Logbooks - {% endblock %}
+
+{% block main %}
+<div id="content">
+This is a beta page and is very much not yet complete. I just wanted to push an update before bedtime!<br><br>
+
+{% for log in logbooks %}
+    {{log.event.key}} - {{log.team.name}} - <a href="{{log.url}}">View Logbook Entry</a><br>
+{% endfor %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Logbook Statistics - {% endblock %}
+
+{% block css %}
+<link href='http://fonts.googleapis.com/css?family=Reenie+Beanie' rel='stylesheet' type='text/css'>
+<style>
+.event
+{
+    padding:4px;
+    clear:both;
+    text-align:left;
+    margin:auto;
+    font-size:36px;
+    font-family: 'Reenie Beanie', cursive;
+    color:#000;
+}
+
+.event .team_icon
+{
+    margin-right:10px;
+}
+
+a .event:hover
+{
+    background-color:#E6D298;
+}
+
+.key
+{
+    width:120px;
+}
+
+.name
+{
+    width:50%;
+}
+
+.total, .percent
+{
+    width:120px;
+    text-align:right;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block main %}
+<div id="content">
+
+<div class="event">
+    <div class="key col">Event</div> <div class="team_icon col" style="visibility:hidden"><img src="/assets/images/sprites/icons/blank.png"></div>
+    <div class="name col">Name</div>
+    <div class="col total">Handled</div>
+    <div class="col percent">Percent</div>
+</div>
+{% for stat in stats %}
+<div class="event">
+    <div class="key col">{{stat.key}}</div> <div class="team_icon col"><img src="/assets/images/sprites/icons/{{stat.image}}"></div>
+    <div class="name col">{{stat.name}}</div>
+    <div class="col total">{{stat.handled}}/{{stat.total}}</div>
+    <div class="col percent">{{stat.percent}} %</div>
+</div>
+{% endfor %}
+</div>
+{% endblock %}
+

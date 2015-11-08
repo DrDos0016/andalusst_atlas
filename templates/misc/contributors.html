@@ -1,0 +1,81 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Contributors - {% endblock %}
+
+{% block css %}
+<style>
+#avatar_wall
+{
+    line-height:0px;
+}
+
+#avatar_wall, #text_list
+{
+    text-align:center;
+    width:80%;
+    margin:auto;
+    margin-top:32px;
+    margin-bottom:32px;
+}
+
+#avatar_wall img
+{
+    width:50px;
+    height:50px;
+    margin:0;
+    float:left;
+}
+
+#avatar_wall a
+{
+    display:inline-block;
+}
+
+#text_list .col
+{
+    width:24%;
+    font-size:10pt;
+    text-align:left;
+    padding:2px;
+}
+
+#text_list .col:hover
+{
+    background-color:#FFE8AA
+}
+
+#text_list img
+{
+    width:50px;
+    height:50px;
+    margin-right:8px;
+    float:left;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Contributors ({{count}})</h1>
+
+<div id="avatar_wall">
+{% for user in users %}<a href="http://{{user.username}}.deviantart.com" target="_blank"><img src="{{user.icon}}" alt="{{user.username}}"></a>{% endfor %}
+</div>
+
+<div class="spacer" style="width:50%;height:2px;background-color:#9F5145;margin:auto;"></div>
+<br>
+
+<div id="text_list">
+{% for user in users %}
+<a href="http://{{user.username}}.deviantart.com" target="_blank">
+<div class="col">
+    <img src="{{user.icon}}" alt="{{user.username}}"> {{user.username}}
+</div>
+</a>
+{% endfor %}
+</div>
+
+
+</div>
+{% endblock %}
+

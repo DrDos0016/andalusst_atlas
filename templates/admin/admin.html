@@ -1,0 +1,96 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Administration - {% endblock %}
+
+{% block css %}
+<style>
+.section
+{
+    display:inline-block;
+    vertical-align:top;
+    width:49%;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Administration Functions</h1>
+
+<div class="section">
+    <a href="/admin/verify_logbooks"><img src="/assets/images/sugimori/163.png"><h2>Verify Logbooks</h2></a><br>
+    <p>Approve/Reject logbook submissions and hand out the rewards for them. This is what you'll want to use upon some sort of group event ending.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/approvals"><img src="/assets/images/sugimori/493.png"><h2>Approvals</h2></a><br>
+    <p>Approve/Reject anything that isn't a logbook! Like customizations.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/reward_teams"><img src="/assets/images/sugimori/225.png"><h2>Reward Teams</h2></a><br>
+    <p>Give a whole lot of teams some kind of reward. This should probably be used sparingly, instead preferring the Verify Logbooks option.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/manage-star-coins"><img src="/assets/images/sugimori/385.png"><h2>Star Coin Management</h2></a><br>
+    <p>Give/Take Star Coins from a Team.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/manage-merits-strikes"><img src="/assets/images/sugimori/579.png"><h2>Manage Merits/Strikes</h2></a><br>
+    <p>Adjust a team's merits and strikes.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/add-event"><img src="/assets/images/sugimori/486.png"><h2>Add Event</h2></a><br>
+    <p>Add an event and its rewards so that users can submit logbook entries for it.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/twitter"><img src="/assets/images/sugimori/144.png"><h2>Tweets and Timers</h2></a><br>
+    <p>Tweet from <a href="http://twitter.com/pmdunity">@pmdunity</a>. Also schedule regular tweets as the deadline for an event approaches.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/transaction-log"><img src="/assets/images/sugimori/52.png"><h2>Transaction Log</h2></a><br>
+    <p>Follow the money.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/site-log"><img src="/assets/images/sugimori/137.png"><h2>Site Log</h2></a><br>
+    <p>Follow everything.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/account_transfer"><img src="/assets/images/sugimori/78.png"><h2>Account Migrations</h2></a><br>
+    <p>Change somebody's DA name stored on the site.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/powerless"><img src="/assets/images/sugimori/129.png"><h2>Powerless View</h2></a><br>
+    <p>This will remove the admin flag from your account temporarily, so you can see the site from the eyes of a regular user. You can regain power by logging out and then back in.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/dungeons"><img src="/assets/images/sugimori/150.png"><h2>Dungeon Mastery</h2></a><br>
+    <p>Make a dungeon!</p>
+</div>
+
+<h1>Webmaster Functions - You Should Probably Not Touch These</h1>
+<p>If you need something done with these, ask Dos first. If it's a regular thing yell at him to clean it up so it's safe for admins without direct database access.</p>
+
+<div class="section">
+    <a href="/admin/manage-items"><img src="/assets/images/sugimori/100.png"><h2>Item Management</h2></a><br>
+    <p>Set up items that teams may be able to acquire.</p>
+</div>
+
+{% comment %}
+<div class="section">
+    <a href="/admin/manage-events"><img src="/assets/images/sugimori/251.png"><h2>Manage Events</h2></a><br>
+    <p>Add logbook events and their rewards for the purposes of logbook verification later.</p>
+</div>
+{% endcomment %}
+</div>
+{% endblock %}
+

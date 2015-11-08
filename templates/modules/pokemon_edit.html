@@ -1,0 +1,143 @@
+<div class="header" data-show="{{forloop.counter}}">
+    <div class="team_icon"><img id="poke_icon-{{forloop.counter}}" src="/assets/images/sprites/icons/{{poke.species|default:'question'}}.png"></div>
+    <div class="col">Team Member #{{forloop.counter}}</div>
+    <div class="arrow" id="arrow-{{forloop.counter}}">-</div>
+</div>
+<div name="pokemon_info" id="pokemon_info{{forloop.counter}}">
+    <input name="locked_pokemon" value="0" type="hidden">
+    {% if poke.id %}<input name="pokemon_id" type="hidden" value="{{poke.id}}">{% else %}<input name="pokemon_id" type="hidden" value="-999">{% endif %}
+    <div class="col" style="width:176px;text-align:center;">
+        <img id="poke_sprite-{{forloop.counter}}" class="sprite" src="/assets/images/sprites/x-y/{% if poke.shiny %}shiny/{% endif %}{{poke.species}}.png"><br>
+            <table class="stats">
+                <tr>
+                    <th colspan="7">Stats</th>
+                </tr>
+                <tr id="str-{{forloop.counter}}">
+                    <th>STR</th>
+                    <td id="str1-{{forloop.counter}}">&nbsp;</td>
+                    <td id="str2-{{forloop.counter}}">&nbsp;</td>
+                    <td id="str3-{{forloop.counter}}">&nbsp;</td>
+                    <td id="str4-{{forloop.counter}}">&nbsp;</td>
+                    <td id="str5-{{forloop.counter}}">&nbsp;</td>
+                    <td id="str-total-{{forloop.counter}}" class="total">0</td>
+                </tr>
+                <tr id="int-{{forloop.counter}}">
+                    <th>INT</th>
+                    <td id="int1-{{forloop.counter}}">&nbsp;</td>
+                    <td id="int2-{{forloop.counter}}">&nbsp;</td>
+                    <td id="int3-{{forloop.counter}}">&nbsp;</td>
+                    <td id="int4-{{forloop.counter}}">&nbsp;</td>
+                    <td id="int5-{{forloop.counter}}">&nbsp;</td>
+                    <td id="int-total-{{forloop.counter}}" class="total">0</td>
+                </tr>
+                <tr id="agl-{{forloop.counter}}">
+                    <th>AGL</th>
+                    <td id="agl1-{{forloop.counter}}">&nbsp;</td>
+                    <td id="agl2-{{forloop.counter}}">&nbsp;</td>
+                    <td id="agl3-{{forloop.counter}}">&nbsp;</td>
+                    <td id="agl4-{{forloop.counter}}">&nbsp;</td>
+                    <td id="agl5-{{forloop.counter}}">&nbsp;</td>
+                    <td id="agl-total-{{forloop.counter}}" class="total">0</td>
+                </tr>
+                <tr id="chr-{{forloop.counter}}">
+                    <th>CHR</th>
+                    <td id="chr1-{{forloop.counter}}">&nbsp;</td>
+                    <td id="chr2-{{forloop.counter}}">&nbsp;</td>
+                    <td id="chr3-{{forloop.counter}}">&nbsp;</td>
+                    <td id="chr4-{{forloop.counter}}">&nbsp;</td>
+                    <td id="chr5-{{forloop.counter}}">&nbsp;</td>
+                    <td id="chr-total-{{forloop.counter}}" class="total">0</td>
+                </tr>
+                <tr>
+                    <th colspan="7"><span id="pts_used-{{forloop.counter}}">0</span> / 10</th>
+                </tr>
+            </table>
+        
+    </div>
+    <div class="col">
+        <table>
+            <tr>
+                <td id="pokemon_name-{{forloop.counter}}">Name</td>
+                <td><input name="pokemon_name" value="{{poke.name}}" maxlength="80"></td>
+            </tr>
+            <tr>
+                <td>Species</td>
+                <td><select name="species" data-id="{{forloop.counter}}">
+                    {% if poke.evolved %}<option value="{{poke.evolved}}">{{poke.species_name}}</option>{% endif %}
+                    {% if poke.species == 0 %}<option value="0">None</option>{% endif %}
+                    {{poke.select_list|safe}}
+                    </select></td>
+            </tr>
+            <tr>
+                <td>Shiny</td>
+                <td><select name="shiny" data-id="{{forloop.counter}}">
+                        <option value="1">Yes</option>
+                        <option value="0"{% if not poke.shiny %} selected{% endif %}>No</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Gender</td>
+                <td><input name="gender" value="{{poke.gender}}" maxlength="20"></td>
+            </tr>
+            <tr>
+                <td id="ability-{{forloop.counter}}">Ability</td>
+                <td><input name="ability" value="{{poke.ability}}" maxlength="30"></td>
+            </tr>
+            <tr>
+                <td><a href="http://veekun.com/dex/natures" target="_blank" tabIndex="-1">Nature</a></td>
+                <td><select name="nature">
+                    {% for nature in natures %}
+                        <option{% if nature == poke.nature %} selected {% endif %}>{{nature}}</option>
+                    {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><a href="http://veekun.com/dex/natures#phenotypes" target="_blank" tabIndex="-1">Trait</a></td>
+                <td><select name="trait">
+                    {% for trait in traits %}
+                        <option{% if trait == poke.trait %} selected{% endif %}>{{trait}}</option>
+                    {% endfor %}
+                    </select></td>
+            </tr>
+            <tr>
+                <td><a name="move_link" href="#" target="_blank" tabIndex="-1">Move 1</a></td>
+                <td><input name="move1" value="{{poke.move1|default:'-'}}" maxlength="40"></td>
+            </tr>
+            <tr>
+                <td>Move 2</td>
+                <td><input name="move2" value="{{poke.move2|default:'-'}}" maxlength="40"></td>
+            </tr>
+            <tr>
+                <td>Move 3</td>
+                <td><input name="move3" value="{{poke.move3|default:'-'}}" maxlength="40"></td>
+            </tr>
+            <tr>
+                <td>Move 4</td>
+                <td><input name="move4" value="{{poke.move4|default:'-'}}" maxlength="40"></td>
+            </tr>
+            <tr>
+                <td name="stat_label-{{forloop.counter}}">Strength</td>
+                <td><input name="stat" class="xs" value="{{poke.strength}}"> + <input name="stat" class="xs" value="{{poke.bonus_strength}}"> Bonus</td>
+            </tr>
+            <tr>
+                <td name="stat_label-{{forloop.counter}}">Intelligence</td>
+                <td><input name="stat" class="xs" value="{{poke.intelligence}}"> + <input name="stat"class="xs" value="{{poke.bonus_intelligence}}"> Bonus</td>
+            </tr>
+            <tr>
+                <td name="stat_label-{{forloop.counter}}">Agility</td>
+                <td><input name="stat" class="xs" value="{{poke.agility}}"> + <input name="stat" class="xs" value="{{poke.bonus_agility}}"> Bonus</td>
+            </tr>
+            <tr>
+                <td name="stat_label-{{forloop.counter}}">Charisma</td>
+                <td><input name="stat" class="xs" value="{{poke.charisma}}"> + <input name="stat" class="xs" value="{{poke.bonus_charisma}}"> Bonus</td>
+            </tr>
+            <tr>
+                <td colspan="2" id="pokemon_errors-{{forloop.counter}}" name="pokemon_errors">
+                </td>
+            </tr>
+        </table>
+    </div>    
+    <div style="clear:both">&nbsp;</div>
+</div>

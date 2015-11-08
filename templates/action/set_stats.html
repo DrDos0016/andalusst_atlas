@@ -1,0 +1,309 @@
+﻿{% extends "main.html" %}
+
+
+{% block title %}Set Stats for Pokémon - {% endblock %}
+
+{% block css %}
+<style>
+#image
+{
+    float:right;
+}
+
+#inv_frame
+{
+    width:420px;
+    margin-right:16px;
+    text-align:center;
+}
+
+.inv_item
+{
+    margin:auto;
+    margin-top:8px;
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+    border-radius:15px;
+    width:72px;
+    height:72px;
+    padding:2px;
+    display:inline-block;
+    vertical-align:top;
+    text-align:center;
+    position:relative;
+    cursor:pointer;
+}
+
+.item_frame_selected
+{
+    background-color:#FFE8AA;
+    border:2px solid #9F5145;
+    cursor:pointer;
+}
+
+.inv_item .image, .inv_item .image img
+{
+    margin-top:2px;
+    width:64px;
+    height:64px;
+}
+
+.inv_icons
+{
+    position:absolute;
+    top: 2px;
+    left: 8px;
+}
+
+.choices
+{
+    text-align:center;
+    height:440px;
+    overflow:auto;
+}
+
+#step1
+{
+    width:440px;
+    height:500px;
+}
+
+#step2, #step3
+{
+    width:250px;
+    height:500px;
+}
+
+input
+{
+    border:1px solid #A05246;
+    background-color:#E6DDBF;
+    width:160px;
+}
+
+input.xs
+{
+    width:25px;
+    text-align:center;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var names = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree", "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate", "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash", "Nidoran♀", "Nidorina", "Nidoqueen", "Nidoran♂", "Nidorino", "Nidoking", "Clefairy", "Clefable", "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff", "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat", "Venomoth", "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape", "Growlithe", "Arcanine", "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam", "Machop", "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebel", "Tentacool", "Tentacruel", "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke", "Slowbro", "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel", "Dewgong", "Grimer", "Muk", "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee", "Hypno", "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute", "Exeggutor", "Cubone", "Marowak", "Hitmonlee", "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey", "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie", "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros", "Magikarp", "Gyarados", "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Dratini", "Dragonair", "Dragonite", "Mewtwo", "Mew ", "Chikorita", "Bayleef", "Meganium", "Cyndaquil", "Quilava", "Typhlosion", "Totodile", "Croconaw", "Feraligatr", "Sentret", "Furret", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Spinarak", "Ariados", "Crobat", "Chinchou", "Lanturn", "Pichu", "Cleffa", "Igglybuff", "Togepi", "Togetic", "Natu", "Xatu", "Mareep", "Flaaffy", "Ampharos", "Bellossom", "Marill", "Azumarill", "Sudowoodo", "Politoed", "Hoppip", "Skiploom", "Jumpluff", "Aipom", "Sunkern", "Sunflora", "Yanma", "Wooper", "Quagsire", "Espeon", "Umbreon", "Murkrow", "Slowking", "Misdreavus", "Unown", "Wobbuffet", "Girafarig", "Pineco", "Forretress", "Dunsparce", "Gligar", "Steelix", "Snubbull", "Granbull", "Qwilfish", "Scizor", "Shuckle", "Heracross", "Sneasel", "Teddiursa", "Ursaring", "Slugma", "Magcargo", "Swinub", "Piloswine", "Corsola", "Remoraid", "Octillery", "Delibird", "Mantine", "Skarmory", "Houndour", "Houndoom", "Kingdra", "Phanpy", "Donphan", "Porygon", "Stantler", "Smeargle", "Tyrogue", "Hitmontop", "Smoochum", "Elekid", "Magby", "Miltank", "Blissey", "Raikou", "Entei", "Suicune", "Larvitar", "Pupitar", "Tyranitar", "Lugia", "Ho-Oh", "Celebi ", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Poochyena", "Mightyena", "Zigzagoon", "Linoone", "Wurmple", "Silcoon", "Beautifly", "Cascoon", "Dustox", "Lotad", "Lombre", "Ludicolo", "Seedot", "Nuzleaf", "Shiftry", "Taillow", "Swellow", "Wingull", "Pelipper", "Ralts", "Kirlia", "Gardevoir", "Surskit", "Masquerain", "Shroomish", "Breloom", "Slakoth", "Vigoroth", "Slaking", "Nincada", "Ninjask", "Shedinja", "Whismur", "Loudred", "Exploud", "Makuhita", "Hariyama", "Azurill", "Nosepass", "Skitty", "Delcatty", "Sableye", "Mawile", "Aron", "Lairon", "Aggron", "Meditite", "Medicham", "Electrike", "Manectric", "Plusle", "Minun", "Volbeat", "Illumise", "Roselia", "Gulpin", "Swalot", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Numel", "Camerupt", "Torkoal", "Spoink", "Grumpig", "Spinda", "Trapinch", "Vibrava", "Flygon", "Cacnea", "Cacturne", "Swablu", "Altaria", "Zangoose", "Seviper", "Lunatone", "Solrock", "Barboach", "Whiscash", "Corphish", "Crawdaunt", "Baltoy", "Claydol", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Castform", "Kecleon", "Shuppet", "Banette", "Duskull", "Dusclops", "Tropius", "Chimecho", "Absol", "Wynaut", "Snorunt", "Glalie", "Spheal", "Sealeo", "Walrein", "Clamperl", "Huntail", "Gorebyss", "Relicanth", "Luvdisc", "Bagon", "Shelgon", "Salamence", "Beldum", "Metang", "Metagross", "Regirock", "Regice", "Registeel", "Latias", "Latios", "Kyogre", "Groudon", "Rayquaza", "Jirachi", "Deoxys ", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup", "Empoleon", "Starly", "Staravia", "Staraptor", "Bidoof", "Bibarel", "Kricketot", "Kricketune", "Shinx", "Luxio", "Luxray", "Budew", "Roserade", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Burmy", "Wormadam", "Mothim", "Combee", "Vespiquen", "Pachirisu", "Buizel", "Floatzel", "Cherubi", "Cherrim", "Shellos", "Gastrodon", "Ambipom", "Drifloon", "Drifblim", "Buneary", "Lopunny", "Mismagius", "Honchkrow", "Glameow", "Purugly", "Chingling", "Stunky", "Skuntank", "Bronzor", "Bronzong", "Bonsly", "Mime Jr.", "Happiny", "Chatot", "Spiritomb", "Gible", "Gabite", "Garchomp", "Munchlax", "Riolu", "Lucario", "Hippopotas", "Hippowdon", "Skorupi", "Drapion", "Croagunk", "Toxicroak", "Carnivine", "Finneon", "Lumineon", "Mantyke", "Snover", "Abomasnow", "Weavile", "Magnezone", "Lickilicky", "Rhyperior", "Tangrowth", "Electivire", "Magmortar", "Togekiss", "Yanmega", "Leafeon", "Glaceon", "Gliscor", "Mamoswine", "Porygon-Z", "Gallade", "Probopass", "Dusknoir", "Froslass", "Rotom", "Uxie", "Mesprit", "Azelf", "Dialga", "Palkia", "Heatran", "Regigigas", "Giratina", "Cresselia", "Phione", "Manaphy", "Darkrai", "Shaymin", "Arceus ", "Victini", "Snivy", "Servine", "Serperior", "Tepig", "Pignite", "Emboar", "Oshawott", "Dewott", "Samurott", "Patrat", "Watchog", "Lillipup", "Herdier", "Stoutland", "Purrloin", "Liepard", "Pansage", "Simisage", "Pansear", "Simisear", "Panpour", "Simipour", "Munna", "Musharna", "Pidove", "Tranquill", "Unfezant", "Blitzle", "Zebstrika", "Roggenrola", "Boldore", "Gigalith", "Woobat", "Swoobat", "Drilbur", "Excadrill", "Audino", "Timburr", "Gurdurr", "Conkeldurr", "Tympole", "Palpitoad", "Seismitoad", "Throh", "Sawk", "Sewaddle", "Swadloon", "Leavanny", "Venipede", "Whirlipede", "Scolipede", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Basculin", "Sandile", "Krokorok", "Krookodile", "Darumaka", "Darmanitan", "Maractus", "Dwebble", "Crustle", "Scraggy", "Scrafty", "Sigilyph", "Yamask", "Cofagrigus", "Tirtouga", "Carracosta", "Archen", "Archeops", "Trubbish", "Garbodor", "Zorua", "Zoroark", "Minccino", "Cinccino", "Gothita", "Gothorita", "Gothitelle", "Solosis", "Duosion", "Reuniclus", "Ducklett", "Swanna", "Vanillite", "Vanillish", "Vanilluxe", "Deerling", "Sawsbuck", "Emolga", "Karrablast", "Escavalier", "Foongus", "Amoonguss", "Frillish", "Jellicent", "Alomomola", "Joltik", "Galvantula", "Ferroseed", "Ferrothorn", "Klink", "Klang", "Klinklang", "Tynamo", "Eelektrik", "Eelektross", "Elgyem", "Beheeyem", "Litwick", "Lampent", "Chandelure", "Axew", "Fraxure", "Haxorus", "Cubchoo", "Beartic", "Cryogonal", "Shelmet", "Accelgor", "Stunfisk", "Mienfoo", "Mienshao", "Druddigon", "Golett", "Golurk", "Pawniard", "Bisharp", "Bouffalant", "Rufflet", "Braviary", "Vullaby", "Mandibuzz", "Heatmor", "Durant", "Deino", "Zweilous", "Hydreigon", "Larvesta", "Volcarona", "Cobalion", "Terrakion", "Virizion", "Tornadus", "Thundurus", "Reshiram", "Zekrom", "Landorus", "Kyurem", "Keldeo", "Meloetta", "Genesect ", "Chespin", "Quilladin", "Chesnaught", "Fennekin", "Braixen", "Delphox", "Froakie", "Frogadier", "Greninja", "Bunnelby", "Diggersby", "Fletchling", "Fletchinder", "Talonflame", "Scatterbug", "Spewpa", "Vivillon", "Litleo", "Pyroar", "Flabébé", "Floette", "Florges", "Skiddo", "Gogoat", "Pancham", "Pangoro", "Furfrou", "Espurr", "Meowstic", "Honedge", "Doublade", "Aegislash", "Spritzee", "Aromatisse", "Swirlix", "Slurpuff", "Inkay", "Malamar", "Binacle", "Barbaracle", "Skrelp", "Dragalge", "Clauncher", "Clawitzer", "Helioptile", "Heliolisk", "Tyrunt", "Tyrantrum", "Amaura", "Aurorus", "Sylveon", "Hawlucha", "Dedenne", "Carbink", "Goomy", "Sliggoo", "Goodra", "Klefki", "Phantump", "Trevenant", "Pumpkaboo", "Gourgeist", "Bergmite", "Avalugg", "Noibat", "Noivern", "Xerneas", "Yveltal", "Zygarde"];
+
+$(document).ready(function (){
+    $("input[name=stat]").click(function (){
+        $(this).select();
+    });
+    
+    $("input[name=stat]").change(function (){
+        update_stats();
+    });
+    
+    $("#submit").click(function (){
+        return submit();
+    });
+});
+
+function update_stats()
+{
+    var count = 0;
+    var stats = [];
+    var id = 1;
+    $("input[name=stat]").each(function (){
+        var pts = Math.max(0, $(this).val());
+        pts = Math.min(5, pts);
+        if (isNaN(pts))
+            pts = 0;
+        
+        stats.push(pts);
+        $(this).val(pts);
+        count++;
+    });
+    for (var x = 0; x < stats.length; x += 8)
+    {
+        var str = "<th>STR</th>";
+        var blank = 5 - stats[x] - stats[x+1];
+        for (var y = 0; y < stats[x]; y++)
+            str += '<td class="point">&nbsp;</td>';
+        for (var y = 0; y < stats[x+1]; y++)
+            str += '<td class="bonus">&nbsp;</td>';
+        for (var y = 0; y < blank; y++)
+            str += '<td>&nbsp;</td>';
+        str += '<td class="total">'+(stats[x]+stats[x+1])+'</td>';
+        $("#str-"+id).html(str);
+        
+        var intl = "<th>INT</th>";
+        var blank = 5 - stats[x+2] - stats[x+3];
+        for (var y = 0; y < stats[x+2]; y++)
+            intl += '<td class="point">&nbsp;</td>';
+        for (var y = 0; y < stats[x+3]; y++)
+            intl += '<td class="bonus">&nbsp;</td>';
+        for (var y = 0; y < blank; y++)
+            intl += '<td>&nbsp;</td>';
+        intl += '<td class="total">'+(stats[x+2]+stats[x+3])+'</td>';
+        $("#int-"+id).html(intl);
+        
+        var agl = "<th>AGL</th>";
+        var blank = 5 - stats[x+4] - stats[x+5];
+        for (var y = 0; y < stats[x+4]; y++)
+            agl += '<td class="point">&nbsp;</td>';
+        for (var y = 0; y < stats[x+5]; y++)
+            agl += '<td class="bonus">&nbsp;</td>';
+        for (var y = 0; y < blank; y++)
+            agl += '<td>&nbsp;</td>';
+        agl += '<td class="total">'+(stats[x+4]+stats[x+5])+'</td>';
+        $("#agl-"+id).html(agl);
+        
+        var chr = "<th>CHR</th>";
+        var blank = 5 - stats[x+6] - stats[x+7];
+        for (var y = 0; y < stats[x+6]; y++)
+            chr += '<td class="point">&nbsp;</td>';
+        for (var y = 0; y < stats[x+7]; y++)
+            chr += '<td class="bonus">&nbsp;</td>';
+        for (var y = 0; y < blank; y++)
+            chr += '<td>&nbsp;</td>';
+        chr += '<td class="total">'+(stats[x+6]+stats[x+7])+'</td>';
+        $("#chr-"+id).html(chr);
+        
+        var used = 10 - stats[x] - stats[x+2] - stats[x+4] - stats[x+6];
+        $("#pts_used-"+id).html(used);
+        id++;
+    }
+}
+
+function submit()
+{
+    var errors = "";
+    var raw_stats   = $("input[name=stat]").toArray();
+    var stats       = [parseInt($(raw_stats[0]).val()), parseInt($(raw_stats[1]).val()), parseInt($(raw_stats[2]).val()), parseInt($(raw_stats[3]).val()), parseInt($(raw_stats[4]).val()), parseInt($(raw_stats[5]).val()), parseInt($(raw_stats[6]).val()), parseInt($(raw_stats[7]).val())];
+    
+    
+    // Total base stats    
+    if ((stats[0] + stats[2] + stats[4] + stats[6]) > 10)
+    {
+        $("td[name=stat_label-1]").css("color", "#DC0032");
+        errors = "Your base stats use more than 10 points!";
+    }
+    else if ((stats[1] + stats[3] + stats[5] + stats[7]) > 2) // Total bonus stats
+    {
+        $("td[name=stat_label-1]").css("color", "#DC0032");
+        errors = "Your bonus stats use more than 2 points!";
+    }
+    else if ((stats[0] + stats[1] > 5) || (stats[2] + stats[3] > 5) || (stats[4] + stats[5] > 5) || (stats[6] + stats[7] > 5)) // Combined Stats > 5
+    {
+        $("td[name=stat_label-1]").css("color", "#DC0032");
+        errors = "Your have a total stat with more than 5 points!";
+    }
+    else
+        $("td[name=stat_label-1]").css("color", "#000");
+    
+    if (errors)
+    {
+        alert(errors);
+        return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content" style="text-align:center">
+<form method="POST">
+<div id="step1" class="col">
+    <h1 style="text-align:center">Teammate</h1>
+
+    <div class="choices">
+        <div class="col">
+            <div class="from inv_item" data-id="{{pokemon.id}}" data-from="{{pokemon.species}}" data-stats="{{pokemon.strength}}:{{pokemon.bonus_strength}}:{{pokemon.intelligence}}:{{pokemon.bonus_intelligence}}:{{pokemon.agility}}:{{pokemon.bonus_agility}}:{{pokemon.charisma}}:{{pokemon.bonus_charisma}}" data-ability="{{pokemon.ability}}" data-move1="{{pokemon.move1}}" data-move2="{{pokemon.move2}}" data-move3="{{pokemon.move3}}" data-move4="{{pokemon.move4}}" style="width:200px;height:200px;">
+                <img src="/assets/images/sprites/x-y/{% if poke.shiny %}shiny/{% endif %}{{pokemon.species}}.png">
+                <h3>{{pokemon.name}}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="step3" class="col">
+    <h1>New Stats</h1>
+    <table class="stats">
+        <tr>
+            <th colspan="7">Stats</th>
+        </tr>
+        <tr id="str-1">
+            <th>STR</th>
+            <td id="str1-1">&nbsp;</td>
+            <td id="str2-1">&nbsp;</td>
+            <td id="str3-1">&nbsp;</td>
+            <td id="str4-1">&nbsp;</td>
+            <td id="str5-1">&nbsp;</td>
+            <td id="str-total-1" class="total">0</td>
+        </tr>
+        <tr id="int-1">
+            <th>INT</th>
+            <td id="int1-1">&nbsp;</td>
+            <td id="int2-1">&nbsp;</td>
+            <td id="int3-1">&nbsp;</td>
+            <td id="int4-1">&nbsp;</td>
+            <td id="int5-1">&nbsp;</td>
+            <td id="int-total-1" class="total">0</td>
+        </tr>
+        <tr id="agl-1">
+            <th>AGL</th>
+            <td id="agl1-1">&nbsp;</td>
+            <td id="agl2-1">&nbsp;</td>
+            <td id="agl3-1">&nbsp;</td>
+            <td id="agl4-1">&nbsp;</td>
+            <td id="agl5-1">&nbsp;</td>
+            <td id="agl-total-1" class="total">0</td>
+        </tr>
+        <tr id="chr-1">
+            <th>CHR</th>
+            <td id="chr1-1">&nbsp;</td>
+            <td id="chr2-1">&nbsp;</td>
+            <td id="chr3-1">&nbsp;</td>
+            <td id="chr4-1">&nbsp;</td>
+            <td id="chr5-1">&nbsp;</td>
+            <td id="chr-total-1" class="total">0</td>
+        </tr>
+        <tr>
+            <th colspan="7"><span id="pts_used-1">10</span> / 10</th>
+        </tr>
+    </table>
+    <br>
+    <table>
+        <tr>
+            <td name="stat_label-1">Strength</td>
+            <td><input name="stat" class="xs" value="0"> + <input name="stat" class="xs" value="0"> Bonus</td>
+        </tr>
+        <tr>
+            <td name="stat_label-1">Intelligence</td>
+            <td><input name="stat" class="xs" value="0"> + <input name="stat"class="xs" value="0"> Bonus</td>
+        </tr>
+        <tr>
+            <td name="stat_label-1">Agility</td>
+            <td><input name="stat" class="xs" value="0"> + <input name="stat" class="xs" value="0"> Bonus</td>
+        </tr>
+        <tr>
+            <td name="stat_label-1">Charisma</td>
+            <td><input name="stat" class="xs" value="0"> + <input name="stat" class="xs" value="0"> Bonus</td>
+        </tr>
+    </table>
+</div>
+<br>
+<div>
+{% csrf_token %}
+<input name="action" type="hidden" value="set_stats">
+<input name="pokemon_id" type="hidden">
+<input name="from_species" type="hidden">
+<input name="to_species" type="hidden">
+<input id="submit" class="bigbutton" type="submit" value="Assign Stat Points">
+<br><br>
+<b>Once your choice is made, it is final.</b>
+</div>
+</form>
+</div>
+{% endblock %}
+

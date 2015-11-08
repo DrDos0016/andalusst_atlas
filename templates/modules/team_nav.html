@@ -1,0 +1,13 @@
+<ul class="nav_links">
+    {% if extra_nav %}
+    <a href="/team/{{team.id}}/{{team.name|slugify}}"><li>Edit Team</li></a>
+    <a href="/team/actions/{{team.id}}/{{team.name|slugify}}"><li>Team Actions</li></a>
+    {% endif %}
+    <a href="/team/view/{{team.id}}/{{team.name|slugify}}"><li>Overview</li></a>
+    <a href="/team/inventory/{{team.id}}/{{team.name|slugify}}"><li>Inventory</li></a>
+    <a href="/logbook/view/{{team.id}}/{{team.name|slugify}}"><li>Logbook</li></a>
+    <a href="{{team.application}}" target="_blank"><li>Application</li></a>
+    {% if team.alt_app %}<a href="{{team.alt_app}}" target="_blank"><li>Alt App</li></a>{% endif %}
+    {% if team.teamooc.tumblr %}<a href="{{team.teamooc.tumblr}}" target="_blank"><li>Tumblr</li></a>{% endif %}
+</ul>
+<br>

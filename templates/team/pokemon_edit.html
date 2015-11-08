@@ -1,0 +1,135 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Edit Pokémon - {% endblock %}
+
+{% block css %}
+<style>
+.teammate
+{
+    display:inline-block;
+    margin-right:48px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="/assets/scripts/common.js"></script>
+<script>
+$(document).ready(function (){
+    
+    $('#app_link').blur(function (){
+        var url = $(this).val();
+        get_app($(this).val(), "app_img", "app_txt");
+    });
+    
+    $('#delete').click(function (){
+        var conf = confirm("This will remove the pokémon PERMANENTLY.\nIt _cannot_ be undone. Are you absolutely sure you wish to delete this pokémon?");
+        if (! conf)
+            return false;
+    });
+    
+    $("#species1").change(function (){ move_ref(1); });
+    
+    get_app($('#app_link').val(), "app_img", "app_txt");
+    move_ref(1);
+});
+
+function have_app(data)
+{
+    $('#ext_app').html("View Submission");
+    $('#ext_app').attr("href", url);
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="edit_pokemon">
+    <input type="hidden" name="application" id="app_link" maxlength="150" value="{{pokemon.team.application}}">
+    
+    <div class="col" id="side_app">
+        <img src="" alt="&nbsp;" id="app_img" style="" alt="Your application should display here">
+    </div>
+    
+    <br>
+    <div class="teammate">
+        <h1>Team Member Information</h1>
+        <div class="field">
+            <label>Pokémon Name <input name="pkmn_name" maxlength="80" value="{{pokemon.name}}"></label><br>
+        </div>
+        <div class="field">
+            <label>Pokémon Species 
+                <select name="species" id="species1">
+                    {{pokemon_select|safe}}
+                </select><br>
+                <span class="sub">Please note that options for eggs and other can be found at the end of the list.</span>
+            </label>
+        </div>
+        <div class="field">
+            <label>Shiny?</label>
+            <div class="radio">Yes <input type="radio" name="shiny" value="1" {% if pokemon.shiny %}checked{% endif %}> No <input type="radio" name="shiny" value="0" {% if not pokemon.shiny %}checked{% endif %}></div>
+        </div>
+        <div class="field">
+            <label>Gender <input name="gender" maxlength="20" value={{pokemon.gender}}><br>
+            <span class="sub">Your character may identify however they choose.</span></label>
+        </div>
+        <div class="field">
+            <label>Ability <input name="ability" value="{{pokemon.ability}}" maxlength="30"><br>
+            <span class="sub"><a href="#" target="_blank" tabindex="-1" id="ability_ref1">Reference</a></span></label>
+        </div>
+        <div class="field">
+            <label>Nature 
+                <select name="nature">
+                {% for nature in natures %}
+                    <option{% if nature == pokemon.nature %} selected {% endif %}>{{nature}}</option>
+                {% endfor %}
+                </select><br>
+                <span class="sub"><a href="http://veekun.com/dex/natures" target="_blank" tabindex="-1">Reference</a></span>
+            </label>
+        </div>
+        <div class="field">
+            <label>Trait 
+                <select name="trait">
+                {% for trait in traits %}
+                    <option{% if trait == pokemon.trait %} selected{% endif %}>{{trait}}</option>
+                {% endfor %}
+                </select><br>
+                <span class="sub"><a href="http://veekun.com/dex/natures#phenotypes" target="_blank" tabindex="-1">Reference</a></span>
+            </label>
+        </div>
+        <div class="field">
+            <label>Move 1 <input name="move1" value="{{pokemon.move1|default:'-'}}" maxlength="20"><br>
+            <span class="sub"><a id="move_ref1" href="#" tabindex="-1" target="_blank">Reference</a></span></label>
+        </div>
+        <div class="field">
+            <label>Move 2 <input name="move2" value="{{pokemon.move2|default:'-'}}" maxlength="20"></label>
+        </div>
+        <div class="field">
+            <label>Move 3 <input name="move3" value="{{pokemon.move3|default:'-'}}" maxlength="20"></label>
+        </div>
+        <div class="field">
+            <label>Move 4 <input name="move4" value="{{pokemon.move4|default:'-'}}" maxlength="20"></label>
+        </div>
+    </div>
+    
+    <br>
+    <input type="submit" value="Edit Pokémon" class="bigbutton">
+</form>
+    
+<br>
+    
+<form method="POST">
+{% csrf_token %}
+<h1>Delete Pokémon</h1>
+<input type="hidden" name="action" value="delete_pokemon">
+<input type="hidden" name="pokemonID" value="{{pokemon.id}}">
+<p>If you are 100% absolutely sure you wish to remove all traces of this pokémon you may delete this pokémon. It can't be undone. Items are not tied to a specific pokémon and will not be deleted.</p>
+<input type="submit" id="delete" value="Delete Pokémon" class="bigbutton">
+</form>
+
+<div style="clear:both">&nbsp;</div>
+</div>
+{% endblock %}
+

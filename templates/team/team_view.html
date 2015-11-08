@@ -1,0 +1,158 @@
+﻿{% extends "main.html" %}
+
+{% block title %}View Team - {% endblock %}
+
+{% block css %}
+<style>
+.teammate
+{
+    display:inline-block;
+    margin-right:48px;
+}
+
+h1
+{
+    display:inline-block;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="/assets/scripts/common.js"></script>
+<script>
+var author = "";
+$(document).ready(function (){
+    
+    var url = $('#app_link').attr("href");
+    get_app(url, "app_img", "app_txt");
+    
+    $('#delete').click(function (){
+        var conf = confirm("This will remove the team, all pokemon within it, their items, their starcoins PERMANENTLY.\nIt _cannot_ be undone. Are you absolutely sure you wish to delete this team?");
+        if (! conf)
+            return false;
+    });
+});
+
+function have_app(data)
+{
+    return true;
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+    {% include "modules/team_nav.html" %}
+    <div id="team_info" class="col">
+        <h1>Team Overview</h1>
+        <div class="field">
+            <label>Team Name <div>{{team.name}}</div></label>
+        </div>
+        <div class="field">
+            <label>Owner <div><a href="http://{{team.user.username}}.deviantart.com" target="_blank">{{team.user.username}}</a></div></label>
+        </div>
+        <div class="field" style="display:none">
+            <label>Application <div><a href="{{team.application}}" id="app_link" target="_blank">View Application</a></div></label>
+        </div>
+        <div class="field">
+            <label>Team Type <div>{{team.teamooc.type}}</div></label>
+        </div>
+        <div class="field">
+            <label>Guild <div>{{team.guild}}</div></label>
+        </div>
+        <div class="field">
+            <label>Guild Standing<div>{{team.merits}} merits / {{team.strikes}} strikes</div></label>
+        </div>
+        <div class="field">
+            <label>Star Coins <div>{{team.stars}}</div></label>
+        </div>
+        <div class="field">
+            <label>Date Joined <div>{{team.joined|date:"N jS, Y"}}</div></label>
+        </div>
+        <div class="field">
+            <label>Cameos 
+                <div>
+                    {% if team.cameos == "No" %}No. Do not give this team a cameo.{% endif %}
+                    {% if team.cameos == "Ask" %}Ask me about it.{% endif %}
+                    {% if team.cameos == "Non-speaking" %}Yes, but only in a non-speaking role.{% endif %}
+                    {% if team.cameos == "Yes" %}Yes!{% endif %}
+                </div><br>
+                <span class="sub">Please respect others' characters and wishes when giving a cameo!</span>
+            </label>
+        </div>
+        
+        {% for poke in pokemon %}
+        <div class="teammate">
+            <h1>Team Member # Information</h1>
+            <div class="field">
+                <label>Pokémon Name <div>{{poke.name}}</div></label><br>
+            </div>
+            <div class="field">
+                <label>Pokémon Species <div><a href="http://veekun.com/dex/pokemon/{{poke.species_name|lower}}" target="_blank">{{poke.species_name}}</a></div></label>
+            </div>
+            <div class="field">
+                <label>Shiny Pokémon <div>{{poke.shiny|yesno|title}}</div></label>
+            </div>
+            <div class="field">
+                <label>Gender <div>{{poke.gender}}</div></label>
+            </div>
+            <div class="field">
+                <label>Ability <div><a href="http://veekun.com/dex/abilities/{{poke.ability|lower}}" target="_blank">{{poke.ability}}</a></div></label>
+            </div>
+            <div class="field">
+                <label>Nature <div><a href="http://veekun.com/dex/natures/{{poke.nature|lower}}" target="_blank">{{poke.nature}}</a></div></label>
+            </div>
+            <div class="field">
+                <label>Trait <div><a href="http://veekun.com/dex/natures#phenotypes" target="_blank">{{poke.trait}}</a></div></label>
+            </div>
+            {% if poke.move1 != "-" %}
+            <div class="field">
+                <label>Move 1 <div><a href="http://veekun.com/dex/moves/{{poke.move1|lower}}" target="_blank">{{poke.move1|title}}</a></div></label>
+            </div>
+            {% endif %}
+            {% if poke.move2 != "-" %}
+            <div class="field">
+                <label>Move 2 <div><a href="http://veekun.com/dex/moves/{{poke.move2|lower}}" target="_blank">{{poke.move2|title}}</a></div></label>
+            </div>
+            {% endif %}
+            {% if poke.move3 != "-" %}
+            <div class="field">
+                <label>Move 3 <div><a href="http://veekun.com/dex/moves/{{poke.move3|lower}}" target="_blank">{{poke.move3|title}}</a></div></label>
+            </div>
+            {% endif %}
+            {% if poke.move4 != "-" %}
+            <div class="field">
+                <label>Move 4 <div><a href="http://veekun.com/dex/moves/{{poke.move4|lower}}" target="_blank">{{poke.move4|title}}</a></div></label>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        
+        {% if session.admin %}
+        <br>
+        <h1>Admin Options</h1>
+        <div class="field">
+                <label><a href="/team/edit/{{team.id}}/{{team.urlname}}">Edit Team - {{team.name}}</a></label>
+        </div>
+        {% for poke in pokemon %}
+        <div class="field">
+                <label><a href="/pokemon/edit/{{poke.id}}/{{poke.urlname}}">Edit Pokémon - {{poke.name}}</a></label>
+        </div>
+        {% endfor %}
+        {% endif %}
+        
+    </div>
+        
+    <div class="col" id="side_app">
+        <img src="" alt="&nbsp;" id="app_img" alt="Your application should display here">
+        <p id="app_txt" style="display:none"></p>
+    </div>
+    
+    <!--
+    
+    -->
+    
+    <div style="clear:both">&nbsp;</div>
+</div>
+{% endblock %}
+

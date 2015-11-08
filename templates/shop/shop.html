@@ -1,0 +1,127 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Wear and Flair Accessories - {% endblock %}
+
+{% block css %}
+<style>
+.price, .choices
+{
+    display:none;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $(".store_item").click(function(){
+        window.scrollTo(0,0);
+        var id = $(this).attr("id").substring(5);
+        
+        $("#active_item").val(id);
+        $('#item_image').attr("src", $("#image-"+id).attr("src"));
+        $('#item_image').attr("alt", $("#name-"+id).html());
+        $('#item_name').html($("#name-"+id).html());
+        $('#item_desc').html($("#desc-"+id).val());
+        $('#item_exp').html($("#exp-"+id).val());
+        $('#item_cost').html($("#cost-"+id).html());
+        
+        $('.price').show();
+        $('.choices').show();
+    });
+    
+    $("input[name=cancel]").click(function(){ reset(); });
+    $("#buy").click(function(){ buy(); });
+    
+    {% if purchase %}purchased("{{purchase}}");{% endif %}
+    {% if select %}select("{{select}}");{% endif %}
+});
+
+function reset()
+{
+    $('.price').hide();
+    $('.choices').hide();
+    $("#active_item").val("0");
+    $('#item_image').attr("src", "/assets/images/characters/chantelle.png");
+    $('#item_image').attr("alt", "Chantelle");
+    $('#item_name').html("Chantelle");
+    $('#item_desc').html("<br>&ldquo;Is there something I can get for you?<br><br>Do be quick. You're detracting from the elegant environment I'm going for.&rdquo;");
+    $('#item_exp').html("");
+    
+    $("#checkout").hide();
+    $("#store").show();
+    
+}
+
+function buy()
+{
+    id = $("#active_item").val();
+    window.location = "/shop/buy/"+id;
+}
+
+function purchased(id)
+{
+    $('#item_image').attr("src", $("#image-"+id).attr("src"));
+    $('#item_image').attr("alt", $("#name-"+id).html());
+    $('#item_name').html($("#name-"+id).html() + " Purchased!");
+    $('#item_desc').html("Your newly acquired item can found in your teams <a href='/team/inventory/{{session.teamID}}/{{session.team_name|slugify}}'>inventory</a>.");
+}
+
+function select(id)
+{
+    $("#item-"+id).click();
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content" style="text-align:center">
+
+    <div id="store">
+        <div style="height:225px">
+        <div class="item_details">
+            <div class="col image"><img src="/assets/images/characters/chantelle.png" alt="Chantelle" id="item_image"></div>
+            <div class="desc">
+                <h1 id="item_name">Chantelle</h1>
+                <input type="hidden" id="active_item" value="0">
+                <div class="price">
+                    <span id="item_cost"></span>
+                    <span style="font-size:10pt"> x </span><img src="/assets/images/icons/star-piece.png">
+                </div>
+                <div class="description" id="item_desc"><br>&ldquo;Is there something I can get for you?<br><br>Do be quick. You're detracting from the elegant environment I'm going for.&rdquo;</div>
+                <br>
+                <div class="explanation" id="item_exp"></div>
+                <div class="choices">
+                    <input type="button" value="No Thanks" style="width:25%" name="cancel"> <input type="button" value="Select Payment" style="width:70%" id="buy">
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="store_frame">
+            {% for item in store %}
+            <div class="store_item" id="item-{{item.id}}">
+                <div class="col image"><img id="image-{{item.id}}" src="/assets/images/items/{{item.image}}" alt="{{item.name}}"></div>
+                <div class="desc">
+                    <h3 id="name-{{item.id}}">{{item.name}}</h3>
+                    <span class="item_cost" id="cost-{{item.id}}">{{item.cost}}</span> <span style="font-size:10pt"> x </span><img src="/assets/images/icons/star-piece.png">
+                    <input type="hidden" id="desc-{{item.id}}" value="&ldquo;{{item.description}}&rdquo;">
+                    <input type="hidden" id="exp-{{item.id}}" value="{{item.explanation}}">
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="store_item" id="item-customization">
+                <div class="col image"><img id="image-customization" src="/assets/images/characters/chantelle.png" alt="{{item.name}}"></div>
+                <div class="desc">
+                    <h3 id="name-customization">Accessory Customization</h3>
+                    <span class="item_cost" id="cost-customization">Varies</span> <span style="font-size:10pt"> x </span><img src="/assets/images/icons/star-piece.png">
+                    <input type="hidden" id="desc-customization" value="&ldquo;If you have an accessory you'd like to make a bit less garish, just say the word.&rdquo;">
+                    <input type="hidden" id="exp-customization" value="">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

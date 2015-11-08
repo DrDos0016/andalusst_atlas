@@ -1,0 +1,18 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Error - {% endblock %}
+
+
+{% block main %}
+<div id="content" style="text-align:center">
+<h1>Error - {{error|title}}</h1><br>
+
+<img src="/assets/images/error.gif"><br>
+
+<h2>{{error_message|safe}}</h2>
+
+<p style="width:50%;margin:auto;text-align:left;">If you have received this message by mistake, please get in touch with <a href="mailto:doctordos@gmail.com">me</a>! 
+Let me know what you did that lead to the error, what you had set any form data to, and anything else that might help track down the issue.</p>
+</div>
+{% endblock %}
+

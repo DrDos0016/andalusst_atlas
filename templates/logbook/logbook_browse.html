@@ -1,0 +1,165 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Browse Logbooks - {% endblock %}
+
+{% block css %}
+<link href='http://fonts.googleapis.com/css?family=Reenie+Beanie' rel='stylesheet' type='text/css'>
+<style>
+.event_list
+{
+    
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+}
+
+.event
+{
+    padding:4px;
+    clear:both;
+    text-align:left;
+    margin:auto;
+    font-size:36px;
+    font-family: 'Reenie Beanie', cursive;
+    color:#000;
+}
+
+.event .team_icon
+{
+    margin-right:10px;
+}
+
+a .event:hover
+{
+    background-color:#E6D298;
+}
+
+.key
+{
+    width:120px;
+}
+
+#results .team_col
+{
+    margin-bottom:20px;
+}
+.explorers, .undecided
+{
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+}
+
+.researchers
+{
+    border:2px solid #4B7148;
+    background-color:#8CAE86;
+}
+
+.hunters
+{
+    border:2px solid #DBC85E;
+    background-color:#161B22;
+    color: #FFF;
+}
+
+.hunters a
+{
+    color:#EAD459;
+}
+
+.bookmarks
+{
+    width:40px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+});
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+
+{% if not key %}
+<h1>Recorded Events</h1>
+{% for event in events %}
+<a href="/logbook/browse/{{event.key}}">
+<div class="event">
+    <div class="key col">{{event.key}}</div> <div class="team_icon col"><img src="/assets/images/sprites/icons/{{event.image}}"></div>
+    {{event.name}}
+</div>
+</a>
+{% endfor %}
+<a href="/logbook/browse/ORIG">
+<div class="event">
+    <div class="key col">ORIG</div> <div class="team_icon col"><img src="/assets/images/sprites/icons/blank.png"></div>
+    Personal Stories
+</div>
+</a>
+<div class="spacer"></div>
+{% if session.teamID %}
+<a href="/logbook/view/{{session.teamID}}/{{session.team_name|slugify}}">
+<div class="event">
+    <div class="key col" style="text-align:center">&nbsp;</div> <div class="team_icon col"><img src="/assets/images/sprites/icons/{{session.team_pkmn1}}.png"></div>
+    Logbook for {{session.team_name}}
+</div>
+</a>
+{% if session.beta %}<a href="/logbook/bookmarks">
+<div class="event">
+    <div class="key col" style="text-align:center">&nbsp;</div> <div class="team_icon col"></div>
+    Your bookmarks
+</div>
+</a>{% endif %}
+{% endif %}
+
+{% else %}
+
+<div class="event" style="border-bottom:1px solid #000;margin-bottom:4px;">
+    <div class="key col">{{event.key}}</div> <div class="team_icon col"><img src="/assets/images/sprites/icons/{{event.image}}"></div> {{event.name}}
+    <a href="/logbook/browse" style="float:right">Event List</a>
+</div>
+<div id="controls">
+<ul class="nav_links">
+<a href="/logbook/browse/{{event.key}}"><li{% if guild == "" %} class="selected"{% endif %}>All Guilds</li></a> 
+<a href="/logbook/browse/{{event.key}}?guild=explorers"><li{% if guild == "explorers" %} class="selected"{% endif %}>Explorers</li></a> 
+<a href="/logbook/browse/{{event.key}}?guild=hunters"><li{% if guild == "hunters" %} class="selected"{% endif %}>Hunters</li></a> 
+<a href="/logbook/browse/{{event.key}}?guild=researchers"><li{% if guild == "researchers" %} class="selected"{% endif %}>Researchers</li></a> 
+</ul>
+</div>
+
+<div id="results">
+    {% for result in results %}
+        <div class="team_tag col">
+            <img src="/assets/images/icons/{{result.team.guild_icon}}" alt="{{result.team.guild}}" title="{{result.team.guild}}" style="float:left"> <a href="/team/view/{{result.team.id}}/{{result.team.urlname}}">{{result.team.name}}</a>
+            <a href="/logbook/view/{{result.team.id}}/{{result.team.name|slugify}}"><img src="/assets/images/icons/book-open-text.png" alt="Logbook" title="Logbook" style="float:right"></a>
+            <br>
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{result.team.pkmn1.species|default:'blank'}}.png"></div>
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{result.team.pkmn2.species|default:'blank'}}.png"></div>
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{result.team.pkmn3.species|default:'blank'}}.png"></div>
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{result.team.pkmn4.species|default:'blank'}}.png"></div>
+            <br>
+            <img src="/assets/images/icons/{{result.team.teamooc.type|lower}}.png" title="{{result.team.teamooc.type}}" style="float:left">
+            <a href="{{result.url}}" target="_blank">Logbook Entry</a>
+            {% if dungeon %}
+            <a href="/dungeon/view/map/{{result.dungeon_map}}/{{result.team.name|slugify}}"><img src="/assets/images/icons/direction--arrow.png" title="Dungeon Map" style="float:right"></a>
+            {% endif %}
+            <div class="spacer"></div>
+        </div>
+    {% empty %}
+        <h2 style="text-align:center">Nothing to show!</h2>
+    {% endfor %}
+</div>
+
+<div class="controls" style="margin-top:8px">
+    <a href="{{url}}{{prev}}"><input type="button" class="bigbutton" value="Newer"></a>
+    <a href="{{url}}{{next}}"><input type="button" class="bigbutton" value="Older"></a>
+</div>
+
+{% endif %}
+
+</div>
+{% endblock %}
+

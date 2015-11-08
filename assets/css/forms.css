@@ -1,0 +1,133 @@
+.controls
+{
+    margin:auto;
+    width:95%;
+    text-align:center;
+}
+
+.error
+{
+    color:#DC0032;
+}
+.field
+{
+    width:500px;
+    border-bottom:1px solid #000;
+    margin-bottom:1px;
+    padding:1px;
+    min-height:24px;
+    text-align:left;
+}
+
+.field label
+{
+    width:100%;
+    font-weight:bold;
+}
+
+.field input, .field select, .field textarea
+{
+    float:right;
+    width:200px;
+    margin-right:2px;
+    border:1px solid #A05246;
+    background-color:#E6D298;
+}
+.field select
+{
+    width:202px; /* DUMB */
+}
+
+.sub
+{
+    font-size:8pt;
+    font-weight:normal;
+}
+
+.radio
+{
+    display:inline-block;
+    float:right;
+    width:200px;
+    margin-right:2px;
+    font-weight:normal;
+}
+
+.radio input[type=radio]
+{
+    width:20px;
+    float:none;
+}
+
+.bigbutton
+{
+    width:400px;
+}
+
+a.bigbutton
+{
+    width:400px;
+    font-size:18pt;
+    border:2px solid #803226;
+    background-color:#A05246;
+    color:#E6D298;
+    font-family:"Ubuntu Condensed";
+    padding:0px 6px;
+}
+
+.smallbutton
+{
+    width:200px;
+}
+
+input[type=button], input[type=submit]
+{
+    font-size:18pt;
+    /* border:2px solid #D1AD7E;*/
+    border:2px solid #803226;
+    background-color:#A05246;
+    color:#E6D298;
+    font-family:"Ubuntu Condensed";
+}
+
+input[type=button]:hover, input[type=submit]:hover
+{
+    cursor:pointer;
+}
+
+input[type=checkbox]
+{
+    width:20px;
+}
+
+form p
+{
+    width:400px;
+}
+
+textarea
+{
+    border:2px solid #803226;
+    background-color:#E6D298;
+    padding:2px;
+}
+
+.field textarea
+{
+    width: 196px;
+}
+
+select[name=year]
+{
+    width:60px;
+}
+
+select[name=day]
+{
+    width:43px;
+}
+
+select[name=month]
+{
+    width:95px;
+}

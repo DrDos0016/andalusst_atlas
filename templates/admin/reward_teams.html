@@ -1,0 +1,115 @@
+{% extends "main.html" %}
+
+{% block title %}Administration - Reward Teams - {% endblock %}
+
+{% block css %}
+<style>
+#item_list input
+{
+    width:35px;
+    text-align:right;
+}
+
+#team_list, #item_list
+{
+    width:95%;
+    margin:auto;
+}
+
+#team_list div
+{
+    width:24%;
+}
+#team_list a
+{
+    float:right;
+}
+
+textarea
+{
+    width:593px;
+    height:150px;
+}
+
+form .col
+{
+    padding:4px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("input[name=teams]").change(function (){ make_log(); });
+    $("[name^=item-]").on("input", function (){ make_log(); });
+    $("#submit").click(function (){ make_log(); });
+});
+
+function make_log()
+{
+    var log = "Give the following items: \n";
+    
+    $("[name^=item-]").each(function (){
+        if (parseInt($(this).val()) > 0)
+        {
+            log += " - " + $(this).val() + $(this).parent().text() + "\n";
+        }
+    });
+    
+    var team_list = "";
+    var team_count = 0;
+    $("input[name=teams]").each(function (){
+        if (this.checked)
+        {
+            team_list += " - " + $(this).parent().text() + "\n";
+            team_count++;
+        }
+    });
+    log += "to the following ("+team_count+") teams: \n";
+    log += team_list;
+    
+    $("#log").text(log);
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h2>{{message}}</h2>
+<form method="POST" id="form">
+{% csrf_token %}
+<input type="hidden" name="action" value="reward_teams">
+
+<div class="wrapper" style="height:275px;border:2px solid #9F5145;">
+<table id="team_list" class="dataTable">
+    {% for team in teams %}
+    <tr>
+        <td><label><input type="checkbox" name="teams" value="{{team.id}}">{{team.name}}</label></td>
+        <td>{{team.user.username}}</td>
+        <td><a href="/team/view/{{team.id}}/{{team.name|slugify}}" target="_blank" tabindex="-1">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+<a href="?page={{prev_page}}">Prev Page</a> <a href="?page={{next_page}}">Next Page</a><br>
+<br>
+<div class="col wrapper" style="height:275px;width:350px;border:2px solid #9F5145">
+<table id="item_list" class="dataTable">
+    <tr><td><label><input name="item-0" value=""> Star Coins</label></td></tr>
+    {% for item in items %}
+        <tr><td><label><input name="item-{{item.id}}" value=""> {{item.name}}</label></td></tr>
+    {% endfor %}
+</table>
+</div>
+
+<div class="col" style="height:275px;width:601px;border:2px solid #9F5145">
+<p>Double check this information is correct!<br>
+Undoing mistakes is tedious!</p>
+<textarea id="log" name="log" readonly="True">{{log}}</textarea><br>
+<input id="submit" type="submit" class="bigButton" value="Reward Teams" style="float:right;margin-top:4px;">
+</div>
+</form>
+</div>
+{% endblock %}
+

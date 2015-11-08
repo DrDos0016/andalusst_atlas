@@ -1,0 +1,253 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Pokémon Population - {% endblock %}
+
+{% block css %}
+<style>
+#pop_table
+{
+    border-collapse:collapse;
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+    width:100%;
+}
+
+#pop_table th
+{
+    padding-bottom:12px;
+}
+
+#pop_table th, #pop_table td
+{
+    text-align:left;
+}
+
+#pop_table .r
+{
+    text-align:right;
+}
+
+#pop_table tr:hover
+{
+    background-color:#FFE8AA;
+}
+
+#content h1
+{
+    text-align:center;
+    margin-bottom:8px;
+}
+
+#report h2
+{
+    display:inline-block;
+}
+
+.individual
+{
+    display:inline-block;
+    vertical-align:top;
+    width:30%;
+    padding:2px;
+    font-family:"Ubuntu Condensed", sans-serif;
+}
+
+.individual .gender, .individual .shiny
+{
+    float:right;
+}
+
+.explorers, .undecided
+{
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+}
+
+.researchers
+{
+    border:2px solid #4B7148;
+    background-color:#8CAE86;
+}
+
+.hunters
+{
+    border:2px solid #DBC85E;
+    background-color:#161B22;
+    color: #FFF;
+}
+
+.hunters a
+{
+    color:#EAD459;
+}
+
+.gray
+{
+    border:2px solid #999;
+    background-color:#CCC;
+}
+
+.chart
+{
+    display:none;
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script>
+    // Load the Visualization API and the piechart package.
+    google.load('visualization', '1.0', {'packages':['corechart']});
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function draw_chart(title, id, info) {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Guild');
+        data.addColumn('number', 'Members');
+        data.addRows(info);
+
+        // Set chart options
+        var options = {'title':title,
+        'width':400,
+        'height':300,
+        'is3D':true,
+        'backgroundColor':'#E6D298',
+        'chartArea.left':10,
+        'chartArea.top':20,
+        'chartArea.width':300,
+        'chartArea.height':275};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById(id));
+        chart.draw(data, options);
+    }
+
+$(document).ready(function (){
+    $("span[name=pokemon_link]").click(function (){
+        var dex = $(this).data("dex");
+        var species = $(this).text();
+        $.ajax({
+        url: "/ajax/get_species/"+dex,
+        success: function(data) {
+            data = $.parseJSON(data);
+            
+            var heading = "";
+            var heading_img = "";
+            var individuals = "";
+            
+            if (data.length < 1)
+            {
+                heading = "No such Pokémon found!";
+                heading_img = "";
+            }
+            else
+            {
+                heading = species;
+                heading_img = "/assets/images/sprites/icons/"+dex+".png";
+                
+                var explorer_count = 0;
+                var hunter_count = 0;
+                var researcher_count = 0;
+                var undecided_count = 0;
+                
+                var shiny_count = 0;
+                var not_shiny_count = 0;
+                
+                var genders = {};
+                
+                for (var x = 0; x < data.length; x++)
+                {
+                    if (data[x].shiny)
+                    {
+                        var shiny = "Shiny";
+                        shiny_count += 1;
+                    }
+                    else
+                    {
+                        var shiny = "";
+                        not_shiny_count += 1;
+                    }
+                    
+                    /*if (genders[data[x].gender])
+                        genders[data[x].gender] += 1;
+                    else
+                        genders[data[x].gender] = 1;*/
+                    
+                    if (data[x].guild == "Hunters")
+                        hunter_count += 1;
+                    else if (data[x].guild == "Explorers")
+                        explorer_count += 1;
+                    else if (data[x].guild == "Researchers")
+                        researcher_count += 1;
+                    else
+                        undecided_count += 1;
+                    
+                    individuals += "<div class='individual "+data[x].guild.toLowerCase()+"'>" + data[x].name + "<div class='gender'>" + data[x].gender + "</div><br><a href='/team/view/"+data[x].team_id+"/'>" + data[x].team_name +"</a><div class='shiny'>"+shiny+"</div></div>";
+                    
+                }
+                
+                var extras = data.length % 3;
+                if (extras == 1)
+                    individuals += "<div class='individual gray'><br><br></div><div class='individual gray'><br><br></div>";
+                else if (extras == 2)
+                    individuals += "<div class='individual gray'><br><br></div>";
+            }
+            
+            // Render Charts
+            draw_chart("Guild Breakdown", "guild_chart", [["Explorers", explorer_count],["Hunters", hunter_count],["Researchers", researcher_count],["Undecided", undecided_count]]);
+            draw_chart("Shiny Breakdown", "shiny_chart", [["Shiny", shiny_count], ["Non-shiny", not_shiny_count]]);
+            
+            $("#heading").html(heading);
+            $("#heading_img").attr("src", heading_img);
+            $("#individuals").html(individuals);
+            $(".chart").css("display", "inline-block");
+        }
+        });
+    });
+});    
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Pokémon Population</h1>
+
+<div class="col" style="width:20%">
+    <table id="pop_table">
+    <tr>
+        <th><a href="/stats/population?sort=species">Pokémon</a></th>
+        <th class="r"><a href="/stats/population?sort=active">Active</a></th>
+        <th class="r"><a href="/stats/population?sort=total">Total</a></th>
+    </tr>
+    {% for s in species %}
+    <tr>
+        <td><span class="jsLink" name="pokemon_link" data-dex="{{s.dex}}">{{s.name}}</span></td>
+        <td class="r">{{s.active}}</td>
+        <td class="r">{{s.count}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</div>
+<div class="col" id="report" style="width:79%">
+    <img id="heading_img"> <h2 id="heading">Select a Pokémon for details</h2><br>
+    
+    <div id="guild_chart" class="chart"></div>
+    
+    {% comment %}<div id="gender_chart" class="chart"></div>{% endcomment %}
+    
+    <div id="shiny_chart" class="chart"></div>
+    
+    <div id="individuals">
+    </div>
+</div>
+</div>
+{% endblock %}
+

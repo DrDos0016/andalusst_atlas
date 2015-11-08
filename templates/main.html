@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>{%block title %}{% endblock %}Andalusst Atlas</title>
+    
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu+Condensed' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css?v=081614">
+    <link rel="stylesheet" type="text/css" href="/assets/css/forms.css?v=081614">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    <meta name="author" content="Dr. Dos">
+    <meta name="description" content="PMD Unity">
+
+    {% block css %}
+    {% endblock %}
+
+    <!--ANALYTICS-->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-48987723-1', 'pmdunity.org');
+        ga('send', 'pageview');
+    </script>
+    
+    <!--<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+    <script src="/assets/scripts/jquery-1.11.1.min.js"></script>
+    {% block scripts %}
+    {% endblock %}
+</head>
+<body>
+<div id="navigation">
+    {% if session.userID %}
+        {% if session.teamID %}
+            <div style="float:left;">
+                <div class="col">
+                    <div class="team_icon"><img src="/assets/images/sprites/icons/{{session.team_pkmn1}}.png"></div>
+                    <div class="team_icon"><img src="/assets/images/sprites/icons/{{session.team_pkmn2}}.png"></div>
+                    <div class="team_icon"><img src="/assets/images/sprites/icons/{{session.team_pkmn3}}.png"></div>
+                    <div class="team_icon"><img src="/assets/images/sprites/icons/{{session.team_pkmn4}}.png"></div>
+                </div>
+                <div id="selected_team" class="col team_numbers" style="font-family: 'Ubuntu Condensed'">
+                    {% if session.team_guild == "Explorers" %}<img src="/assets/images/icons/map-pin.png" alt="Explorers" title="Explorers">{% endif %}
+                    {% if session.team_guild == "Hunters" %}<img src="/assets/images/icons/sealing-wax.png" alt="Hunters" title="Hunters">{% endif %}
+                    {% if session.team_guild == "Researchers" %}<img src="/assets/images/icons/flask.png" alt="Researchers" title="Researchers">{% endif %}
+                    <a href="/team/view/{{session.teamID}}/{{session.team_name|slugify}}">{{session.team_name}}</a><br>
+                    <div class="col" title="Star Coins"><img src="/assets/images/icons/star-piece.png" alt="Star Coins">x <span id="header_stars">{{session.team_stars}}</span></div>
+                    <div class="col" title="Merits"><img src="/assets/images/icons/tick-circle.png" alt="Merits">x {{session.merits}}</div>
+                    <div class="col" title="Strikes"><img src="/assets/images/icons/cross-circle.png" alt="Strikes">x {{session.strikes}}</div>
+                    <div style="float:right">
+                        <a href="/team/inventory/{{session.teamID}}/{{session.team_name|slugify}}"><img src="/assets/images/icons/drawer-open.png" alt="inventory" title="inventory"></a>
+                        <a href="/logbook/view/{{session.teamID}}/{{session.team_name|slugify}}"><img src="/assets/images/icons/book-open-text.png" alt="logbook" title="logbook"></a>
+                    </div>
+                </div>
+                
+            </div>
+        {% else %}
+            <div style="float:left;">[ No Team Selected ]</div>
+        {% endif %}
+        
+        <div style="float:right;text-align:right;">
+            <div class="col"><img src="{{session.icon}}" class="da_icon"></div>
+            <div class="col">{{session.username}}<br><a href="/logout" style="color:#00F">Log Out</a></div>
+            <div class="col"><a href="/account/manage"><img src="/assets/images/icons/gear.png" alt="Settings" title="Settings"></a></div>
+        </div>
+    {% else %}
+        <div style="float:right">
+            <a href="/login" style="color:#00F"><div class="col"><img src="/assets/images/deviantart.png"></div>
+            <div class="col">DeviantArt<br>Login</div></a>
+        </div>
+    {% endif %}
+    <div style="clear:both"></div>
+    <ul class="nav_links">
+        <a href="/"><li>Home</li></a>
+        <a href="/search"><li>Search Teams</li></a>
+        <a href="/logbook/browse"><li>Logbooks</li></a>
+        <a href="/team/manage"><li>Manage Teams</li></a>
+        {% if session.userID %}<a href="/dungeon/browse"><li>Dungeons</li></a>{% endif %}
+        <a href="/locations"><li>Locations</li></a>
+        <a href="/misc"><li>Misc</li></a>
+        <a href="http://wiki.pmdunity.org"><li>Wiki</li></a>
+        <a href="http://pmdunity.deviantart.com/"><li>DA Group</li></a>
+    </ul>
+    <div style="clear:both"></div>
+</div>
+
+{% block main %}
+<div id="content">
+Content goes here.
+</div>
+{% endblock %}
+
+<div id="footer">
+&bull; PMD Unity created by <a href="http://chillysundance.deviantart.com/">Sundance</a> &bull; Website created by <a href="mailto:doctordos@gmail.com">Dr. Dos</a> &bull;<br>
+&bull; {% now "F jS, Y H:i" %} &bull;
+{% if session.beta %}
+<br>&bull; <b>You're a Beta Tester!</b> &bull;
+{% endif %}
+{% if session.admin %}
+<br>&bull; <b>You're an <a href="/admin">administrator!</a></b> &bull;
+{% endif %}
+</div>
+
+<div class="bgchar">
+</div>
+</body>
+</html>

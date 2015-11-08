@@ -1,0 +1,101 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Timeline - {% endblock %}
+
+{% block css %}
+<style>
+.artist
+{
+    padding:4px;
+    width:95%;
+    margin:auto;
+    border:2px solid #9F5145;
+}
+
+.artist:hover
+{
+    background-color:#FFE8AA;
+}
+
+.artist_body
+{
+    width:100%;
+}
+
+.date
+{
+    font-family:monospace;
+    width:10%;
+}
+
+h3
+{
+    display:inline-block;
+}
+
+.submission
+{
+    width:40%;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Timeline Management</h1>
+
+{% if not event %}
+<h2>Select a Timeline Event to Manage</h2>
+<ul>
+    {% for e in events %}
+    <li><a href="/admin/timeline?event={{e.key}}">{{e.key}} - {{e.name}}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+
+{{users}}
+
+{% for artist in info %}
+    <div class="artist">
+        <div>
+            <h3>{{artist.artist}}</h3>
+            {% if artist.artist in usernames %}HAS ACCOUNT{% endif %}
+        </div>
+        <table class="artist_body">
+        {% for sub in artist.submissions %}
+            <tr>
+            <td class="date">
+                {{sub.date}}
+            </td>
+            <td class="submission">
+                <a href="{{sub.url}}" name="sub-subID">{{sub.title}}</a>
+            </td>
+            <td>
+                {% comment %}
+                <select name="page-">
+                    <option>--------------------</option>
+                    
+                    <option value="teamID-subID">{{e.key}} - [Team 1] - Start</option>
+                    <option>{{e.key}} - [Team 1] - End</option>
+                    <option>{{e.key}} - [Team 2] - Start</option>
+                    <option>{{e.key}} - [Team 2] - End</option>
+                    
+                </select>
+                {% endcomment %}
+                <a class="jsLink">Start for Team</a>
+                <a class="jsLink">End for Team</a>
+            </td>
+            <td>
+                Rewarded []. Give Reward []. [SAVE]
+            </td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+{% endfor %}
+
+
+{% endif %}
+</div>
+{% endblock %}
+

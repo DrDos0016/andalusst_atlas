@@ -1,0 +1,93 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Shop - {% endblock %}
+
+{% block css %}
+<style>
+#content
+{
+    text-align:center
+}
+
+#invoice
+{
+    width:500px;
+    margin:auto;
+    background-color:#FFD;
+    padding:8px;
+    font-family: monospace;
+    font-size:14pt;
+    border:2px solid #CCA;
+}
+#invoice *
+{
+    font-family: monospace;
+}
+
+#invoice h2
+{
+    border-bottom:1px solid #000;
+}
+
+select
+{
+    border:1px solid #A05246;
+    background-color:#E6D298;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("input[name=cancel]").click(function (){
+        window.location = "/shop";
+    });
+});
+
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+
+<div id="invoice">
+<h2>{{store}}</h2>
+P R O O F &nbsp; O F &nbsp; S A L E<br>
+<img src="/assets/images/items/{{item.image}}" class="grayscale">
+<br>
+<div style="float:left">1x</div> {{item.name|upper}} <div style="float:right">&#9830; {{item.cost}}</div>
+<br>
+<div style="float:left">TO:</div><div style="float:right">{{session.team_name|upper}}</div>
+<br>
+</div>
+
+{% if can_cash %}
+<p>By using starcoins to purchase this item, your team will have <b>{{after}}</b> starcoins remaining.</p>
+{% else %}
+<p>Your team doesn't have enough starcoins to purchase this!</p>
+{% endif %}
+{% if can_vouch %}<p>Alternatively, you can use a valid voucher!</p>{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="button" name="cancel" value="Cancel">
+{% if can_cash %}
+    <input type="submit" name="starcoins" value="Pay {{item.cost}} Starcoins">
+{% endif %}
+{% if can_vouch %}
+    <input type="submit" name="voucher" value="Use voucher:">
+    <select name="voucher_id">
+        {% for v in vouchers %}
+        <option value="{{v.id}}">{{v.item.name}}</option>
+        {% endfor %}
+    </select>
+    
+{% endif %}
+</form>
+
+
+
+</div>
+{% endblock %}
+

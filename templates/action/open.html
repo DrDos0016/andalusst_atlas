@@ -1,0 +1,112 @@
+﻿{% extends "main.html" %}
+
+
+{% block title %}Open Package - {% endblock %}
+
+{% block css %}
+<style>
+#image
+{
+    float:right;
+}
+
+#inv_frame
+{
+    width:420px;
+    margin-right:16px;
+    text-align:center;
+}
+
+.inv_item
+{
+    margin:auto;
+    margin-top:8px;
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+    border-radius:15px;
+    width:72px;
+    height:72px;
+    padding:2px;
+    display:inline-block;
+    vertical-align:top;
+    text-align:center;
+    position:relative;
+    cursor:pointer;
+}
+
+.item_frame_selected
+{
+    background-color:#FFE8AA;
+    border:2px solid #9F5145;
+    cursor:pointer;
+}
+
+.inv_item .image, .inv_item .image img
+{
+    margin-top:2px;
+    width:64px;
+    height:64px;
+}
+
+.inv_icons
+{
+    position:absolute;
+    top: 2px;
+    left: 8px;
+}
+
+.choices
+{
+    text-align:center;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $(".inv_item").click(function (){
+        $(".inv_item").each(function (){
+            $(this).removeClass("item_frame_selected");
+            $(this).addClass("grayscale");
+        });
+        
+        $(this).addClass("item_frame_selected");
+        $(this).removeClass("grayscale");
+        $("input[name=choice]").val($(this).data("choice"));
+        
+        $("#submit").val("Confirm Reward");
+        $("#submit").removeClass("grayscale");
+        $("#submit").removeAttr("disabled");
+    });
+});
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h1 style="text-align:center">Opening up the package you find...</h1>
+
+<div class="choices">
+    {% for choice in choices %}
+    <div class="col">
+        <div class="inv_item grayscale" data-choice="{{forloop.counter0}}" style="width:250px;height:250px;">
+            <img src="/assets/images/items/{{choice.item.image}}">
+            <h3>{{choice.item.name}}<br>({{choice.qty}}x)</h3>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<br>
+<form method="POST" style="text-align:center">
+{% csrf_token %}
+<input name="action" type="hidden" value="open">
+<input type="hidden" name="choice" value="X">
+<input id="submit" class="grayscale bigbutton" type="submit" value="Select a Reward" disabled>
+<br><br>
+<b>Once your choice is made, it is final.</b>
+</form>
+
+</div>
+{% endblock %}
+

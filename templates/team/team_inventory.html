@@ -1,0 +1,293 @@
+﻿{% extends "main.html" %}
+
+
+{% block title %}Inventory - {% endblock %}
+
+{% block css %}
+<style>
+#image
+{
+    float:right;
+}
+
+#inv_frame
+{
+    width:420px;
+    margin-right:16px;
+    text-align:center;
+}
+
+.inv_item
+{
+    margin:auto;
+    margin-top:8px;
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+    border-radius:15px;
+    width:72px;
+    height:72px;
+    padding:2px;
+    display:inline-block;
+    vertical-align:top;
+    text-align:center;
+    position:relative;
+}
+
+.inv_item:hover, .inv_selected
+{
+    background-color:#FFE8AA;
+    cursor:pointer;
+}
+
+.inv_item .image, .inv_item .image img
+{
+    margin-top:2px;
+    width:64px;
+    height:64px;
+}
+
+.inv_icons
+{
+    position:absolute;
+    top: 2px;
+    left: 8px;
+}
+
+.blank
+{
+    border-color:#999;
+    background-color:#CCC;
+}
+
+.blank:hover
+{
+    background-color:#CCC;
+    cursor:default;
+}
+
+h1
+{
+    border-bottom:1px solid #000;
+}
+
+p
+{
+    text-align:left;
+}
+
+#admin_form
+{
+    display:none;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $(".inv_item").click(function (){
+        if ($(this).hasClass("blank"))
+            return false;
+        $(".inv_item").each(function (){
+            $(this).removeClass("inv_selected");
+        });
+    
+        $("#inv_details").hide();
+        $("#name").html("");
+        $("#desc").html("");
+        $("#exp").html("");
+        $("#attr").html("");
+        $("#details").html("");
+        var id = $(this).attr("id").substring(5);
+        $(this).addClass("inv_selected");
+        $("#image").attr("src", $("#image-"+id).attr("src"));
+        $("#image").attr("alt", $("#name-"+id).val());
+        $("#name").html($("#name-"+id).val());
+        $("#desc").html("<h3>Description:</h3>&ldquo;"+$("#desc-"+id).val()+"&rdquo;");
+        $("#exp").html("<h3>Explanation:</h3>"+$("#exp-"+id).val());
+        $("#action").html("");
+        var approval = $("#approval-"+id).val();
+        if (approval)
+        {
+            $("#approval").html("<h3>Approval:</h3>");
+        }
+        else
+            $("#approval").html("");
+        
+        // Attributes
+        if ($("#attr-"+id).val() != "")
+        {
+            var attributes = JSON.parse($("#attr-"+id).val());
+            var output = "";
+            if (attributes && attributes.hasOwnProperty("can_customize"))
+            {
+                output += "<li>This item can be customized</li>";
+                $("#attr").html("<h3>Attributes:</h3>\n<ul>" + output + "</ul>");
+            }
+            if (attributes && attributes.hasOwnProperty("can_open"))
+            {
+                $("#action").html("<h3>Action:</h3><a href='/open/"+$("#id-"+id).val()+"'><input type='button' value='Open it!'></a>");
+            }
+            if (attributes && attributes.hasOwnProperty("can_use"))
+            {
+                var type = $("#type-"+id).val();
+                if (type == 15)
+                    $("#action").html("<h3>Action:</h3><a href='/evolve/"+$("#id-"+id).val()+"' class='bigbutton'>Evolve Teammate</a>");
+                else if (type == 47)
+                    $("#action").html("<h3>Action:</h3><a href='/ability/"+$("#id-"+id).val()+"' class='bigbutton'>Change Ability</a>");
+                else if (type == 48 || type == 49)
+                    $("#action").html("<h3>Action:</h3><a href='/tm/"+$("#id-"+id).val()+"' class='bigbutton'>Change Moveset</a>");
+            }
+        }
+        
+        // Details
+        if ($("#details-"+id).val() != "")
+        {
+            var details = JSON.parse($("#details-"+id).val());
+            var output = "";
+            
+            // History
+            if (details.hasOwnProperty("history"))
+            {
+                //details.history.reverse();
+                var output = "";
+                var prev_name = $("#name-"+id).val();
+                for (var x = 0; x < details.history.length; x++)
+                {
+                    if (details.history[x]["action"] == "customization")
+                    {
+                        output += "<li>"+prev_name+" was customized into: <a href='"+details.history[x]["url"]+"' target='_blank'>"+details.history[x]["name"]+"</a></li>\n";
+                        prev_name = details.history[x]["name"];
+                        final_name = details.history[x]["name"];
+                        final_desc = details.history[x]["desc"];
+                    }
+                }
+                $("#name").html(final_name);
+                $("#desc").html("<h3>Description:</h3>&ldquo;"+final_desc+"&rdquo;");
+                
+                {% if yours %}
+                // Approval
+                var approval_output = "";
+                var approval_text = $("#approval-"+id).val();
+                if (approval_text == "Approved")
+                    var approval_img = "plus-circle24";
+                else if (approval_text == "Rejected")
+                    var approval_img = "minus-circle24";
+                else
+                    var approval_img = "question";
+                approval_output = "<h3>Approval:</h3>\n<img src='/assets/images/icons/"+approval_img+".png' alt='"+approval_text+"'> " + approval_text;
+                if (approval_text == "Rejected")
+                {
+                    approval_output += ": " + $("#note-"+id).val() + " <i>(handled by "+$("#handler-"+id).val()+")</i><br>";
+                    approval_output += "You can either <a href='/approval/resubmit?id="+$("#approval_id-"+id).val()+"'>resubmit</a> or <a href='/approval/undo?id="+$("#approval_id-"+id).val()+"'>undo</a> this approval request."
+                }
+                if (approval_text == "Approved")
+                    approval_output += " <i>(handled by "+$("#handler-"+id).val()+")</i>";
+                $("#approval").html(approval_output);
+                {% endif %}
+                
+            }
+            
+            $("#details").html("<h3>Details:</h3>\n<ul>" + output + "</ul>");
+        }
+        
+        $("#inv_details").show();
+        {% if session.admin %}$("#admin_form").show();$("input[name=admin-del]").val($("#id-"+id).val()){% endif %}
+    });
+    
+    // Inventory Icons
+    $(".inv_item").each(function (){
+        if ($(this).hasClass("blank"))
+            return false;
+
+        var id = $(this).attr("id").substring(5);
+        if ($("#details-"+id).val() != "")
+        {
+            var details = JSON.parse($("#details-"+id).val());
+            if (details.hasOwnProperty("is_customized"))
+            {
+                $(this).append("<div class='inv_icons' id='icons-"+id+"'></div>");
+                $("#icons-"+id).append("<img src='/assets/images/icons/scissors-blue.png' alt='customized'>");
+                
+                {% if yours %}
+                var approval_text = $("#approval-"+id).val();
+                if (approval_text == "Approved")
+                    var approval_img = "plus-circle16";
+                else if (approval_text == "Rejected")
+                    var approval_img = "minus-circle16";
+                else
+                    var approval_img = "question16";
+                $("#icons-"+id).append("<img src='/assets/images/icons/"+approval_img+".png' alt='"+approval_text+"'>");
+                {% endif %}
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<div style="width:100%; text-align:center">
+    {% include "modules/team_nav.html" %}
+    <div class="col" id="inv_frame">
+    <h1>Inventory for <br>{{team.name}}</h1>
+    {% for item in inventory %}
+    <div class="inv_item" id="item-{{forloop.counter}}">
+        <div class="col image"><img id="image-{{forloop.counter}}" src="/assets/images/items/{{item.item.image}}" alt="{{item.item.name}}"></div>
+        <input type="hidden" id="id-{{forloop.counter}}" value="{{item.id}}">
+        <input type="hidden" id="type-{{forloop.counter}}" value="{{item.item.id}}">
+        <input type="hidden" id="name-{{forloop.counter}}" value="{{item.item.name}}">
+        <input type="hidden" id="desc-{{forloop.counter}}" value="{{item.item.description}}">
+        <input type="hidden" id="exp-{{forloop.counter}}" value="{{item.item.explanation}}">
+        <input type="hidden" id="attr-{{forloop.counter}}" value="{{item.item.attributes|default:""}}">
+        <input type="hidden" id="details-{{forloop.counter}}" value="{{item.details|default:""}}">
+        {% if item.approval %}
+            <input type="hidden" id="approval_id-{{forloop.counter}}" value="{{item.approval.id}}">
+            {% if item.approval.approved == 1 %}<input type="hidden" id="approval-{{forloop.counter}}" value="Approved">{% endif %}
+            {% if item.approval.approved == 0 %}<input type="hidden" id="approval-{{forloop.counter}}" value="Rejected">{% endif %}
+            {% if item.approval.approved == None %}<input type="hidden" id="approval-{{forloop.counter}}" value="Pending">{% endif %}
+            <input type="hidden" id="handler-{{forloop.counter}}" value="{% if item.approval.approved != None %}{{item.approval.handled_by}}{% endif %}">
+            <input type="hidden" id="note-{{forloop.counter}}" value="{% if item.approval.approved != None %}{{item.approval.user_note}}{%else %}{% endif %}">
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% for empty in blank %}
+    <div class="inv_item blank"></div>
+    {% endfor %}
+    <br><br>
+    <a href="/team/view/{{team.id}}/{{team.name|slugify}}"><input type="button" value="Return to Team Page"></a>
+    </div>
+    
+    <div class="col" id="inv_details">    
+        <h1>Item Information<br>&nbsp;</h1>
+        <div style="margin-top:8px;">
+        <img id="image" src="" alt="">
+        <h2 id="name"></h2>
+        <p id="desc">Click on an item to examine it.</p>
+        
+        <p id="exp"></p>
+        
+        <p id="attr"></p>
+        
+        <p id="details"></p>
+        
+        {% if yours %}
+        <p id="approval"></p>
+        <p id="action"></p>
+        {% endif %}
+        
+        {% if session.admin %}
+        <form method="POST" id="admin_form">
+        {% csrf_token %}
+        <input type="hidden" name="admin-del" value="">
+        <h3>Admin Functions</h3>
+        <input type="submit" value="Delete Item">
+        </form>
+        {% endif %}
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+

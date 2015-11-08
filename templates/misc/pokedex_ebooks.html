@@ -1,0 +1,48 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Storehouse - {% endblock %}
+
+{% block css %}
+<style>
+.progress
+{
+    width:400px;
+    height:25px;
+    background-color:#300;
+    margin:4px 0px;
+}
+
+.bar
+{
+    text-align:center;
+}
+
+.dialog .guild
+{
+    display:inline-block;
+    *display:inline;
+    zoom:1;
+    width:96px;
+}
+
+.qty
+{
+    width:96px;
+    display:inline-block;
+    *display:inline;
+    zoom:1;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Pokédex ebooks</h1>
+{% for p in posts %}
+{{p}}<hr>
+{% endfor %}
+</div>
+
+</div>
+{% endblock %}
+

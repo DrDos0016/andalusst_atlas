@@ -1,0 +1,106 @@
+{% extends "main.html" %}
+
+{% block title %}Manage Events - {% endblock %}
+
+{% block css %}
+<style>
+.section
+{
+    display:inline-block;
+    vertical-align:top;
+    width:49%;
+}
+
+textarea, input[type=text]
+{
+    border:1px solid #A05246;
+    background-color:#E6D298;
+}
+
+textarea
+{
+    width:250px;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+
+<div class="col">
+    <form method="POST">
+    {% csrf_token %}
+    <input name="id" value="{{event.id|default:'new'}}" type="hidden">
+    <input type="hidden" name="action" value="save">
+    <div class="field">
+        <label>Event ID # <div>{{event.id|default:"new"}}</div></label>
+    </div>
+
+    <div class="field">
+        <label>Event Key <input name="key" maxlength="8" value="{{event.key}}"</label>
+    </div>
+
+    <div class="field">
+        <label>Event Name <input name="closes" maxlength="40" value="{{event.name}}"></label>
+    </div>
+
+    <div class="field">
+        <label>Event Opens <input name="opens" maxlength="10" value="{{event.opens|date:'Y-m-d'}}"></label>
+    </div>
+
+    <div class="field">
+        <label>Event Closes <input name="closes" maxlength="10" value="{{event.closes|date:'Y-m-d'}}"></label>
+    </div>
+
+    <div class="field">
+        <label>Guild Availability (EHR) <input name="guilds" maxlength="3" value="{{event.guilds}}"></label>
+    </div>
+    <br>
+    <div class="field">
+        <label>Full Rewards</label>
+    </div>
+    <div class="field">
+        <label>Explorers (Itm:Qty:Per,Itm:Qty,...) <input name="full-Explorers" value="{{full-e}}"></label>
+    </div>
+    <div class="field">
+        <label>Hunters <input name="full-Hunters" value="{{full-h}}"></label>
+    </div>
+    <div class="field">
+        <label>Researchers <input name="full-Researchers" value="{{full-r}}"></label>
+    </div>
+    <br>
+    <div class="field">
+        <label>Late Rewards</label>
+    </div>
+    <div class="field">
+        <label>Explorers (Itm:Qty:Per,Itm:Qty,...) <input name="late-Explorers" value="{{late-e}}"></label>
+    </div>
+    <div class="field">
+        <label>Hunters <input name="late-Hunters" value="{{late-h}}"></label>
+    </div>
+    <div class="field">
+        <label>Researchers <input name="late-Researchers" value="{{late-r}}"></label>
+    </div>
+    <br>
+    <div class="field">
+        <label>Bonus Rewards</label>
+    </div>
+    <div class="field">
+        <label>Explorers (Itm:Qty:Per,Itm:Qty,...) <input name="bonus-Explorers" value="{{bonus-e}}"></label>
+    </div>
+    <div class="field">
+        <label>Hunters <input name="bonus-Hunters" value="{{bonus-h}}"></label>
+    </div>
+    <div class="field">
+        <label>Researchers <input name="bonus-Researchers" value="{{bonus-r}}"></label>
+    </div>
+    <br>
+    <input type="submit" value="Save Event" class="bigbutton">
+
+
+
+    </form>
+</div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,40 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Account Transfer - {% endblock %}
+
+{% block css %}
+<style>
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Account Transfer</h1>
+
+<form method="POST">
+{% csrf_token %}
+<div class="field">
+    <label>Old DA Name: <input name="from"></label>
+</div>
+<div class="field">
+    <label>New DA Name: <input name="to"></label>
+</div>
+
+<p><b>Please VERIFY that these accounts are the same person and not some weirdo trying to hijack a team.</b></p>
+<p>Also note that for the purposes of logging in, names are case-sensitive "Dr-Dos" and "dr-dos" are different usernames!</p>
+<p><b>This will delete the user with the new DA name if one exists!</b> You may need to delete their teams first if they re-entered any!</p>
+<p>Lastly, tell the person who you transferred to log out and back in again.</p>
+
+<input name="action" value="transfer" type="hidden">
+<input type="submit" value="Transfer Account">
+<br><br>
+<div class="field">
+    <label>Transfer Result:</label>
+</div>
+{{result}}
+
+
+</form>
+</div>
+{% endblock %}
+

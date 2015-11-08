@@ -1,0 +1,51 @@
+{% extends "main.html" %}
+
+{% block title %}Manage Account - {% endblock %}
+
+{% block css %}
+<style>
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+
+<div class="col">
+    <img src="{{session.icon}}" class="da_icon">
+</div>
+<div class="col">
+    <h1>{{session.username}}</h1>
+</div>
+
+ <h1>{{msg}}</h1>
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="action" value="save">
+<div class="field">
+    <label>Default Team
+    <select name="default_team">
+        <option value="0">No Default</option>
+    {% for team in teams %}
+        <option value="{{team.id}}"{% if user.default_team == team.id %} selected{% endif %}>{{team.name}}</option>
+    {% endfor %}
+    </select><br>
+    <span class="sub">Automatically select this team when you sign in.</span>
+    </label>
+</div>
+<div class="field">
+    <label>Results Per Page
+    <input name="results" value="{{session.results|default:25}}" maxlength="2"><br>
+    <span class="sub">The number of results per page for logbooks and team searches. Maximum permitted is 50.</span>
+    </label>
+</div>
+{% if session.beta %}
+<div class="field">
+    <label>Beta Tester <div>YES</div></label><br>
+    <span class="sub">You get to try out special features before anybody else. Probably nothing TOO dangerous...</span>
+</div>
+{% endif %}
+<input type="submit" class="bigbutton" value="Apply Settings">
+</form>
+</div>
+{% endblock %}
+

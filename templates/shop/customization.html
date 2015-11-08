@@ -1,0 +1,227 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Wear and Flair Accessories - {% endblock %}
+
+{% block css %}
+<style>
+#customization_form
+{
+}
+
+#customization_frame
+{
+    float:right;
+    border:2px solid #9F5145;
+    width:681px;
+    height:758px;
+}
+
+iframe
+{
+    width:681px;
+    height:758px;
+}
+
+#customization_frame img
+{
+    max-width:681px;
+    max-height:758px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="/assets/scripts/common.js"></script>
+<script src="/assets/scripts/validation.js"></script>
+<script>
+$(document).ready(function (){
+    $("input[name=customization_url]").blur(function (){
+        var c_url = $(this).val();
+        c_url = remove_params(c_url);
+        $(this).val(c_url);
+        get_customization(c_url);
+    });
+    
+    $("select[name=item]").change(function (){
+        display_item($(this).val());
+    });
+    
+    $("select[name=alterations]").change(function (){
+        var alterations = $(this).val();
+        set_price(alterations * 2);
+    });
+    
+    $('#submit').click(function (){
+        var success = (is_fav_me("customization_url"));
+        success = (is_set("new_name") && success);
+        return success;
+    });
+    
+    set_price($("select[name=alterations]").val() * 2);
+    display_item($("select[name=item]").val());
+});
+
+function set_price(val)
+{
+    $("#cost").html(val);
+    $("input[name=cost]").val(val);
+}
+
+function display_item(item_id)
+{
+    item = get_item(item_id);
+    item = JSON.parse(item);
+    
+    $("#inv_details").hide();
+    $("#name").html("");
+    $("#desc").html("");
+    $("#exp").html("");
+    $("#attr").html("");
+    $("#details").html("");
+    var id = item.id;
+    $("#image").attr("src", "/assets/images/items/"+item.item_image);
+    $("#image").attr("alt", item.item_name);
+    $("#name").html(item.item_name);
+    $("#desc").html("<h3>Description:</h3>&ldquo;"+item.item_desc+"&rdquo;");
+    $("#exp").html("<h3>Explanation:</h3>"+item.item_exp);
+
+    $("#inv_details").show();
+    if (item.item_attr != "")
+    {
+        var attributes = JSON.parse(item.item_attr);
+        var output = "";
+        if (attributes && attributes.hasOwnProperty("can_customize"))
+        {
+            output += "<li>This item can be customized</li>";
+            $("#attr").html("<h3>Attributes:</h3>\n<ul>" + output + "</ul>");
+        }
+        
+    }
+
+    if (item.details)
+    {
+        var details = JSON.parse(item.details);
+        var output = "";
+        if (details.hasOwnProperty("history"))
+        {
+            //details.history.reverse();
+            var output = "";
+            var prev_name = item.item_name;
+            for (var x = 0; x < details.history.length; x++)
+            {
+                if (details.history[x]["action"] == "customization")
+                {
+                    output += "<li>"+prev_name+" was customized into: <a href='"+details.history[x]["url"]+"' target='_blank'>"+details.history[x]["name"]+"</a></li>\n";
+                    prev_name = details.history[x]["name"];
+                    final_name = details.history[x]["name"];
+                    final_desc = details.history[x]["desc"];
+                }
+            }
+            $("#name").html(final_name);
+            $("#desc").html("<h3>Description:</h3>&ldquo;"+final_desc+"&rdquo;");
+        }
+        
+        $("#details").html("<h3>Details:</h3>\n<ul>" + output + "</ul>");
+    }
+
+    $("#inv_details").show();
+}
+
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+
+    <h1>Accessory Customization</h1>
+    
+    <div class="col" id="customization_form">
+    <form method="POST">
+    {% if inventory %}{% csrf_token %}{% endif %}
+    <input name="action" value="customization" type="hidden">
+    <div class="field">
+        <label>Item to Customize
+            {% if inventory %}
+            <select name="item">
+                {% for item in inventory %}
+                    {% if item.approval.approved == 1 or item.approval_id == None %}
+                        <option value="{{item.id}}">[{{forloop.counter}}] {{item.item.name}}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            {% else %}
+            <div>Your team has no customizable items!</div>
+            {% endif %}
+        </label>
+    </div>
+    <div class="field">
+        <label>Customization Link <input name="customization_url" id="customization_url"><br>
+        <span class="sub">The <b>fav.me</b> address of the customization on DeviantArt</span></label>
+    </div>
+    <div class="field">
+        <label>Alterations 
+            <select name="alterations">
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+            </select><br>
+            <span class="sub">Of decor, shape, and dye, how many of the three are being altered?</span>
+        </label>
+    </div>
+    <div class="field">
+        <label>Creation Name <input name="name" id="new_name"><br></label>
+    </div>
+    <div class="field">
+        <label>Creation Description <input name="desc" maxlength="140"><br>
+        <span class="sub">Optionally, explain the new item in 140 characters or less. That's a tweet sized description.</span></label>
+    </div>
+    <div class="field">
+        <label>Customization Cost
+            <div><span class="item_cost" id="cost">5</span> <span style="font-size:10pt"> x </span><img src="/assets/images/icons/star-piece.png"></div>
+            <input type="hidden" name="cost" value="5">
+        </label>
+    </div>
+    <div class="field">
+        <label>Payment Method
+            <select name="payment">
+                <option value="starcoins">Starcoins</option>
+                {% if can_vouch %}<option value="voucher" selected>Voucher</option>{% endif %}
+            </select>
+            <input type="hidden" name="voucher_id" value="{{voucher_id}}">
+        </label>
+    </div>
+    
+    <br>
+    {% if inventory %}<input type="submit" class="bigbutton" value="Customize Item" id="submit">{% endif %}<br>
+    
+    <div class="field">
+    <p>Please make sure that all information is correct before submitting! Once you make your customization, an admin will approve it. Items which have not been approved can't be recustomized until they are approved.</p>
+    </div>
+    </form>
+    
+    <div id="inv_details" class="small">
+        <div class="col">
+            <img id="image" src="" alt="">
+        </div>
+        <div class="col" style="width:395px">
+            <h2 id="name"></h2>
+            <p id="desc"></p>
+            
+            <p id="exp"></p>
+            
+            <p id="attr"></p>
+            
+            <p id="details"></p>
+        </div>
+    </div>
+    
+    </div>
+    
+    <div id="customization_frame" class="col">
+        <img id="img_customization" src="/assets/images/blank_customization.png">
+        <div id="txt_customization"></div>
+    </div>
+    <div style="clear:both"></div>
+</div>
+{% endblock %}
+

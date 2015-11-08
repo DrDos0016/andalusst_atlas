@@ -1,0 +1,369 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Verify Logbooks - {% endblock %}
+
+{% block css %}
+<style>
+#controls
+{
+    text-align:left;
+}
+
+iframe
+{
+    display:none;
+    border:0;
+    height:717px;
+    width:100%;
+}
+
+.entries
+{
+    overflow:auto;
+    height:440px;
+}
+
+{% if event.key != "APP" %}.invalid
+{
+    text-decoration:line-through;
+}{% endif %}
+
+.entry
+{
+    padding-top:3px;
+    padding-left:3px;
+}
+
+.entry:hover, .entry.selected
+{
+    cursor:pointer;
+    background-color:#E6D298;
+}
+
+#controls
+{
+    border-top:2px solid #9F5145;
+    padding:2px;
+}
+
+input[type=text], select
+{
+    margin-right:2px;
+    border:1px solid #A05246;
+    background-color:#E6D298;
+    width:110px;
+}
+
+.key
+{
+    font-weight:bold;
+    background-color:#E6D298;
+}
+
+#content h1
+{
+    display:inline-block;
+}
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/assets/scripts/common.js"></script>
+<script>
+var rewards = '{{event.rewards|safe}}';
+if (rewards)
+{
+    rewards = JSON.parse(rewards);
+    //alert("Rewards!" + rewards["Explorers"][0]["name"]);    
+}
+
+$(document).ready(function(){
+    document.cookie = "csrftoken="+$('input[name=csrfmiddlewaretoken]').val();
+    
+    $("#app_col").css("width", ($("#content").width() - 240));
+    
+    $(".entry").click(function (){
+        var app = $(this).data("app");
+        var url = $(this).data("url");
+        var logbook_id = $(this).data("logbook_id");
+        var team_size = $(this).data("team_size");
+        var entry_num = $(this).data("selected");
+        var guild = $(this).data("guild")
+        var map = $(this).data("map");
+        
+        $(".entry").each(function (){
+            $(this).removeClass("selected");
+        });
+        
+        $("#team_size option[value='"+team_size+"']").prop("selected", "selected");
+        
+        $(this).addClass("selected");
+        reset();
+        $("#submission_frame").attr("src", url);
+        $("#submission_frame").show();
+        $("#app_frame").attr("src", app);
+        $("#app_frame").hide();
+        if (map)
+        {
+            //http://django.pi:8000/dungeon/view/1/4/
+            $("#map_frame").attr("src", "/dungeon/view/map/"+map+"?minimal=1");
+            $("#map_frame").hide();
+        }
+        $("#entry").val(logbook_id);
+        $("#selected").val(entry_num);
+        load_rewards(guild);
+    });
+    
+    $("#view_sub").click(function (){
+        $("#app_frame").hide();
+        $("#map_frame").hide();
+        $("#submission_frame").show();
+    });
+    
+    $("#view_app").click(function (){
+        $("#submission_frame").hide();
+        $("#map_frame").hide();
+        $("#app_frame").show();
+    });
+    
+    $("#view_map").click(function (){
+        $("#submission_frame").hide();
+        $("#app_frame").hide();
+        $("#map_frame").show();
+    });
+    
+    $("#apply").click(function (){
+        submit();
+    });
+    
+    $("#event_list").change(function (){
+        window.location = "/admin/verify_logbooks?key="+$(this).val();
+    });
+    
+    $(window).keyup(function (e){
+        //console.log("CODE: " + e.keyCode);
+        if (! $("#keyboard").prop("checked") || $("#user").is(":focus") || $("#admin").is(":focus") || $("#reward_set").is(":focus"))
+            return false;
+
+        switch (e.keyCode)
+        {
+            case 65: // Approve
+                $("#approve").click();
+                $("#user").val("");
+                $("#admin").val("");
+                $("input[name=reward]").prop("checked", false);
+                $("#user").val("N/A");
+                $("#admin").val("N/A");
+                break;
+            case 82: // Reject
+                $("#reject").click();
+                $("#none").click();
+                $("#user").val("");
+                $("#admin").val("");
+                $("#user").focus();
+                break;
+            /*case 70: // Full Reward
+                $("#full").prop("checked", true);
+                break;
+            case 76: // Late Reward
+                $("#late").prop("checked", true);
+                break;
+            case 78: // No Reward
+                $("#none").prop("checked", true);
+                break;
+            case 77:
+                $("#manual").prop("checked", true);
+                break;
+            */
+            case 66:
+                if ($("input[name=bonus]").prop("checked"))
+                    $("input[name=bonus]").prop("checked", false);
+                else
+                    $("input[name=bonus]").prop("checked", true);
+                break;
+            case 85: // User Notes
+                $("#user").focus();
+                break;
+            case 83: // Staff Notes
+                $("#admin").focus();
+                break;
+            case 13: // Apply
+                submit();
+                break;
+            case 49: // Team Size 1
+                $("#team_size option[value='1']").prop("selected", "selected");
+                break;
+            case 50: // Team Size 2
+                $("#team_size option[value='2']").prop("selected", "selected");
+                break;
+            case 51: // Team Size 3
+                $("#team_size option[value='3']").prop("selected", "selected");
+                break;
+            case 52: // Team Size 4
+                $("#team_size option[value='4']").prop("selected", "selected");
+                break;
+            case 48: // Team Size 0
+                $("#team_size option[value='0']").prop("selected", "selected");
+                break;
+            case 81: // Submission
+                $("#view_sub").click();
+                break;
+            case 87: // App
+                $("#view_app").click();
+                break;
+            case 69: // Map
+                $("#view_map").click();
+            /*default:
+                alert(e.keyCode);*/
+        }
+    });
+    
+    reset();
+    $(".entry :first").click()
+});
+
+function reset()
+{
+    $("input[type=radio]").prop("checked", false);
+    $("input[name=user_note]").val("");
+    $("input[name=admin_note]").val("");
+    $("input[name=bonus]").prop("checked", false);
+    $("select[name=reputation]").val("0");
+}
+
+function submit()
+{
+    if ($("#entry").val() == "")
+        return false;
+    
+    var data = {};
+    data.entry      = $("input[name=entry]").val();
+    data.key        = $("input[name=key]").val();
+    data.status     = $("input[name=status]:checked").val();
+    data.reward     = $("select[name=reward_set]").val();
+    data.reputation = parseInt($("select[name=reputation]").val());
+    data.u_note     = $("input[name=user_note]").val();
+    data.s_note     = $("input[name=admin_note]").val();
+    data.size       = $("select[name=team_size]").val();
+    data.bonus      = parseInt($("input[name=bonus]:checked").val());
+    
+    if (! $("input[name=status]:checked").val())
+    {
+        alert("You didn't approve/reject the submission!");
+        return false;
+    }
+    
+    data = JSON.stringify(data);
+    
+    $.ajax({
+        url: "/ajax/validate_logbook",
+        data: {"data":data},
+        type: "POST",
+        async: false,
+        success: function(ret) {
+            var current = parseInt($("#selected").val());
+            var next = current + 1;
+            if (ret == "SUCCESS")
+            {
+                
+                $("#entry"+ current).hide();
+            }
+            else
+            {
+                $("#entry"+current).css("background-color", "red");
+            }
+            
+            $("#entry"+ next).click();
+        }
+    });
+    
+    
+    
+}
+
+function load_rewards(guild)
+{
+    reward_choices = rewards[guild];
+    $("#reward_set").html("");
+    for (var x = 0; x < reward_choices.length; x++)
+    {
+        $("#reward_set").append("<option value='"+reward_choices[x]["name"]+"'>"+reward_choices[x]["name"]+"</option>\n");
+    }
+    $("#reward_set").append("<option value='None'>NONE</option>\n");
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>[{{event.key}}] - {{event.name}}{% if event.closes %} - Closes: {{event.closes}}{% endif %}</h1>
+<div style="float:right">
+    <b>Event:</b>
+    <select style="width:250px" id="event_list">
+        {% for e in events %}
+        <option value="{{e.key}}" {% if e.key == event.key %} selected{% endif %}>[{{e.key}}] - {{e.name}}</option>
+        {% endfor %}
+    </select>
+</div>
+<br>
+<div class="col" style="width:215px;height:721px;border:2px solid #9F5145;overflow:auto;">
+<div class="entries">
+{% for entry in logbooks %}
+    <div class="entry{% if entry.team.id not in valid_apps %} invalid{% endif %}" id="entry{{forloop.counter}}" data-app="{{entry.team.application}}" data-map="{{entry.dungeon_map}}" data-url="{{entry.url}}" data-logbook_id="{{entry.id}}" data-selected="{{forloop.counter}}" data-guild="{{entry.team.guild}}" data-team_size="{% if entry.team.pkmn4 %}4{% elif entry.team.pkmn3 %}3{% elif entry.team.pkmn2 %}2{% elif entry.team.pkmn1 %}1{%else%}0{%endif%}">
+        {% if entry.team.guild == "Explorers" %}<img src="/assets/images/icons/map-pin.png" alt="Explorers" title="Explorers">{% endif %}
+        {% if entry.team.guild == "Hunters" %}<img src="/assets/images/icons/sealing-wax.png" alt="Hunters" title="Hunters">{% endif %}
+        {% if entry.team.guild == "Researchers" %}<img src="/assets/images/icons/flask.png" alt="Researchers" title="Researchers">{% endif %}
+       {{entry.team.name}} {{entry.team.size}}
+    </div>
+{% endfor %}
+</div>
+<div id="controls">
+        <div style="margin-left:25px">
+        <span class="key">Q</span> - <a class="jsLink" id="view_sub">Sub</a>
+        <span class="key">W</span> - <a class="jsLink" id="view_app">App</a>
+        <span class="key">E</span> - <a class="jsLink" id="view_map">Map</a>
+        </div>
+        <form method="POST">
+        {% csrf_token %}
+        <input id="entry" name="entry" value="" type="hidden">
+        <input id="selected" value="" type="hidden">
+        <input name="key" value="{{event.key}}" type="hidden">
+        <select name="team_size" id="team_size"> 
+            <option value="0">0?</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select> <span class="key">#</span> Team size<br>
+        
+        <label><input id="approve" name="status" type="radio" value="1"> <span class="key">A</span>pprove</label> 
+        <label><input id="reject" name="status" type="radio" value="0"> <span class="key">R</span>eject</label><br>
+        
+        <select id="reward_set" name="reward_set"></select> Reward<br>
+        <input id="bonus" name="bonus" type="checkbox" value="1"> Give <span class="key">B</span>onus (if any)<br>
+        
+        <select id="reputation" name="reputation">
+            <option value="0">No Change</option>
+            <option value="1">Merit</option>
+            <option value="-1">Strike</option>
+        </select> Reputation<br><br>
+        
+        <input id="user" name="user_note" type="text" value=""> <span class="key">U</span>ser Note<br>
+        <input id="admin" name="admin_note" type="text" value=""> <span class="key">S</span>taff Note<br>
+        
+        
+        <input id="apply" type="button" value="Apply (Enter)" style="font-size:12pt"> <br>
+        <input id="keyboard" type="checkbox" value="1" checked> Key Shortcuts Enabled <br>
+        </form>
+    </div>
+</div>
+
+<div class="col" style="border:2px solid #9F5145" id="app_col">
+    <iframe id="app_frame"></iframe>
+    <iframe id="submission_frame"></iframe>
+    <iframe id="map_frame"></iframe>
+</div>
+</div>
+{% endblock %}
+

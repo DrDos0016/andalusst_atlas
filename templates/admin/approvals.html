@@ -1,0 +1,246 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Approvals - {% endblock %}
+
+{% block css %}
+<style>
+#controls
+{
+    text-align:left;
+}
+
+iframe
+{
+    display:none;
+    border:0;
+    height:717px;
+    width:100%;
+}
+
+.entries
+{
+    overflow:auto;
+    height:440px;
+}
+
+.entry
+{
+    padding-top:3px;
+    padding-left:3px;
+}
+
+.entry:hover, .entry.selected
+{
+    cursor:pointer;
+    background-color:#E6D298;
+}
+
+#controls
+{
+    border-top:2px solid #9F5145;
+    padding:2px;
+}
+
+input[type=text], select
+{
+    margin-right:2px;
+    border:1px solid #A05246;
+    background-color:#E6D298;
+    width:110px;
+}
+
+.key
+{
+    font-weight:bold;
+    background-color:#E6D298;
+}
+
+#content h1
+{
+    display:inline-block;
+}
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/assets/scripts/common.js"></script>
+<script>
+$(document).ready(function(){
+    document.cookie = "csrftoken="+$('input[name=csrfmiddlewaretoken]').val();
+    
+    $("#app_col").css("width", ($("#content").width() - 240));
+    
+    $(".entry").click(function (){
+        var app = $(this).data("app");
+        var url = $(this).data("url");
+        var logbook_id = $(this).data("logbook_id");
+        var entry_num = $(this).data("selected");
+        var guild = $(this).data("guild")
+        
+        $(".entry").each(function (){
+            $(this).removeClass("selected");
+        });
+        
+        $(this).addClass("selected");
+        reset();
+        $("#submission_frame").attr("src", url);
+        $("#submission_frame").show();
+        $("#app_frame").attr("src", app);
+        $("#app_frame").hide();
+        $("#entry").val(logbook_id);
+        $("#selected").val(entry_num);
+    });
+    
+    $("#view_sub").click(function (){
+        $("#app_frame").hide();
+        $("#submission_frame").show();
+    });
+    
+    $("#view_app").click(function (){
+        $("#submission_frame").hide();
+        $("#app_frame").show();
+    });
+    
+    $("#apply").click(function (){
+        submit();
+    });
+    
+    $("#type_button").click(function (){
+        window.location = "/admin/approvals?type="+$("#type_list").val()+"&status="+$("input[name=status]:checked").val();
+    });
+    
+    $(window).keyup(function (e){
+        if (! $("#keyboard").prop("checked") || $("#user").is(":focus") || $("#admin").is(":focus"))
+            return false;
+
+        switch (e.keyCode)
+        {
+            case 13: // Apply
+                submit();
+                break;
+            case 81: // Submission
+                $("#view_sub").click();
+                break;
+            case 87: // App
+                $("#view_app").click();
+                break;
+            /*default:
+                alert(e.keyCode);*/
+        }
+    });
+    
+    reset();
+    $(".entry :first").click()
+});
+
+function reset()
+{
+    //$("input[type=radio]").prop("checked", false);
+    $("input[name=user_note]").val("");
+    $("input[name=admin_note]").val("");
+    $("input[name=decision]").prop("checked", false);
+    {% if status == "approved" %}$("#approve").prop("checked", true);{% endif %}
+    {% if status == "rejected" %}$("#reject").prop("checked", true);{% endif %}
+    {% if status == "undecided" %}$("#ignore").prop("checked", true);{% endif %}
+}
+
+function submit()
+{
+    if ($("#entry").val() == "")
+        return false;
+    
+    var data = {};
+    data.entry  = $("input[name=entry]").val();
+    data.status = $("input[name=decision]:checked").val();
+    data.u_note = $("input[name=user_note]").val();
+    data.s_note = $("input[name=admin_note]").val();
+    
+    data = JSON.stringify(data);
+    
+    $.ajax({
+        url: "/ajax/submit_approval",
+        data: {"data":data},
+        type: "POST",
+        async: false,
+        success: function(ret) {
+            var current = parseInt($("#selected").val());
+            var next = current + 1;
+            if (ret == "SUCCESS")
+            {
+                
+                $("#entry"+ current).hide();
+            }
+            else
+            {
+                $("#entry"+current).css("background-color", "red");
+            }
+            
+            $("#entry"+ next).click();
+        }
+    });
+    
+    
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>{{type}}</h1>
+<div style="float:right">
+    <b>Status:</b>
+    <label><input type="radio" name="status" value="approved" {% if status == "approved" %} checked{% endif %}> Approved</label>
+    <label><input type="radio" name="status" value="rejected" {% if status == "rejected" %} checked{% endif %}> Rejected</label>
+    <label><input type="radio" name="status" value="undecided" {% if status == "undecided" %} checked{% endif %}> Undecided</label>
+    <b>Approvals:</b>
+    <select style="width:250px" id="type_list">
+        {% for t in types %}
+        <option value="{{t.type}}" {% if t.type == type %} selected{% endif %}>{{t.type}}</option>
+        {% endfor %}
+    </select>
+    <input type="button" id="type_button" value="Go">
+</div>
+<hr>
+<div class="col" style="width:215px;height:721px;border:2px solid #9F5145;overflow:auto;">
+<div class="entries">
+{% for entry in approvals %}
+    <div class="entry" id="entry{{forloop.counter}}" data-app="{{entry.team.application}}" data-url="{{entry.url}}" data-logbook_id="{{entry.id}}" data-selected="{{forloop.counter}}" data-guild="{{entry.team.guild}}" data-team_size="{% if entry.team.pkmn4 %}4{% elif entry.team.pkmn3 %}3{% elif entry.team.pkmn2 %}2{% elif entry.team.pkmn1 %}1{%else%}0{%endif%}">
+        {% if entry.team.guild == "Explorers" %}<img src="/assets/images/icons/map-pin.png" alt="Explorers" title="Explorers">{% endif %}
+        {% if entry.team.guild == "Hunters" %}<img src="/assets/images/icons/sealing-wax.png" alt="Hunters" title="Hunters">{% endif %}
+        {% if entry.team.guild == "Researchers" %}<img src="/assets/images/icons/flask.png" alt="Researchers" title="Researchers">{% endif %}
+       {{entry.team.name}} {{entry.team.size}}
+    </div>
+{% endfor %}
+</div>
+<div id="controls">
+        <div style="margin-left:25px">
+        <span class="key">Q</span> - <a class="jsLink" id="view_sub">Submission</a>
+        <span class="key">W</span> - <a class="jsLink" id="view_app">App</a>
+        </div>
+        <form method="POST">
+        {% csrf_token %}
+        <input id="entry" name="entry" value="" type="hidden">
+        <input id="selected" value="" type="hidden">
+        <input name="key" value="{{event.key}}" type="hidden">
+        
+        <label><input id="approve" name="decision" type="radio" value="approved"> Approved</label><br>
+        <label><input id="reject" name="decision" type="radio" value="rejected"> Rejected</label><br>
+        <label><input id="ignore" name="decision" type="radio" value="undecided"> Undecided</label><br>
+        
+        <input id="user" name="user_note" type="text" value=""> User Note<br>
+        <input id="admin" name="admin_note" type="text" value=""> Staff Note<br>
+        
+        <input id="apply" type="button" value="Apply (Enter)" style="font-size:12pt"> <br>
+        <input id="keyboard" type="checkbox" value="1" checked> Key Shortcuts Enabled <br>
+        </form>
+    </div>
+</div>
+
+<div class="col" style="border:2px solid #9F5145" id="app_col">
+    <iframe id="app_frame"></iframe>
+    <iframe id="submission_frame"></iframe>
+</div>
+</div>
+{% endblock %}
+

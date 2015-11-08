@@ -1,0 +1,100 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Administration - Transaction Log - {% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function (){
+        $('input[type=button]').click(function (){
+            var params = "?";
+            if ($("input[name='team_name']").val())
+                params += "name=" + $("input[name='team_name']").val() + "&";
+            if ($("input[name='performer']").val())
+                params += "performer=" + $("input[name='performer']").val() + "&";
+            if ($("input[name='desc']").val())
+                params += "desc=" + $("input[name='desc']").val() + "&";
+            if ($("input[name='time']").val())
+                params += "time=" + $("input[name='time']").val() + "&";
+            
+            if ($(this).val() == "Prev")
+                var offset = Math.max(0, $('#offset').val() - 60);
+            else if ($(this).val() == "Next")
+                var offset = $('#offset').val();
+            else if ($(this).val() == "Filter")
+                var offset = 0;
+            else
+                return false;
+            window.location = "/admin/transaction-log" + params + "offset="+offset;
+        });
+        
+        $('#clear').click(function (){
+            $("input[name='team_name']").val("");
+            $("input[name='performer']").val("");
+            $("input[name='desc']").val("");
+            $("input[name='time']").val("");
+        });
+    });
+    
+    
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<form>
+<input type="hidden" id="offset" value="{{next}}">
+<div id="controls">
+    <div class="col">
+        <div class="field">
+            <label>Team Name <input name="team_name" value="{{name}}"><br>
+        </div>
+        <div class="field">
+            <label>Performed By <input name="performer" value="{{performer}}"><br>
+            <span class="sub"><br></span>
+        </div>
+        <div class="field" style="border-bottom:0px">
+            <input type="button" id="next" value="Next" style="width:100px" tabindex="-1">
+            <input type="button" id="prev" value="Prev" style="width:100px" tabindex="-1">
+            <input type="button" id="clear" value="Clear" style="width:100px" tabindex="-1">
+        </div>
+    </div>
+    <div class="col">
+        <div class="field">
+            <label>Description Contains <input name="desc" value="{{desc}}"><br>
+        </div>
+        <div class="field">
+            <label>Transaction Time <input name="time" value="{{time}}"><br>
+            <span class="sub">YYYY-MM-DD hh:mm:ss - time is optional</span>
+        </div>
+        <div class="field" style="border-bottom:0px">
+            <input type="button" id="filter" class="bigbutton" value="Filter">
+        </div>
+    </div>
+</div>
+</form>
+<br>
+
+<table class="dataTable">
+    <tr>
+        <th>ID</th>
+        <th>Team</th>
+        <th>Change</th>
+        <th>Performed By</th>
+        <th>Description</th>
+        <th>Timestamp</th>
+    </tr>
+    {% for trans in transactions %}
+    <tr>
+        <td>{{trans.id}}</td>
+        <td>{{trans.team.name}}</td>
+        <td>{{trans.change}}</td>
+        <td>{{trans.username}}</td>
+        <td>{{trans.description}}</td>
+        <td>{{trans.timestamp|date:"r"}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</div>
+{% endblock %}
+

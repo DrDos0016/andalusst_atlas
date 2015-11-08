@@ -1,0 +1,572 @@
+{% extends "main.html" %}
+
+{% block title %}{{team.name|default:"New Team"}} - {% endblock %}
+
+{% block css %}
+<style>
+#html_app
+{
+    min-height:800px;
+    /*width:480px;*/
+    width:50%;
+}
+
+#side_app
+{
+    width:49%;
+}
+
+#blank
+{
+    border:2px dashed #999;
+    border-radius:16px;
+    background-color:#CCC;
+    min-height:600px;
+    padding:4px;
+}
+
+#drawn, #written
+{
+    display:none;
+}
+
+#drawn_app
+{
+    width:100%;
+}
+
+#written_app
+{
+    width:100%;
+    height:1000px;
+    border:0;
+}
+
+.header
+{
+    font-family: "Ubuntu Condensed";
+    font-size:24pt;
+    text-align:center;
+    width:100%;
+    height:40px;
+    background-color:#9F5145;
+    color:#FFE8AA;
+    border-left:2px solid #9F5145;
+    border-right:2px solid #9F5145;
+    padding-bottom:4px;
+    cursor:pointer;
+}
+
+.header .team_icon
+{
+    border:0;
+    margin:2px;
+    float:left;
+    clear:both;
+}
+
+.arrow
+{
+    display:inline-block;
+    float:right;
+    width:50px;
+    font-weight:bold;
+}
+
+.roster
+{
+    text-align:center;
+}
+
+.team_icon
+{
+    margin-bottom:4px;
+}
+
+div[name=team_info], div[name=pokemon_info]
+{
+    background-color:#E6D298;
+    border-left:2px solid #9F5145;
+    border-right:2px solid #9F5145;
+    width:100%;
+}
+
+input
+{
+    border:1px solid #A05246;
+    background-color:#E6DDBF;
+    width:160px;
+}
+
+select
+{
+    border:1px solid #A05246;
+    background-color:#E6DDBF;
+    width:164px;
+}
+
+input.xs
+{
+    width:25px;
+    text-align:center;
+}
+
+input.l
+{
+    width:160px;
+}
+
+input[type=radio]
+{
+    width:30px;
+}
+
+.sprite
+{
+    max-width:128px;
+    max-height:128px;
+}
+
+.value
+{
+    font-weight:bold;
+    min-width:120px;
+    padding-left:10px;
+}
+
+#team_errors, td[name=pokemon_errors]
+{
+    max-width:125px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="/assets/scripts/common.js"></script>
+<script>
+$(document).ready(function (){
+    $("input").click(function (){ if (!$(this).hasClass("no-hl")) $(this).select(); });
+    
+    $(".header").click(function (){
+        var id = $(this).data("show");
+        var val = $("#arrow-"+id).text();
+        
+        if (val == "-")
+            $("#arrow-"+id).text("+");
+        else
+            $("#arrow-"+id).text("-");
+        
+        if (id == "0")
+        {
+            $("div[name=team_info]").toggle();
+        }
+        else
+        {
+            $("#pokemon_info"+$(this).data("show")).toggle();
+        }
+    });
+    
+    $("select[name=guild]").change(function (){
+       $ ("#seal").attr("src", "/assets/images/seals/"+$(this).val().toLowerCase()+"_seal.png");
+    });
+    
+    $("select[name=species]").change(function (){
+        var id = $(this).data("id");
+        var species = $(this).val();
+        var shiny = $("#pokemon_info"+id+ " select[name=shiny]").val();
+        $("#poke_icon-"+id).attr("src", "/assets/images/sprites/icons/"+species+".png");
+        $("#poke_sprite-"+id).attr("src", "/assets/images/sprites/x-y/"+(parseInt(shiny) ? "shiny/" : "")+species+".png");
+        moves_link();
+    });
+    
+    $("select[name=shiny]").change(function (){
+        var id = $(this).data("id");
+        var species = $("#pokemon_info"+id+ " select[name=species]").val();
+        var shiny = $(this).val();
+        $("#poke_sprite-"+id).attr("src", "/assets/images/sprites/x-y/"+(parseInt(shiny) ? "shiny/" : "")+species+".png");
+    });
+    
+    $("input[name=stat]").change(function (){
+        update_stats();
+    });
+    
+    $("input[name=app]").change(function (){
+        load_app();
+    });
+    
+    $("#submit").click(function(){
+        return submit();
+    });
+    
+    moves_link();
+    update_stats();
+    load_app();
+    
+});
+
+function update_stats()
+{
+    var count = 0;
+    var stats = [];
+    var id = 1;
+    $("input[name=stat]").each(function (){
+        var pts = Math.max(0, $(this).val());
+        pts = Math.min(5, pts);
+        if (isNaN(pts))
+            pts = 0;
+        
+        stats.push(pts);
+        $(this).val(pts);
+        count++;
+    });
+    for (var x = 0; x < stats.length; x += 8)
+    {
+        var str = "<th>STR</th>";
+        var blank = 5 - stats[x] - stats[x+1];
+        for (var y = 0; y < stats[x]; y++)
+            str += '<td class="point">&nbsp;</td>';
+        for (var y = 0; y < stats[x+1]; y++)
+            str += '<td class="bonus">&nbsp;</td>';
+        for (var y = 0; y < blank; y++)
+            str += '<td>&nbsp;</td>';
+        str += '<td class="total">'+(stats[x]+stats[x+1])+'</td>';
+        $("#str-"+id).html(str);
+        
+        var intl = "<th>INT</th>";
+        var blank = 5 - stats[x+2] - stats[x+3];
+        for (var y = 0; y < stats[x+2]; y++)
+            intl += '<td class="point">&nbsp;</td>';
+        for (var y = 0; y < stats[x+3]; y++)
+            intl += '<td class="bonus">&nbsp;</td>';
+        for (var y = 0; y < blank; y++)
+            intl += '<td>&nbsp;</td>';
+        intl += '<td class="total">'+(stats[x+2]+stats[x+3])+'</td>';
+        $("#int-"+id).html(intl);
+        
+        var agl = "<th>AGL</th>";
+        var blank = 5 - stats[x+4] - stats[x+5];
+        for (var y = 0; y < stats[x+4]; y++)
+            agl += '<td class="point">&nbsp;</td>';
+        for (var y = 0; y < stats[x+5]; y++)
+            agl += '<td class="bonus">&nbsp;</td>';
+        for (var y = 0; y < blank; y++)
+            agl += '<td>&nbsp;</td>';
+        agl += '<td class="total">'+(stats[x+4]+stats[x+5])+'</td>';
+        $("#agl-"+id).html(agl);
+        
+        var chr = "<th>CHR</th>";
+        var blank = 5 - stats[x+6] - stats[x+7];
+        for (var y = 0; y < stats[x+6]; y++)
+            chr += '<td class="point">&nbsp;</td>';
+        for (var y = 0; y < stats[x+7]; y++)
+            chr += '<td class="bonus">&nbsp;</td>';
+        for (var y = 0; y < blank; y++)
+            chr += '<td>&nbsp;</td>';
+        chr += '<td class="total">'+(stats[x+6]+stats[x+7])+'</td>';
+        $("#chr-"+id).html(chr);
+        
+        var used = 10 - stats[x] - stats[x+2] - stats[x+4] - stats[x+6];
+        $("#pts_used-"+id).html(used);
+        id++;
+    }
+}
+
+function submit()
+{
+    var ret = true;
+    var errors = [];
+    team_errors = "";
+
+    if ($("input[name=app]").length && $("input[name=app]").val().substring(0, 14) != "http://fav.me/")
+    {
+        $("td[name=app]").css("color", "#DC0032");
+        errors.push("Invalid URL for 'Application'! Please use the fav.me address linked from your DA submission");
+    }
+    else
+        $("td[name=app]").css("color", "#000");
+        
+    if ($("input[name=alt_app]").length && $("input[name=alt_app]").val() != "" && $("input[name=alt_app]").val().substring(0, 14) != "http://fav.me/")
+    {
+        $("td[name=alt_app]").css("color", "#DC0032");
+        errors.push("Invalid URL for 'Alt App'! Please use the fav.me address linked from your DA submission");
+    }
+    else
+        $("td[name=alt_app]").css("color", "#000");
+        
+    if ($("input[name=team_name]").length && $("input[name=team_name]").val().trim() == "")
+    {
+        $("td[name=team_name]").css("color", "#DC0032");
+        errors.push("Invalid data for 'Team Name'! Your team needs something to call themselves!");
+    }
+    else
+        $("td[name=team_name]").css("color", "#000");
+    
+    if ($("input[name=tumblr]").length && $("input[name=tumblr]").val() != "" && $("input[name=tumblr]").val().substring(0, 7) != "http://")
+    {
+        $("td[name=tumblr]").css("color", "#DC0032");
+        errors.push("Invalid URL for 'Tumblr'! Please make sure your address begins with http://");
+    }
+    else
+        $("td[name=tumblr]").css("color", "#000");
+     
+    if ($("select[name=year]").length)
+    {
+        var joined = $("select[name=year]").val() + "-" + $("select[name=month]").val() + "-" + $("select[name=day]").val();
+        // Date.parse does not work in Safari
+        var date = new Date($("select[name=year]").val(), $("select[name=month]").val(), $("select[name=day]").val());
+        if (! Date.parse(joined))
+        {
+            $("td[name=joined]").css("color", "#DC0032");
+            errors.push("Invalid date for 'Date Joined'! Please make sure your given date is a valid one!");
+        }
+        else
+            $("td[name=joined]").css("color", "#000");
+    }
+    
+    // Write errors
+    if (errors.length > 0)
+    {
+        ret = false;
+        var team_errors = "<b class='error'>Errors were found!</b><hr>";
+        for (var x = 0; x < errors.length; x++)
+        {
+            team_errors += errors[x] + "<hr>";
+        }
+        $("#team_errors").html(team_errors);
+        console.log(team_errors);
+    }
+    else
+        $("#team_errors").html("");
+    // Pokemon
+    var names       = $("input[name=pokemon_name]").toArray();
+    var species     = $("select[name=species]").toArray();
+    var shiny       = $("select[name=shiny]").toArray();
+    var abilities   = $("input[name=ability]").toArray();
+    var natures     = $("input[name=nature]").toArray();
+    var traits      = $("input[name=trait]").toArray();
+    var move1       = $("input[name=move1]").toArray();
+    var move2       = $("input[name=move2]").toArray();
+    var move3       = $("input[name=move3]").toArray();
+    var move4       = $("input[name=move4]").toArray();
+    var raw_stats   = $("input[name=stat]").toArray();
+    var stats       = [];
+    for (var x = 0; x < raw_stats.length; x += 8)
+    {
+        stats.push([parseInt($(raw_stats[x]).val()), parseInt($(raw_stats[x+1]).val()), parseInt($(raw_stats[x+2]).val()), parseInt($(raw_stats[x+3]).val()), parseInt($(raw_stats[x+4]).val()), parseInt($(raw_stats[x+5]).val()), parseInt($(raw_stats[x+6]).val()), parseInt($(raw_stats[x+7]).val())]);
+    }
+    
+    for (var i = 0; i < species.length; i++)
+    {
+        var errors = [];
+        var id = i + 1;
+        if ($(species[i]).length && $(species[i]).val() == 0)
+        {
+            continue;
+        }   
+        
+        if ($(names[i]).length && $(names[i]).val().trim() == "")
+        {
+            $("#pokemon_name-"+id).css("color", "#DC0032");
+            errors.push("Invalid name for Pokemon!");
+        }
+        else
+            $("#pokemon_name-"+id).css("color", "#000");
+        
+        if ($(abilities[i]) && $(abilities[i]).val().trim() == "")
+        {
+            $("#ability-"+id).css("color", "#DC0032");
+            errors.push("Invalid ability for Pokemon!");
+        }
+        else
+            $("#ability-"+id).css("color", "#000");
+        
+        // Total base stats
+        if ((stats[i][0] + stats[i][2] + stats[i][4] + stats[i][6]) > 10)
+        {
+            $("td[name=stat_label-"+id+"]").css("color", "#DC0032");
+            errors.push("Your base stats use more than 10 points!");
+        }
+        else if ((stats[i][1] + stats[i][3] + stats[i][5] + stats[i][7]) > 2) // Total bonus stats
+        {
+            $("td[name=stat_label-"+id+"]").css("color", "#DC0032");
+            errors.push("Your bonus stats use more than 2 points!");
+        }
+        else if ((stats[i][0] + stats[i][1] > 5) || (stats[i][2] + stats[i][3] > 5) || (stats[i][4] + stats[i][5] > 5) || (stats[i][6] + stats[i][7] > 5)) // Combined Stats > 5
+        {
+            $("td[name=stat_label-"+id+"]").css("color", "#DC0032");
+            errors.push("Your have a total stat with more than 5 points!");
+        }
+        else
+            $("td[name=stat_label-"+id+"]").css("color", "#000");
+        
+        
+        // Write errors
+        if (errors.length > 0)
+        {
+            ret = false;
+            var poke_errors = "<b class='error'>Errors were found!</b><hr>";
+            for (var x = 0; x < errors.length; x++)
+            {
+                poke_errors += errors[x] + "<hr>";
+            }
+            $("#pokemon_errors-"+id).html(poke_errors);
+            console.log(poke_errors);
+        }
+        else
+            $("#pokemon_errors-"+id).html("");
+    }
+    
+    if (! ret)
+        $("#submit").val("Fix the errors above!");
+    else
+        $("#submit").val("Save Changes");
+    return ret;
+}
+
+function load_app()
+{
+    url = $("input[name=app]").val();
+    console.log(url);
+    
+    if (url == "" || url == "#")
+        return false;
+    else if (url.indexOf("fav.me") == -1)
+        return false;
+    
+    var oembed_url = 'http://backend.deviantart.com/oembed?url='+encodeURIComponent(url)+'&format=jsonp&callback=?';
+    console.log(oembed_url);
+    dat = $.getJSON(oembed_url, function(data) {
+        console.log(data);
+        
+        if (data.type == "photo" || data.type == "link")
+        {
+            console.log("Art App");
+            
+            if (data.type == "photo")
+                img_src = data.url;
+            else if (data.type == "link")
+                img_src = data.fullsize_url;
+            
+            $("#blank").hide();
+            $("#written").hide();
+            $("#drawn_app").attr("src", img_src);
+            $("#drawn").show();
+        }
+        else
+        {
+            console.log("Written App");
+            $("#blank").hide();
+            $("#drawn").hide();
+            $("#written_app").attr("src", url);
+            $("#written").show();
+        }
+    }).fail(function() {
+        console.log( "Ajax Failed" );
+    });
+    
+    
+}
+
+function have_app()
+{
+    return true;
+}
+
+function moves_link()
+{
+    var raw_species = $("select[name=species] option:selected").toArray();
+    var species = [];
+    for (var x = 0; x < raw_species.length; x++)
+    {
+        species.push($(raw_species[x]).text());
+    }
+    //alert(species);
+    var x = 0;
+    $("a[name=move_link]").each(function (){
+        if (species[x] != "N/A")
+            $(this).attr("href", "http://veekun.com/dex/pokemon/"+species[x].toLowerCase()+"#moves");
+        x++;
+    });
+    return 1;
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+
+{% if action != "create" %}{% include "modules/team_nav.html" %}{% endif %}
+
+{% if session.userID %}<form method="POST">{% endif %}
+{% csrf_token %}
+<input type="hidden" name="action" value="{{action}}">
+<div class="col" id="html_app">
+
+    <div class="header" style="border-radius: 16px 16px 0px 0px;border-top:2px solid #9F5145;height:8px;">
+        &nbsp;
+    </div>
+    
+    {% if yours and team.lock_time > now %}{% include "modules/team_edit.html" %}{% else %}{% include "modules/team_show.html" %}{% endif %}
+    
+    {% for poke in pokemon %}
+        {% if yours and poke.lock_time > now %}{% include "modules/pokemon_edit.html" %}{% else %}{% include "modules/pokemon_show.html" %}{% endif %}
+    {% endfor %}
+    
+    <div class="header" style="border-radius: 0px 0px 16px 16px;border-bottom:2px solid #9F5145;height:8px">
+        &nbsp;
+    </div>
+    {% if yours %}
+    <div style="width:100%;text-align:center;margin-top:16px;">
+    <input type="submit" id="submit" class="bigbutton" value="Save Changes">
+    </div>
+    {% endif %}
+</div>
+
+<div class="col" id="side_app">
+    <div id="blank">
+        <div style="width:75%;text-align:left;margin:auto;margin-top:250px">
+            <p>The team's primary application should appear here.<br>
+            Drawn apps should be directly embedded. Written apps should load a DeviantArt frame.<br>
+            <br>
+            If nothing shows up, please double check that your application URL is valid. DeviantArt's API may possibly be down as well.
+            </p>
+        </div>
+    </div>
+    <div id="drawn">
+        <img src="" alt="Drawn Application" id="drawn_app">
+    </div>
+    <div id="written">
+        <iframe src="" id="written_app" style="width:100%"></iframe>
+    </div>
+    
+</div>
+<div style="clear:both">&nbsp;</div>
+{% if session.userID %}</form>{% endif %}
+
+{% if session.admin %}
+<form method="POST">
+{% csrf_token %}
+<h3>Lock Times{{lock_msg}}</h3>
+<table>
+<tr>
+    <td>Team: </td><td><input name="lock_time" value="{{team.lock_time|date:'Y-m-d H:i:s'}}" class="no-hl"></td>
+</tr>
+    {% for poke in pokemon %}
+    {% if poke.id >= 1 %}
+    <tr>
+    <td>{{poke.name}}: </td>
+    <td>
+        <input name="lock_time" value="{{poke.lock_time|date:'Y-m-d H:i:s'}}" class="no-hl">
+        <input name="pokemon_id" value="{{poke.id}}" type="hidden">
+    </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+
+</table>
+<input type="submit" value="Adjust Locks">
+<input type="hidden" name="action" value="lock_edit">
+{% endif %}
+</div>
+{% endblock %}
+

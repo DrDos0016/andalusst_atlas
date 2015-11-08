@@ -1,0 +1,331 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Changes - {% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Changes</h1>
+<hr>
+<h2>Atlas Update - 2015-02-14</h2>
+<h3>General</h3>
+<ul>
+    <li>The search page now shows teams which haven't submitted a logbook in the past 120 days in grayscale to mark them as inactive. You can filter searches to not show these teams.
+    Inactive teams are just marked, they will not be removed, and a team being marked inactive does not necessarily mean the team's creator is no longer active at all in the group.</li>
+    <li>The Pokémon Population stats page now shows counts of Pokémon on active teams, as well as the grand total. The listings can be sorted by species, active total, and grand total.</li>
+</ul>
+<h3>Teams</h3>
+<ul>
+    <li>Teams will now show shiny X/Y Pokémon models if the teammate is marked a shiny</li>
+</ul>
+
+<h2>Atlas Update - 2014-12-07</h2>
+<h3>Teams</h3>
+<ul>
+    <li>Added the team navigation header to the Team Actions page</li>
+</ul>
+<h3>Logbooks</h3>
+<ul>
+    <li>Team Logbooks now have the rearrange/create buttons at the top of the page, since there can be scrolling involved if you have a lot of logbooks!</li>
+</ul>
+
+<h2>Atlas Update - 2014-12-07</h2>
+<h3>General</h3>
+<ul>
+    <li>Shrunk the header a bit to fit the link to the Wiki</li>
+</ul>
+<h3>Wiki</h3>
+<ul>
+    <li>Now public.</li>
+</ul>
+<h3>Dungeons</h3>
+<ul>
+    <li>Basalt Halls has gone live. Random maps can be generated for each team.</li>
+</ul>
+<h3>Logbooks</h3>
+<ul>
+    <li>Logbooks have support for Dungeons. You can provide a map to use for collabs, and also specify which resources were collected.</li>
+</ul>
+
+<h2>Atlas Update - 2014-08-10</h2>
+<h3>General</h3>
+<ul>
+    <li>Added support to adjust the number of results on the team search and logbook search pages. This can be adjusted in the account settings page and is capped at 50.</li>
+</ul>
+<h3>Logbooks</h3>
+<ul>
+    <li>Added support for personal stories in logbooks. You can submit things under this label as often as you like. They are automatically considered approved, and can be removed at any time.</li>
+    <li>Added support for rearranging logbooks. From your team's logbook, there is a rearrange button below which will allow you to sort them however you like. New logbook submissions automatically are put at the end of the list.</li>
+</ul>
+
+<h2>Atlas Update - 2014-07-19</h2>
+<h3>Teams</h3>
+<ul>
+    <li>You can once again delete teams and pokémon. This can be done from the Team Actions page. Keep in mind it is permanent, and deleting a team removes logbook entries as well!</li>
+</ul>
+
+<h2>Atlas Update - 2014-07-18</h2>
+<h3>General</h3>
+<ul>
+    <li>Added some proper 404 errors for certain pages when data isn't found</li>
+    <li>Admins can now adjust lock times for teams and pokemon</li>
+</ul>
+
+<h3>Teams</h3>
+<ul>
+    <li>Added missing DeviantArt account link to the team view page</li>
+    <li>Added Edit Team and Team Actions links to your own team on the team view page</li>
+</ul>
+
+<h2>Atlas Update - 2014-07-15</h2>
+<h3>General</h3>
+<ul>
+    <li>Your active team's merits/strikes should update when visiting any page that updates starcoins (manage teams, the index, the shop)</li>
+</ul>
+
+<h3>Teams</h3>
+<ul>
+    <li>The hideous mismash of duplicated code that was the Team Creation page, Pokemon Creation page, Team Editing page, Pokemon Editing page, and Team Viewing page has been completely rewritten. It is now the team page. Which means adding new fields or fixing bugs will go a lot faster. It also looks way prettier.</li>
+    <li>Locks have been implemented for teams/pokemon! Right now, every team/pokemon already on the Atlas is locked. This means that certain fields can't be edited. You can't just change species or guild affiliation any longer. Since most people weren't doing this to begin with, you should be fine. If your locked data is incorrect, yell at an admin. They will then yell at me because they can't unlock teams/pokemon yet. Adding that is #1 priority and will be live by this weekend (it won't be difficult to write at all).</li>
+    <li>When you make a new team, or add a new Pokemon to an existing team, it will be unlocked for 24 hours, during this time you can edit all fields freely if you catch any mistakes or change your mind about something.</li>
+    <li>Some new fields have been added to teams/pokemon. Teams can now have an alternate app, which is worthwhile if you have a hybrid team with both apps completed. Stats for Pokemon have also been implemented. On all your locked pokemon. So they all have stats of 0. Ha ha.</li>
+    <li>On the manage team page, you'll see a "Team Actions" link. This is where misc team related things will go. Such as setting stats for Pokemon that are all 0's! Please use this to get the relevant data added! Keep in mind once it is set, it can't be changed!</li>
+</ul>
+
+<h3>Team Inventory</h3>
+<ul>
+    <li>Rewards package contents that offered multiple copies of the same item now properly give those multiple copies. Admins have manually fixed these, but if your team has the wrong number of customization vouchers, let them know!</li>
+    <li>Evolution Slips are now functioning! Go to your team's inventory and select the item, then click the "Evolve Teammate" button. You'll be able to select who evolves, into what, and reassign their ability, moves, and stats.</li>
+</ul>
+
+<h3>Cut Features! (I am actually Electronic Arts)</h3>
+<ul>
+    <li>Deleting pokemon/teams is also temporarily gone. This is the #2 priority and will be done shortly (possibly with admins adjusting locks if I'm feeling motivated).</li>
+</ul>
+
+
+<h2>Atlas Update - 2014-06-21</h2>
+<h3>General</h3>
+<ul>
+    <li>Fixed trying to buy a customization without enough Star Coins causing a 500 error.</li>
+    <li>Added a new page to the stats section, Logbooks. This shows how many entries have been looked at by an admin and the total number of entries submitted for each event.</li>
+</ul>
+
+<h3>Logbooks</h3>
+<ul>
+    <li>When browsing all logbooks, an icon in the lower left will show if the team is registered a drawn, written, or hybrid team. Keep in mind that the symbol is just the team, and if a writer tried their hand at drawing it would show the written icon.</li>
+</ul>
+
+<h3>Team Inventory</h3>
+<ul>
+    <li>Admins can now verify customizations. If they're rejected they may be resubmitted immediately, or canceled, granting you a refund on your money/voucher.</li>
+    <li>Admins are also verifying logbook entries for the tasks. In some cases you'll get a package as a reward, which when you open it lets you choose your reward for the mission.</li>
+</ul>
+
+<h2>Atlas Update - 2014-06-04</h2>
+<h3>General</h3>
+<ul>
+    <li>Fixed some bugs with not having a team selected and trying to access certain pages</li>
+    <li>Added an account settings page. Click the gear in the top right by your DA name. So far all you can do is automatically have a team selected on login, but that's pretty handy!</li>
+    <li>Added a Beta flag to users. They get to try out some things before they're quite ready for the public. If you want in, start hanging out with us on IRC! (See Getting Started on the PMDU Group for IRC info)</li>
+</ul>
+
+<h3>Teams</h3>
+<ul>
+    <li>Changed the date joined field to selecting the day, month, and year rather than typing them all.</li>
+    <li>Fixed some art apps embedding the entire DA page like written apps do.</li>
+</ul>
+
+<h3>Logbooks</h3>
+<ul>
+    <li>Rejected logbook entries now use a textbox so the page won't stretch.</li>
+    <li>Other people's logbooks now looks a bit more like the rest of the logbook section. No more ugly list.</li>
+</ul>
+
+{% if session.beta %}
+<h3>Beta Users Only!!</h3>
+<ul>
+    <li>You can now bookmark teams! Go to a team's logbook and add them to your bookmarks. At the bottom of the main logbook page is a link to your bookmarks.</li>
+    <li>The bookmarks page is sooooo not formatted yet.</li>
+</ul>
+{% endif %}
+
+<hr>
+
+
+<h2>Atlas Update - 2014-05-22</h2>
+<h3>Teams</h3>
+<ul>
+    <li>The list of pokémon when working with teams has been set to only show baby/basic/stage 1 non-legendaries. There is no enforcement of pokémon on a team beyond this. While you can submit a team of Braixen and Sylveon it is still an invalid team at this point for the group.</li>
+    <li>Submitting a new team now automatically submits a logbook entry for the team's application</li>
+    <li>Fixed the abilities reference link just loading a list of every ability, rather than abilities valid for that pokémon</li>
+    <li>Fixed the moves reference link when adding a pokémon to a team opening in the same tab</li>
+    <li>Fixed the edit pokémon page not properly pulling the pokémon's moves</li>
+</ul>
+
+<h3>Customizations</h3>
+<ul>
+    <li>You can no longer try to submit a customization when you have no customizable items in your team's inventory.</li>
+</ul>
+
+<h3>General</h3>
+<ul>
+    <li>Addresses to submissions on DA for apps, logbooks, or customizations now require you to use the submission's fav.me link. This is to help make sure links stay valid. Old logbook entries with DA urls that can't be edited will be adjusted by myself in the future.</li>
+</ul>
+
+<hr>
+<h2>Atlas Update - 2014-05-15</h2>
+<h3>Logbooks</h3>
+<ul>
+    <li>There's now a link in the main header to view all events and all logbook submissions for each event. It's sorted by newest additions.<br>
+    It's meant to let you try to follow _everything_ people submit. The submissions listed might not be verified though! Keep that in mind.</li>
+    <li>Mission 1's rewards have been fixed (a little while ago), staff are verified these entries now!</li>
+    
+</ul>
+
+<h3>Team Inventory / Shopping</h3>
+<ul>
+    <li>The proper high-resolution images of the accessories have been uploaded. So pretty.</li>
+</ul>
+
+<h3>Customizations</h3>
+<ul>
+    <li>You'll now see the item you're attempting to customize! This will make it easier to not customize the wrong thing.</li>
+</ul>
+
+{% if session.admin %}
+<h3>Administration</h3>
+<ul>
+    <li>A page for tweeting from @pmdunity has been added. The timer functionality has yet to be implemented.</li>
+</ul>
+{% endif %}
+
+<hr>
+<h2>Atlas Update - 2014-05-04</h2>
+
+<h3>General</h3>
+<ul>
+    <li>The front page is in character.</li>
+    <li>InlineMantine and Chobin have been added as site admins</li>
+    <li>Empty spots on a team are now blank, rather than using a question mark image</li>
+</ul>
+
+<h3>Search</h3>
+<ul>
+    <li>Fixed some fields resetting after clicking the search button</li>
+    <li>Added the ability to sort teams by artist/writer/hybrid type</li>
+    <li>The team's guild is now displayed in the search results</li>
+</ul>
+
+<h3>Misc</h3>
+<ul>
+    <li>Added a new misc section, with an FAQ, stats, credits, contributors, and the changelog</li>
+    <li>The FAQ answers questions. Yes.</li>
+    <li>The stats page lists the population of each species and lets you break down which guilds they're in and the ratio of shiny to non-shiny</li>
+    <li>Credits gives thanks to some people!</li>
+    <li>Contributors lists everybody that has used the Atlas while logged in</li>
+    <li>The changelog is this. You're looking at it right now.</li>
+</ul>
+
+<h3>Teams</h3>
+<ul>
+    <li>Guilds now have icons. The icon set I use for the site had a wax seal icon. I just had to use it.</li>
+    <li>The select team information now shows guild, merits, strikes, and a link to the team's logbook</li>
+</ul>
+
+<h3>Logbooks</h3>
+<ul>
+    <li>Teams now have logbooks which they can use to record their submissions to the group in one easy place. You can see whether an admin has approved/rewarded your team's submission as well.
+    Access it from the view team page, or by clicking the little open book icon. See the FAQ for details</li>
+</ul>
+
+{% if session.admin %}
+<h3>Administration</h3>
+<ul>
+    <li>You can remove items from a team's inventory by viewing that item in their inventory. This should be useful for fixing people's mistakes!</li>
+    <li>The Verify Logbooks admin page lets you select an event and approve/reject and handle rewards. Known issues are that teams without a guild (no longer possible, but there are 3 teams where they've been grandfathered in like this) will fail if you try to reward them.
+    It is also important that only one person works on an event at a time, otherwise teams will get double rewarded very easily if two people independently reward a team. Just announcing in IRC "I'm going through some apps now." or asking "Is anybody working on Mission 1 submissions?" should be plenty!</li>
+</ul>
+{% endif %}
+
+
+
+<hr>
+<h2>Atlas Update - 2014-04-11</h2>
+<h3>General:</h3>
+<ul>
+	<li>The selected team's starcoin balance is updated when you visit the front page, manage team page, and shop page. This should be enough to prevent it from desyncing with your real balance.</li>
+	<li>Fixed the Nidoran male/female symbols and accented é in Flabébé not hsowing up properly in some spots.</li>
+	<li>If you try to access a page that requires login, you'll be redirected to the login page rather than booted to the front page.</li>
+	<li>Added a "Random" to the list of sort by options for team searches.</li>
+	<li>Guild logos are now higher quality images.</li>
+</ul>
+<h3>Team Inventory:</h3>
+<ul>
+	<li>You no longer have to be logged in to view a team's inventory</li>
+	<li>Customized items have a pair of scissors above them to indicate the item has been modified. They also display a history of customizations and link to the relevant DA page for each customization.</li>
+</ul>
+<h3>Teams:</h3>
+<ul>
+	<li>Teams now have merits and strikes in the backend. They aren't displayed or used anywhere yet.</li>
+	<li>Your selected team now has a dresser icon that links directly to the team's inventory.</li>
+</ul>
+<h3>Shopping:</h3>
+<ul>
+	<li>Purchasing an item/customization now shows you what you purchased afterwards, and links to your inventory.</li>
+	<li>You can now use vouchers to buy accessories. You can select which voucher you use, or choose to hold onto it and pay with starcoins (if you can!) instead.</li>
+</ul>
+<h3>Customizations:</h3>
+<ul>
+	<li>You can now use Chantelle's accessory customization service. It is listed in the shop and will bring you to the relevant page. Customizations require a customizable item, a DA link to the submitted customization (drawn or written), and a custom name. A custom description can also be given but is not mandatory. It is YOUR RESPOSIBILITY to correctly select how many features are being customized as this effects the price and cannot be automated. If you lie to buy something for less you [DATA EXPUNGED]. For the sake of consistency, please set this to the correct amount of alterations even if you're paying with a voucher and making it cost no starcoins.</li>
+</ul>
+<h3>Items:</h3>
+<ul>
+    <li>Customizations can be done multiple times provided you have the money/vouchers. Take a look at team Starbound's scarf as an example.</li>
+	<li>Added new items: Accessory Customization Voucher, Rookie Explorer Voucher, Rookie Hunter Voucher, and Rookie Researcher Voucher. These are the non-cash rewards for mission one.</li>
+</ul>
+<hr>
+
+<h2>Atlas Update - 2014-03-21</h2>
+<h3>General:</h3>
+<ul>
+	<li>Cleaned up the code for displaying app images and embedding DA for written apps.</li>
+	<li>Removed the top link for "Create Team". Teams are now created from the "Manage Teams" page.</li>
+	<li>Your active team's name is now a link to the public page for that team.</li>
+</ul>
+<h3>Create Team:</h3>
+<ul>
+	<li>Teams now start with 0 starcoins. Cailis has been adjusting some teams to the proper amount.</li>
+	<li>Added links to veekun for referencing abilities, natures, traits, and moves.</li>
+	<li>Added two new fields to teams: Type, which can be Drawn, Written, or Hybrid; and also Tumblr, for a link to a team tumblr if you have one.</li>
+	<li>Changed the "Shiny?" text to "Shiny Pokémon" for consistency. Also made it a regular dropdown for consistency.</li>
+</ul>
+<h3>Edit Team/Pokemon:</h3>
+<ul>
+	<li>Made these consistent with the create team features.</li>
+</ul>
+<h3>Manage Teams:</h3>
+<ul>
+	<li>Added a big "Create a New Team" button. You can't miss it.</li>
+	<li>Clicking a team's name now opens the public page for that team. Editing the team is lower on the team overview.</li>
+</ul>
+<h3>Shop:</h3>
+<ul>
+	<li>The shop is now open to the public. As the group progresses there will be specific shops to choose from. For now you immediately go to Wear and Flair Accessories.</li>
+	<li>You can buy things in the shop with Starcoins. Next up will be vouchers for free items (such as the mission 1 reward), and then customization services.</li>
+</ul>
+<h3>Team Page:</h3>
+<ul>
+	<li>Added the new tumblr and application type fields to this page. </li>
+	<li>Added a link to view a team's inventory. You can check out STARBOUND to see what it's like.</li>
+	<li>Items which have been customized aren't yet marked so you currently have to click at item to find out if it is.</li>
+	<li>Prevented unset moves from showing up.</li>
+</ul>
+{% if session.admin %}
+<h3>Admins:</h3>
+<ul>
+	<li>Added a "Powerless" button, which makes you not an admin until you log out and back in again, so you can see things how most users do.</li>
+</ul>
+{% endif %}
+</div>
+{% endblock %}
+

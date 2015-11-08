@@ -1,0 +1,113 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Administration - Site Log - {% endblock %}
+
+{% block css %}
+<style>
+.wide
+{
+    width:50%;
+}
+
+textarea
+{
+    height:110px;
+    width:100%;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function (){
+        $('input[type=button]').click(function (){
+            var params = "?";
+            if ($("input[name='username']").val())
+                params += "username=" + $("input[name='username']").val() + "&";
+            if ($("input[name='ip']").val())
+                params += "ip=" + $("input[name='ip']").val() + "&";
+            if ($("input[name='action']").val())
+                params += "action=" + $("input[name='action']").val() + "&";
+            if ($("input[name='time']").val())
+                params += "time=" + $("input[name='time']").val() + "&";
+            
+            if ($(this).val() == "Prev")
+                var offset = Math.max(0, $('#offset').val() - 60);
+            else if ($(this).val() == "Next")
+                var offset = $('#offset').val();
+            else if ($(this).val() == "Filter")
+                var offset = 0;
+            else
+                return false;
+            window.location = "/admin/site-log" + params + "offset="+offset;
+        });
+        
+        $('#clear').click(function (){
+            $("input[name='username']").val("");
+            $("input[name='ip']").val("");
+            $("input[name='action']").val("");
+            $("input[name='time']").val("");
+        });
+    });
+    
+    
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<form>
+<input type="hidden" id="offset" value="{{next}}">
+<div id="controls">
+    <div class="col">
+        <div class="field">
+            <label>Username <input name="username" value="{{username}}"><br>
+        </div>
+        <div class="field">
+            <label>IP Address <input name="ip" value="{{ip}}"><br>
+            <span class="sub"><br></span>
+        </div>
+        <div class="field" style="border-bottom:0px">
+            <input type="button" id="next" value="Next" style="width:100px" tabindex="-1">
+            <input type="button" id="prev" value="Prev" style="width:100px" tabindex="-1">
+            <input type="button" id="clear" value="Clear" style="width:100px" tabindex="-1">
+        </div>
+    </div>
+    <div class="col">
+        <div class="field">
+            <label>Action <input name="action" value="{{action}}"><br>
+        </div>
+        <div class="field">
+            <label>Timestamp <input name="time" value="{{time}}"><br>
+            <span class="sub">YYYY-MM-DD hh:mm:ss - time is optional</span>
+        </div>
+        <div class="field" style="border-bottom:0px">
+            <input type="button" id="filter" class="bigbutton" value="Filter">
+        </div>
+    </div>
+</div>
+</form>
+<br>
+
+<table class="dataTable">
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>IP</th>
+        <th>Timestamp</th>
+        <th>Action</th>
+    </tr>
+    {% for log in logs %}
+    <tr>
+        <td>{{log.id}}</td>
+        <td>{{log.username}}</td>
+        <td>{{log.ip}}</td>
+        <td>{{log.timestamp|date:"r"}}</td>
+        <td class="wide"><textarea readonly>{{log.action}}</textarea></td>
+    </tr>
+    {% endfor %}
+</table>
+
+</div>
+{% endblock %}
+

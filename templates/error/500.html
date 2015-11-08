@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>500 Error - Andalusst Atlas</title>
+    
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu+Condensed' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/forms.css">
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+    
+    <meta name="author" content="Dr. Dos">
+    <meta name="description" content="PMD Unity">
+
+    <!--ANALYTICS-->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-48987723-1', 'pmdunity.org');
+        ga('send', 'pageview');
+    </script>
+</head>
+
+<body>
+
+<div id="navigation">
+    <br><br>
+    <div style="clear:both"></div>
+    <ul class="nav_links">
+        <a href="/"><li>Home</li></a>
+    </ul><br>
+</div>
+
+<div id="content" style="text-align:center">
+<h1>500 Error</h1><br>
+
+<img src="/assets/images/error.gif"><br>
+
+<h2><a href="/">Return to the front page</a></h2><br>
+
+<p style="width:50%;margin:auto;text-align:left;">If you can reproduce the issue that caused this, please get in touch with <a href="mailto:doctordos@gmail.com">me</a>! 
+Let me know what you did that lead to the error, what you had set any form data to, and anything else that might help track down the issue.</p>
+</div>
+
+<div id="footer">
+&bull; PMD Unity created by <a href="http://chillysundance.deviantart.com/">Sundance</a> &bull;<br>
+&bull; Website created by <a href="mailto:doctordos@gmail.com">Dr. Dos</a> &bull;<br>
+&bull; {% now "F jS, Y H:i" %} &bull;
+{% if session.admin %}
+<br>&bull; <b>You're an <a href="/admin">administrator!</a></b> &bull;
+{% endif %}
+</div>
+
+<div class="bgchar">
+</div>
+</body>
+</html>

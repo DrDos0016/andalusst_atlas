@@ -1,0 +1,456 @@
+﻿a, a:visited
+{
+    text-decoration:none;
+    color:#2d02fd;
+}
+
+body
+{
+    background-color:#E6DDBF;
+    background-image:url('/assets/images/light_noise_diagonal.png');
+    font-family:sans-serif;
+    max-width:1280px;
+    margin:auto;
+    margin-top:10px;
+}
+
+.block
+{
+    border:2px solid #9F5145;
+    padding:4px;
+}
+
+.col
+{
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+    vertical-align:top;
+}
+
+#content
+{
+    width:100%;
+    max-width:1240px;
+    border:2px solid #9F5145;
+    margin:auto;
+    padding:4px;
+    background-color:#D1AD7E;
+    min-height:600px;
+}
+
+#controls
+{
+    margin:auto;
+    text-align:center;
+}
+
+.da_icon
+{
+    border:1px solid #000;
+}
+
+.dataTable
+{
+    margin:auto;
+    min-width:80%;
+    border-collapse:collapse;
+}
+
+.dataTable th
+{
+    text-align:left;
+}
+
+.dataTable tr:hover
+{
+    background-color:#E6D298;
+}
+
+#footer
+{
+    width:400px;
+    border:2px solid #9F5145;
+    margin:auto;
+    padding:4px;
+    background-color:#D1AD7E;
+    margin-top:16px;
+    margin-bottom:8px;
+    text-align:center;
+    font-size:10px;
+}
+
+.grayscale
+{
+    filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
+    filter: gray; /* IE6-9 */
+    -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
+}
+
+.gray_box
+{
+    border: 2px dashed #999;
+    background-color:#CCC;
+    border-radius:16px;
+}
+
+h1, h2, h3
+{
+    font-family: "Ubuntu Condensed";
+    margin:0;
+}
+
+#inv_details
+{
+    width:500px;
+    padding:2px;
+}
+
+#inv_details.small img
+{
+    width:96px;
+    height:96px;
+}
+
+.item_details
+{
+    margin:auto;   
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+    border-radius:15px;
+    width:800px;
+    /*max-height:256px;*/
+    padding:5px;
+}
+
+.item_details .image img
+{
+    width:160px;
+    height:160px;
+}
+
+.item_details .price
+{
+    font-family: "Ubuntu Condensed";
+    font-size:14pt;
+}
+
+.item_details .desc
+{
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+    text-align:left;
+    width:528px;
+}
+
+.item_details .explanation
+{
+    font-size:8pt;
+}
+
+.jsLink
+{
+    color:#00F;
+}
+
+.jsLink:hover
+{
+    cursor:pointer;
+}
+
+#navigation
+{
+    width:100%;
+    max-width:1240px;
+    border:2px solid #9F5145;
+    margin:auto;
+    padding:4px;
+    background-color:#D1AD7E;
+    margin-bottom:16px;
+    min-height:85px;
+    padding-bottom:0px;
+}
+
+ul.nav_links
+{
+    width:100%;
+    margin:0;
+    padding:0;
+    text-align:center;
+}
+
+ul.nav_links li
+{
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+    width:125px;
+    height:25px;
+    font-size:16pt;
+    border:1px solid #9F5145;
+    text-align:center;
+    background-color:#E6D298;
+    font-family: "Ubuntu Condensed";
+    color:#000;
+    margin-bottom:4px;
+}
+
+ul.nav_links li:hover
+{
+    border:1px solid #E6D298;
+    background-color:#FFE8AA;
+}
+
+ul.nav_links li.selected
+{
+    border:1px solid #E6D298;
+    background-color:#FFE8AA;
+}
+
+#results
+{
+    margin-top:16px;
+    border:2px solid #945145;
+}
+
+#results .team_tag
+{
+    padding:4px;
+    width:230px;
+    text-align:center;
+}
+
+.section
+{
+    min-height:136px;
+    border-top:2px solid #000;
+}
+
+.section img
+{
+    float:left;
+    width:128px;
+    height:128px;
+    margin-right:8px;
+}
+
+.section h2
+{
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+    vertical-align:top;
+}
+
+.spacer
+{
+    border-bottom:2px solid #9F5145;
+}
+
+#selected_team
+{
+    min-width:150px;
+}
+
+#side_app
+{
+    float:right;
+    max-width:680px;
+}
+
+#side_app img
+{
+    max-width:650px;
+}
+
+#side_app iframe
+{
+    width:650px;
+    min-height:500px;
+}
+
+.team_frame
+{
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+    width:350px;
+    border:2px solid #9F5145;
+    border-radius:16px;
+    min-height:350px;
+    margin:8px;
+    vertical-align:top;
+    background-color:#E6D298;
+}
+
+.team_icon
+{
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+    border:1px solid #9F5145;
+    text-align:center;
+    background-color:#E6D298;
+    border-radius:40px;
+    width:40px;
+    height:40px;
+}
+
+.team_icon img
+{
+    position:relative;
+    top:2px;
+}
+
+#team_info
+{
+    width:540px;
+}
+
+#team_info label div, .teammate label div, .field label div
+{
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+    float:right;
+}
+
+.team_numbers
+{
+    font-family: "Ubuntu Condensed";
+}
+
+.team_numbers .col
+{
+    margin-right:8px;
+}
+
+.team_tag
+{
+    font-family: "Ubuntu Condensed";
+}
+
+.team_tag:hover
+{
+    background-color:#FFE8AA;
+}
+
+.wrapper
+{
+    overflow:auto;
+}
+
+.store_item
+{
+    margin:auto;
+    margin-top:16px;
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+    border-radius:15px;
+    width:196px;
+    height:196px;
+    padding:5px;
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+    vertical-align:top;
+    text-align:center;
+}
+
+.store_item:hover
+{
+    background-color:#FFE8AA;
+    cursor:pointer;
+}
+
+.store_item .image, .store_item .image img
+{
+    width:128px;
+    height:128px;
+}
+
+.item_cost
+{
+    font-family: "Ubuntu Condensed";
+    font-size:14pt;
+}
+
+#content, #navigation, #footer
+{
+    z-index:10;
+}
+
+.bgchar
+{
+    position:fixed;
+    bottom: 5px;
+}
+
+.stats
+{
+    background-color:#9F5145;
+    color:#FFE8AA;
+    margin:auto;
+    width:158px;
+    height:146px;
+    border-radius:8px;
+    font-family: "Ubuntu Condensed";
+}
+
+.stats td
+{
+    width:12px;
+    background-color:#CCC;
+    border-radius:10px;
+}
+
+.stats .point
+{
+    background-color:#E6D298;
+    
+}
+
+.stats .bonus
+{
+    background-color:#D1AD7E;
+    
+}
+
+.stats .total
+{
+    background-color:#9F5145;
+    font-weight:bold;
+}
+
+/* COOL NEW LOGICAL CSS */
+.b
+{
+    font-weight:bold;
+}
+
+.box-w
+{
+    margin: 8px auto;
+    border: 2px solid #9F5145;
+    background-color: #E6D298;
+    border-radius: 15px;
+    width: 800px;
+    padding: 5px;
+}
+
+img.portrait
+{
+    width:160px;
+    height:160px;
+}
+
+.dialog
+{
+    display:inline-block;
+    zoom: 1;
+    *display: inline;
+    text-align:left;
+    width:600px;
+    vertical-align:top;
+}

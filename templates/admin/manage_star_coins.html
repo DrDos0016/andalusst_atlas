@@ -1,0 +1,73 @@
+{% extends "main.html" %}
+
+{% block title %}Administration - Manage Star Coins - {% endblock %}
+
+{% block css %}
+<style>
+#team_list
+{
+    width:95%;
+    margin:auto;
+}
+
+tr:hover
+{
+    background-color:#E6D298;
+}
+
+form label div
+{
+    display:inline-block;
+    float:right;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+{% if not team %}
+<h2>Select a Team</h2>
+
+<input type="hidden" name="action" value="edit_star_coins">
+
+<table id="team_list">
+    <tr>
+        <th>Team</th>
+        <th>Starcoins</th>
+        <th>User</th>
+        <th>Select</th>
+    </tr>
+    {% for team in teams %}
+    <tr>
+        <td><a href="/team/view/{{team.id}}/{{team.name|slugify}}" target="_blank" tabindex="-1">{{team.name}}</a></td>
+        <td>{{team.stars}}</td>
+        <td>{{team.user.username}}</td>
+        <td><a href="/admin/manage-star-coins/{{team.id}}">Edit</a></td>
+    </tr>
+    {% endfor %}
+</table>
+<br>
+
+<div class="controls">
+<a href="/admin/manage-star-coins?offset={{prev}}"><input type="button" class="bigbutton" value="Previous"></a>
+<a href="/admin/manage-star-coins?offset={{next}}"><input type="button" class="bigbutton" value="Next"></a>
+</div>
+{% else %}
+<h2>{{message}}</h2>
+<form method="POST" id="form">
+{% csrf_token %}
+<input name="action" value="edit" type="hidden">
+<input name="original_starcoins" value="{{team.stars}}" type="hidden">
+<div class="field">
+    <label>Team Name <div>{{team.name}}</div><br></label>
+</div>
+<div class="field">
+    <label>Starcoins <input name="starcoins" value="{{team.stars}}"></label>
+</div>
+<input type="submit" class="bigbutton" value="Update">
+</form>
+{% endif %}
+
+</div>
+{% endblock %}
+

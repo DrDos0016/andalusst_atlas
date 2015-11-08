@@ -1,0 +1,192 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Search Teams - {% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function (){
+        $('#search').click(function (){
+            var params = "?";
+            if ($("input[name='team_name']").val())
+                params += "name=" + $("input[name='team_name']").val() + "&";
+            if ($("input[name='da_name']").val())
+                params += "da_name=" + $("input[name='da_name']").val() + "&";
+            if ($("select[name='pokemon']").val() != "Any")
+                params += "pokemon=" + $("select[name='pokemon']").val() + "&";
+            if ($("input[name=related]").prop("checked"))
+                params += "related=1&";
+            if ($("input[name=active]").prop("checked"))
+                params += "active=1&";
+            params += "cameos=" + $("select[name='cameos']").val() + "&";
+            if ($("select[name='tumblr']").val() != "")
+                params += "tumblr=" + $("select[name='tumblr']").val() + "&";
+            params += "min=" + $("select[name='min']").val() + "&";
+            params += "max=" + $("select[name='max']").val() + "&";
+            if ($("select[name='type']").val() != "")
+                params += "type=" + $("select[name='type']").val() + "&";
+            if ($("select[name='guild']").val() != "")
+            params += "guild=" + $("select[name='guild']").val() + "&";
+            params += "sort=" + $("select[name='sort']").val() + "&";
+            window.location = "/search" + params + "page=1";
+        });
+        
+        $(window).keyup(function (e){
+            if (e.keyCode == 13)
+                $("#search").click();
+        });
+        
+        $('#reset').click(function (){
+            $("input[name='team_name']").val("");
+            $("input[name='da_name']").val("");
+            $("select[name='pokemon']").val("Any");
+            $("select[name='cameos']").val("");
+            $("select[name='tumblr']").val("");
+            $("select[name='min']").val("1");
+            $("select[name='max']").val("4");
+            $("select[name='guild']").val("");
+            $("select[name='type']").val("");
+            $("select[name='sort']").val("newest");
+            $("input[name=related]").prop("checked", "");
+            $("input[name=active]").prop("checked", "");
+        });
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+    <form>
+    <div id="controls">
+        <div class="col">
+            <div class="field">
+                <label>Team name <input name="team_name" maxlength="80" value="{{name}}"></label>
+            </div>
+            <div class="field">
+                <label>DA Name <input name="da_name" maxlength="80" value="{{da_name}}"></label>
+            </div>
+            <div class="field">
+                <label>Pokémon
+                <select name="pokemon">
+                    <option value="Any">- Any -</option>
+                    {{pokemon_select|safe}}
+                </select>
+                <br><label style="font-size:10pt;font-weight:normal;"><input name="related" value="1" type="checkbox"{% if related %} checked{% endif %}><div>Include related Pokémon</div></label>
+                </label>
+                <br>
+            </div>
+            <div class="field">
+                <label>Cameos
+                <select name="cameos">
+                    <option value="">- Any -</option>
+                    <option value="Ask"{% if cameos == "Ask" %} selected{% endif %}>Ask first</option>
+                    <option value="Non-speaking"{% if cameos == "Non-speaking" %} selected{% endif %}>Yes for non-speaking</option>
+                    <option value="Yes"{% if cameos == "Yes" %} selected{% endif %}>Yes!</option>
+                </select></label>
+            </div>
+            <div class="field">
+                <label>Has Tumblr
+                <select name="tumblr">
+                    <option value="">- Don't Care -</option>
+                    <option value="y"{% if tumblr == "y" %} selected{% endif %}>Yes</option>
+                    <option value="n"{% if tumblr == "n" %} selected{% endif %}>No</option>
+                </select>
+                </label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="field">
+                <label>Min. Team Size
+                <select name="min">
+                    <option{% if min == "1" %} selected{% endif %}>1</option>
+                    <option{% if min == "2" %} selected{% endif %}>2</option>
+                    <option{% if min == "3" %} selected{% endif %}>3</option>
+                    <option{% if min == "4" %} selected{% endif %}>4</option>
+                </select>
+                </label>
+            </div>
+            <div class="field">
+                <label>Max. Team Size
+                <select name="max">
+                    <option{% if max == "1" %} selected{% endif %}>1</option>
+                    <option{% if max == "2" %} selected{% endif %}>2</option>
+                    <option{% if max == "3" %} selected{% endif %}>3</option>
+                    <option{% if max == "4" %} selected{% endif %}>4</option>
+                </select>
+                </label>
+            </div>
+            <div class="field">
+                <label>Team Type
+                <select name="type">
+                    <option value="">- Any -</option>
+                    <option{% if type == "Drawn" %} selected{% endif %}>Drawn</option>
+                    <option{% if type == "Written" %} selected{% endif %}>Written</option>
+                    <option{% if type == "Hybrid" %} selected{% endif %}>Hybrid</option>
+                </select>
+                <br><label style="font-size:10pt;font-weight:normal;"><input name="active" value="1" type="checkbox"{% if active %} checked{% endif %}><div>Active teams only</div></label>
+                </label>
+                <br>
+            </div>
+            <div class="field">
+                <label>Guild
+                <select name="guild">
+                    <option value="">- Any -</option>
+                    <option{% if guild == "Explorers" %} selected{% endif %}>Explorers</option>
+                    <option{% if guild == "Hunters" %} selected{% endif %}>Hunters</option>
+                    <option{% if guild == "Researchers" %} selected{% endif %}>Researchers</option>
+                </select>
+                </label>
+            </div>
+            <div class="field">
+                <label>Sort By
+                <select name="sort">
+                    <option value="newest"{% if sort == "newest" %} selected{% endif %}>Newest Additions</option>
+                    <option value="name"{% if sort == "name" %} selected{% endif %}>Team Name</option>
+                    <option value="owner"{% if sort == "owner" %} selected{% endif %}>Team Owner</option>
+                    <option value="random"{% if sort == "random" %} selected{% endif %}>Random Teams</option>
+                </select>
+                </label>
+            </div>
+        </div>
+        <div style="text-align:center;margin:auto;margin-top:16px;width:800px;height:35px;">
+        <input type="button" class="smallbutton" id="reset" value="Reset" style="float:left"> <input type="button" class="bigbutton" id="search" value="Search Teams" style="float:right">
+        </div>
+    </div>
+    </form>
+    
+    <div id="results">
+    {% for result in results %}
+        <a href="/team/view/{{result.id}}/{{result.urlname}}">
+        <div class="team_tag col{% if not result.active %} grayscale{% endif %}">
+            <img src="/assets/images/icons/{{result.guild_icon}}" alt="{{result.guild}}" title="{{result.guild}}" style="float:left">
+            <span{% if not result.active %} style="color:#666"{% endif %}>{{result.name}}</span>
+            <br>
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{result.pkmn1.species|default:'blank'}}.png"></div>
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{result.pkmn2.species|default:'blank'}}.png"></div>
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{result.pkmn3.species|default:'blank'}}.png"></div>
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{result.pkmn4.species|default:'blank'}}.png"></div>
+            <br>
+            <img src="/assets/images/icons/{{result.teamooc.type|lower}}.png" title="{{result.teamooc.type}}" style="float:left">
+        </div>
+        </a>
+    {% empty %}
+        <h2 style="text-align:center">Nothing to show!</h2>
+    {% endfor %}
+    </div>
+    
+    <div class="controls" style="margin-top:8px">
+        <a href="{{url}}{{prev}}"><input type="button" class="bigbutton" value="Previous"></a>
+        <a href="{{url}}{{next}}"><input type="button" class="bigbutton" value="Next"></a>
+    </div>
+    
+    <div class="block" style="width:150px;margin:auto;margin-top:8px;background-color:#E6D298">
+    <table>
+        <tr><th colspan="2">Guild Stats</th></tr>
+    {% for guild in counts %}
+        <tr><td style="width:50%">{{guild.guild}}</td><td style="text-align:right">{{guild.guild_count}}</td></tr>
+    {% endfor %}
+        <tr><td style="width:50%">Total</td><td style="text-align:right">{{total}}</td></tr>
+    </table>
+    </div>
+</div>
+{% endblock %}
+

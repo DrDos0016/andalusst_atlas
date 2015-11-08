@@ -1,0 +1,280 @@
+﻿{% extends "main.html" %}
+
+{% block css %}
+<style>
+.small_col
+{
+    display:inline-block;
+    zoom:1;
+    *display:inline;
+    vertical-align:top;
+    width:19%;
+}
+
+.small_col .block
+{
+    text-align:center;
+    border:2px solid #9F5145;
+    border-radius:15px;
+    background-color:#E6D298;
+}
+
+.spotlight
+{
+    display:inline-block;
+    zoom:1;
+    *display:inline;
+    vertical-align:top;
+    border:2px solid #9F5145;
+    border-radius:15px;
+    background-color:#E6D298;
+    width:100%;
+}
+
+.spotlight > .col
+{
+    padding:8px;
+}
+
+#main
+{
+    width:60%;
+    margin-left:3px;
+    margin-right:8px;
+}
+
+#main > div.col
+{
+    width:100%;
+    margin-bottom:16px;
+}
+
+.item_details div.image
+{
+    width:160px;
+}
+
+h1, #main h1
+{
+    text-align:center;
+}
+
+.featured
+{
+    border-top: 2px solid #9F5145;
+    width:80%;
+    text-align:center;
+    margin:auto;
+    padding:4px;
+}
+
+.featured img
+{
+    max-width:100%;
+}
+
+.item_details .desc
+{
+    width:70%;
+}
+
+#header
+{
+    width:100%;
+    margin-bottom:2px;
+    text-align:center;
+    /*border:2px solid #9F5145;
+    border-radius:15px;
+    background-color:#E6D298;*/
+}
+
+#header h1
+{
+    display:inline-block;
+    width:100%;
+}
+
+#header .text
+{
+    font-size:10pt;
+    text-align:right;
+    margin-left:10px;
+}
+
+#updated
+{
+    font-size:10px;
+    
+}
+
+.featured .text
+{
+    border:2px solid #9F5145;
+    color: #000;
+    height:150px;
+    overflow:auto;
+    font-size:10pt;
+    background-color: #FFE8AA;
+}
+
+.info
+{
+    margin-left:16px;
+}
+.info .col img
+{
+    border:1px solid #000;
+}
+
+#submissions
+{
+    border:2px solid #9F5145;
+    background-color:#D1AD7E;
+    height:185px;
+    overflow:auto;
+}
+
+#submissions .submission
+{
+    padding:4px;
+}
+
+.col.name
+{
+    width:84%;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    var latest_urls = [{% for log in latest %}"{{log.url|safe}}", {% endfor %} "X"];
+    var recruit_urls = [{% for app in recruits %}"{{app.url|safe}}", {% endfor %} "X"];  
+    
+    ajax_image(latest_urls[0], "#latest-1");
+    ajax_image(latest_urls[1], "#latest-2");
+    ajax_image(latest_urls[2], "#latest-3");
+    
+    ajax_image(recruit_urls[0], "#recruit-1");
+    ajax_image(recruit_urls[1], "#recruit-2");
+    ajax_image(recruit_urls[2], "#recruit-3");
+});
+
+function ajax_image(url, selector)
+{
+    var oembed_url = 'http://backend.deviantart.com/oembed?url='+encodeURIComponent(url)+'&format=jsonp&callback=?';
+    console.log(oembed_url);
+    $.getJSON(oembed_url, function(data) {
+        console.log(data);
+    }).done(function (data){
+        if (data.thumbnail_url_150)
+            $(selector).children("img").first().attr("src", data.thumbnail_url_150);
+        else if (data.type == "rich")
+        {
+            var link = $(selector).attr("href");
+            $(selector).removeAttr("href");
+            $(selector).html("<div class='text'><a href='"+link+"' target='_blank'>READ ME</a><hr>"+data.html+"</div>");
+        }
+        else
+            $(selector).children("img").first().attr("src", "/assets/images/sprites/x-y/0.png");
+    });
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<div class="col" id="header">
+    <h1 class="col">Andalusst Atlas</h1>
+</div>
+<br>
+
+<div class="small_col" style="">
+    <div class="block">
+        <h2>Latest Logbooks</h2>
+        {% for log in latest %}
+        <div class="featured">
+            <div class="guild"><img src="/assets/images/icons/{{log.team.guild_icon}}"> {{log.team.guild}}</div>
+            <div class="image"><a href="{{log.url}}" target="_blank" id="latest-{{forloop.counter}}"><img src="/assets/images/loading.gif"></a></div>
+            <div class="team"><a href="/team/view/{{log.team.id}}/{{log.team.name|slugify}}">{{log.team.name}}</a></div>
+            <div class="user"><a href="http://{{log.team.user.username}}.deviantart.com" target="_blank">{{log.team.user.username}}</a></div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="col" id="main">
+    <div class="spotlight">
+        <h1>Weekly Team Spotlight</h1>
+        <div class="col image"><img src="{{spotlight.image}}"></div>
+        <div class="col" style="max-width:43%;">
+            <h2><a href="/team/view/{{spotlight.team.id}}/{{spotlight.team.name|slugify}}">{{spotlight.team.name|title}}</a></h2>
+            <div class="info">
+                <div class="col"><img src="{{spotlight.team.user.icon}}"></div>
+                <div class="col">Created By:<br><a href="http://{{spotlight.team.user.username|lower}}.deviantart.com" target="_blank">{{spotlight.team.user.username}}</a></div>
+            </div>
+            
+            <h2>Overview</h2>
+            <div class="info">
+                {{spotlight.summary|safe}}
+            </div>
+            
+            <h2>Team Members</h2>
+            {% if spotlight.team.pkmn1 %}<div class="col"><div class="team_icon"><img src="/assets/images/sprites/icons/{{spotlight.team.pkmn1.species}}.png"></div> {{spotlight.team.pkmn1.name}}</div>{% endif %}
+            {% if spotlight.team.pkmn2 %}<div class="col"><div class="team_icon"><img src="/assets/images/sprites/icons/{{spotlight.team.pkmn2.species}}.png"></div> {{spotlight.team.pkmn2.name}}</div>{% endif %}
+            {% if spotlight.team.pkmn3 %}<div class="col"><div class="team_icon"><img src="/assets/images/sprites/icons/{{spotlight.team.pkmn3.species}}.png"></div> {{spotlight.team.pkmn3.name}}</div>{% endif %}
+            {% if spotlight.team.pkmn4 %}<div class="col"><div class="team_icon"><img src="/assets/images/sprites/icons/{{spotlight.team.pkmn4.species}}.png"></div> {{spotlight.team.pkmn4.name}}</div>{% endif %}
+            
+            <h2><a href="/logbook/view/{{spotlight.team.id}}/{{spotlight.team.name|slugify}}">Logbook Entries</a></h2>
+            <div id="submissions">
+            <table>
+                {% for submission in submissions %}
+                <tr class="submission">
+                    <td>
+                    <div class="team_icon">
+                        <img src="/assets/images/sprites/icons/{% if submission.event.id == -1 %}{{submission.event.custom_icon}}.png{% else %}{{submission.event.image}}{% endif %}">
+                    </div>
+                    </td>
+                    <td>
+                        <a href="{{submission.url}}" target="_blank">{{submission.event.name}}</a>
+                    </td>
+                </div>
+                {% endfor %}
+            </table>
+            </div>
+            
+            <h2>Other Teams</h2>
+            <div id="others">
+            <table>
+                {% for other in other_teams %}
+                <tr class="submission">
+                    <td>
+                        <img src="/assets/images/icons/{{other.guild_icon}}">
+                    </td>
+                    <td>
+                        <a href="/team/view{{other.id}}/{{other.name|slugify}}">{{other.name}}</a>
+                    </td>
+                </div>
+                {% endfor %}
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="small_col" style="">
+    <div class="block">
+        <h2>New Recruits</h2>
+        {% for app in recruits %}
+        <div class="featured">
+            <div class="guild"><img src="/assets/images/icons/{{app.team.guild_icon}}"> {{app.team.guild}}</div>
+            <div class="image"><a href="{{app.url}}" target="_blank" id="recruit-{{forloop.counter}}"><img src="/assets/images/loading.gif"></a></div>
+            <div class="team"><a href="/team/view/{{app.team.id}}/{{app.team.name|slugify}}">{{app.team.name}}</a></div>
+            <div class="user"><a href="http://{{app.team.user.username}}.deviantart.com" target="_blank">{{app.team.user.username}}</a></div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div style="clear:both"></div>
+</div>
+{% endblock %}
+

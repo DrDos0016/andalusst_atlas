@@ -1,0 +1,73 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Storehouse - {% endblock %}
+
+{% block css %}
+<style>
+.progress
+{
+    width:400px;
+    height:16px;
+    background-color:#300;
+    margin:4px 0px;
+}
+
+.bar
+{
+    text-align:center;
+}
+
+.dialog .guild
+{
+    display:inline-block;
+    *display:inline;
+    zoom:1;
+    width:96px;
+}
+
+.requirement
+{
+    width:400px;
+}
+
+.qty
+{
+    float:right;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Storehouse - {% if verified %}Verified{% else %}Tentative{% endif %} Totals</h1>
+
+<div class="box-w">
+    <img src="/assets/images/dungeons/details/spoolstone.png" class="portrait">
+    <div class="dialog">
+        <h1>Spoolstone Accessory Pack #1</h1>
+        Reach the goal and new accessories will be added to Wear and Flair Accesories: Traveler's Bag, Pants, and Flygoggles.
+        <div class="progress col"><div class="bar" style="background-color:#C0C;width:{% widthratio spool 400 100 %}%;height:100%;">&nbsp;</div></div>
+        <div class="col b requirement">Spoolstone Required:<div class="qty b">{{spool}} / 400</div></div>
+    </div>
+</div>
+
+<div class="box-w">
+    <img src="/assets/images/dungeons/details/fleshcap.png" class="portrait">
+    <div class="dialog">
+        <h1>Funds for Food</h1>
+        Submit a dungeon logbook and receive bonus payment based on how much food is harvested while the event is ongoing.
+        <div class="progress col"><div class="bar" style="background-color:#F00;width:{% widthratio food 400 100 %}%;height:100%;">&nbsp;</div></div>
+        <div class="col b requirement">Food Required (4 starcoins):<div class="qty b">{{food}} / 400</div></div>
+        <div class="col b requirement">Food Required (3 starcoins):<div class="qty b">{{food}} / 300</div></div>
+        <div class="col b requirement">Food Required (2 starcoins):<div class="qty b">{{food}} / 150</div></div>
+    </div>
+</div>
+
+<div class="controls">
+    {% if verified %}<a href="?mode=tentative" class="bigbutton">Show Tentative Totals</a>{% endif %}
+    {% if not verified %}<a href="?mode=verified" class="bigbutton">Show Verified Totals</a>{% endif %}
+</div>
+
+</div>
+{% endblock %}
+

@@ -1,0 +1,91 @@
+﻿{% extends "main.html" %}
+
+{% block main %}
+<div id="content">
+<h1 style="text-align:center">Andalusst Atlas BETA</h1>
+
+<div class="item_details">
+    <div class="col image"><img src="/assets/images/characters/meowth-smile.png"></div>
+    <div class="desc">
+        <h1>Alexander</h1>
+        <div class="description"><br>
+            &ldquo;Hello there! I almost didn't see you come in. Focused on my work as always.<br>
+            <br>
+            It's good to see you again- uh...&rdquo;
+            </div>
+    </div>
+</div>
+<br>
+<div class="item_details">
+    <div class="col image"><img src="/assets/images/characters/meowth-frustrated.png"></div>
+    <div class="desc">
+        <div class="description">
+            <br>
+            &ldquo;Who are you again?<br><br>
+            Have we met before?
+            {% if session.team_name %}
+                I'm sure we have. You're with the {{session.team_guild|lower}}, right? {{session.team_name}}! That's the name!<br><br>
+                Well, of your team at least. Maybe you're just as lousy with names as me. Name's Alexander if you forgot it yourself. I run this here place.&rdquo;
+            {% else %}
+                Don't know if we have, sorry! I'm not so good with faces. It's like everyone's a Ditto to me. Name's Alexander if you didn't know. I'm in charge
+                of this here place.&rdquo;
+            {%endif %}
+        </div>
+    </div>
+</div>
+<br>
+<div class="item_details">
+    <div class="col image"><img src="/assets/images/characters/meowth-happy.png"></div>
+    <div class="desc">
+        <div class="description">
+            <br>
+            &ldquo;How can I be of service?<br><br>
+            Maybe you're <a href="/search">looking for somebody</a>? No? Probably want to {% if session.userID %}<a href="/team/manage">do some work with your team</a>
+            {% else %}<a href="/login">get yourself signed in</a>{% endif %} then.{% if session.userID %}&rdquo;{%else%}<br><br>
+            Or maybe you've wandered in here and have no idea what you're even doing!&rdquo;
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% if not session.userID %}
+<br>
+<div class="item_details">
+    <div class="col image"><img src="/assets/images/characters/meowth-smile.png"></div>
+    <div class="desc">
+        <div class="description">
+            <br>
+            &ldquo;It's fine, don't get all embarrassed or nothin'! You gotta start somewhere. And this is the place to start!&rdquo;
+            
+        </div>
+        <br><br><br>
+        <div class="choices">
+            <a href="/faq"><input type="button" value="Ask some questions!" style="width:100%"></a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% comment %}
+<h2><a href="http://pastebin.com/EUBFFbmG" target="_blank">Atlas Beta Changelog - Apr. 11</a></h2>
+
+<p>Welcome to the Andalusst Atlas! Your guide to the guilds and the many Pokémon teams within.<p>
+
+<p>Here you'll be able to properly register your team(s) with a guild, so that the others know who they can call on in times of need.</p>
+
+<p>You can <a href="/login">login via DeviantArt</a> and get started! Logging in is done through DA, who then says "Yep, they're &lt;person&gt;", 
+we never see your password. All we get is your username and avatar. The full process of this involves openAuth, and though it will request permission to access your Stash, 
+it is not used. Once you've been identified, the DA connection is broken and no Stash access remains. If I could remove the permission to access it I would, but I can't!</p>
+
+<p>Once you have a team registered, others group members will be able to <a href="/search">search</a> by team name, guild, or Pokémon and find your team.
+Of course, you can also use this to find teams yourself, whether for cameos or just to find a cool new team worth following!</p>
+
+<p>Your teams will also be able to keep track of their star coins here, and (soon enough!) be able to use them to purchase accessories and items. Making it much easier to track your money and inventory!</p>
+
+<p>There's more to come and if you have any suggestions, or worse find any bugs, you are encouraged to send me an <a href="mailto:doctordos@gmail.com?subject=PMDU Site Feedback">email</a>.</p>
+
+<p>Thank you!<br>
+- Dr. Dos</p>
+{% endcomment %}
+</div>
+{% endblock %}
+

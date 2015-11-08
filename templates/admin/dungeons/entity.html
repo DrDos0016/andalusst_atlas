@@ -1,0 +1,88 @@
+{% extends "main.html" %}
+
+{% block title %}Dungeon Entities - {% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("#entity").change(function (){
+        window.location = "/admin/dungeons/entity?entity="+$(this).val();
+    });
+});
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+
+<h1><a href="/admin/dungeons">Dungeon Master</a> - Entity Manager - {{wip.name|default:"New Entity"}} - {{msg}}</h1>
+<div class="field">
+<label>Current Entity</label>
+<select id="entity">
+    <optgroup label="New">
+    <option value="0">New Entity</option>
+    </optgroup>
+{% for entity in entities %}
+    {% ifchanged %}</optgroup><optgroup label="{{entity.type|title}}">{% endifchanged %}
+    <option value="{{entity.id}}"{% if wip.id == entity.id %} selected{% endif %}>{{entity.name}}</option>
+    {% if forloop.last %}</optgroup>{% endif %}
+{% endfor %}
+</select>
+</div>
+<br>
+<form method="POST">
+    {% csrf_token %}
+    <input name="action" type="hidden" value="save">
+    <input name="id" type="hidden" value="{{wip.id|default:0}}">
+    
+    <div class="field">
+        <label>Name</label>
+        <input name="name" value="{{wip.name}}">
+    </div>
+    <div class="field">
+        <label>Type</label>
+        <select name="type">
+            <option value="door"{% if wip.type == 'door' %} selected{% endif %}>Door</option>
+            <option value="enemy"{% if wip.type == 'enemy' %} selected{% endif %}>Enemy</option>
+            <option value="trap"{% if wip.type == 'trap' %} selected{% endif %}>Trap</option>
+            <option value="resource"{% if wip.type == 'resource' %} selected{% endif %}>Resource</option>
+        </select>
+    </div>
+    <div class="field">
+        <label>Tile <input name="tile" value="{{wip.tile}}"></label><br>
+        <span class="sub">24x24 image, no extension, (should be PNG)</span>
+    </div>
+    <div class="field">
+        <label>Image <input name="image" value="{{wip.image}}"></label><br>
+        <span class="sub">160x160 image, no extension, (should be PNG)</span>
+    </div>
+    <div class="field">
+        <label>Danger Level
+        <input name="danger_level" value="{{wip.danger_level}}">
+        </label>
+    </div>
+    <div class="field">
+        <label>Description
+        <textarea name="desc" style="width:300px;height:100px">{{wip.desc}}</textarea>
+        </label><br>
+        
+        <div style="clear:both"></div>
+    </div>
+    <div class="field" style="display:none">
+        <label>Data
+        <textarea name="data" style="width:300px;height:30px">{{wip.data}}</textarea>
+        </label><br>
+        <span class="sub">Unused. Leave blank.</span>
+        <div style="clear:both"></div>
+    </div>
+    <div class="field">
+        <label>Collectible
+        <input name="collectible" value="1" type="checkbox"{% if wip.collectible %} checked{%endif %}>
+        </label><br>
+        <span class="sub">Should the resource show up as a collectible when submitting a logbook?</span>
+    </div>
+    <input type="submit" value="Save Entity" class="bigbutton">
+</form>
+</div>
+{% endblock %}
+

@@ -1,0 +1,213 @@
+{% extends "main.html" %}
+
+{% block title %}Dungeon - {% endblock %}
+
+{% block css %}
+<style>
+#floor_select
+{
+    float:right;
+    font-size:24px;
+    border:1px solid #A05246;
+    background-color:#E6D298;
+}
+
+#graphics
+{
+    display:none;
+}
+
+#canvas_area
+{
+    border:2px solid #9F5145;
+    width:576px;
+    height:576px;
+    background-color:#222;
+    color:#0F0;
+    background-image:url("/assets/images/loading.gif");
+    background-size: 50% 50%;
+    background-position: center;
+    background-repeat:no-repeat;
+    font-family:monospace;
+    font-size:24px;
+    font-weight:bold;
+    text-align:center;
+    letter-spacing:.3em;
+}
+
+#map
+{
+    display:none;
+    width:576px;
+    height:576px;
+    /*background-color:#C6B278;*/
+    background-color:#FFF;
+    cursor:help;
+}
+
+#map img
+{
+    margin:0;
+    float:left;
+}
+
+#key_table td
+{
+    padding-right:8px;
+}
+
+#key_table .img
+{
+    text-align:center;
+}
+
+#sidebar
+{
+    width:380px;
+}
+
+#details
+{
+    border-top:2px solid #9F5145;
+    border-bottom:2px solid #9F5145;
+    height:320px;
+}
+
+#info-name
+{
+    text-align:center;
+}
+
+#info-image
+{
+    width:160px;
+    height:160px;
+    border:2px dashed #9F5145;
+    margin:auto;
+    padding:4px;
+}
+
+#info-image img
+{
+    width:100%;
+    height:100%;
+}
+
+.centerer
+{
+    text-align:center;
+}
+
+.centerer div.col
+{
+    text-align:left;
+}
+
+.left_header h1
+{
+    display:inline-block;
+    zoom:1;
+    *display:inline;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var tiles = {{dungeon.map}};
+var entities = {{dungeon.entities|safe|default:"{}"}};
+
+var entity_info = {
+    {% for entity in entities %}"{{entity.id}}":{"type":"{{entity.type}}", "tile":"{{entity.tile}}", "image":"{{entity.image}}", "name":"{{entity.name}}", "desc":"{{entity.desc}}"}, {% endfor %}
+    "X":{"egg":"All work and no play makes Dos a dull boy"}
+};
+
+var descriptions = {{dungeon.descriptions|safe|default:"{}"}};
+
+$(document).ready(function (){
+    $("#floor_select").change(function (){
+        window.location = "/dungeon/view/{{dungeon_id}}/{{team_id}}/{{dungeon.name|slugify}}?f=" + $(this).val();
+    });
+    
+    {% if minimal %}
+    // Admin funcs
+    $("#navigation").hide();
+    $("#footer").hide();
+    $("#debug").hide();
+    {% endif %}
+    
+});
+</script>
+<script src="/assets/scripts/dungeons.js?{{version}}"></script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<div id="graphics">
+<img src="/assets/images/loading.gif">
+<!-- SLICE NEEDS TO BE ADJUSTED BASED ON TILESET NAME LENGTH-->
+{% for image in images %}<img id="{{image|slice:'52:-4'}}" src="{{image|slice:'22:'}}">{% endfor %}
+<img id="highlight" src="/assets/images/dungeons/highlight.png">
+</div>
+<div class="centerer">
+<div class="col">
+    <div class="left_header">
+        <h1>{{dungeon.name}}</h1>
+        <select id="floor_select">
+            {% for floornum in floors %}
+            <option value="{{floornum}}"{% if floor == floornum %} selected{% endif %}>F{{floornum}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div id="canvas_area">
+        <div style="margin-top:350px;" id="loading">LOADING</div>
+        <canvas id="map" width="576" height="576"></canvas>
+    </div>
+    <div style="text-align:center">
+    (Click on a tile to see more information!)
+    </div>
+    <div class="col" id="debug" style="display:none">
+        <h2>Debug</h2>
+        {{seed}}<br>
+        {{dungeon.created|default:"New"}}<br>
+        <div id="debugCoords">&nbsp;</div><br>
+        <div style="background-color:#000;color:#AAA;font-family:monospace;width:192px;">{{text_map|safe}}</div>
+    </div>
+</div>
+<div class="col" id="sidebar">
+    <h1>Information</h1>
+    {% if floor == 1 %}Dungeon Map ID: <b>{{map_id}}</b> for {{team_name}}{% endif %}
+    <h2>Legend</h2>
+    <table id="key_table">
+    <tr>
+        <td class="img"><img src="/assets/images/dungeons/{{dungeon.tileset}}/entrance.png"> <img src="/assets/images/dungeons/{{dungeon.tileset}}/exit.png"></td>
+        <td>Entrance/Exit</td>
+        <td class="img"><img src="/assets/images/dungeons/{{dungeon.tileset}}/stairs_up.png"> <img src="/assets/images/dungeons/{{dungeon.tileset}}/stairs_down.png"></td>
+        <td>Up/Down stairs</td>
+    </tr>
+    <tr>
+        <td class="img"><img src="/assets/images/dungeons/{{dungeon.tileset}}/trap.png"></td>
+        <td>Trap</td>
+        <td class="img"><img src="/assets/images/dungeons/{{dungeon.tileset}}/resource.png"></td>
+        <td>Resource</td>
+    </tr>
+    <tr>
+        <td class="img"><img src="/assets/images/dungeons/{{dungeon.tileset}}/enemy.png"></td>
+        <td>Enemy</td>
+        <td class="img"><img src="/assets/images/dungeons/{{dungeon.tileset}}/door.png"></td>
+        <td>Door</td>
+    </tr>
+    </table>
+    <div id="details">
+        <h2 id="info-name">&nbsp;</h2>
+        <div id="info-image"><img src="" alt="" id="info-img"></div>
+        <p id="info-desc">&nbsp;</p>
+    </div>
+    <h2>Help</h2>
+    <a href="/dungeon/faq">Read the Atlas Dungeon FAQ</a><br>
+    {% if yours %}<a href="/dungeon/reroll?dungeon={{dungeon_id}}&floor={{floor}}">My dungeon map for this floor is invalid!</a><br>{% endif %}
+</div>
+</div>
+</div>
+{% endblock %}
+

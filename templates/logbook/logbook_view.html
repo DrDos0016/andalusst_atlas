@@ -1,0 +1,98 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Team Logbook - {% endblock %}
+
+{% block css %}
+<link href='http://fonts.googleapis.com/css?family=Reenie+Beanie' rel='stylesheet' type='text/css'>
+<style>
+.dataTable
+{
+    width:100%;
+}
+
+.dataTable th
+{
+    text-align:left;
+}
+
+.handwritten
+{
+    font-size:36px;
+    font-family: 'Reenie Beanie', cursive;
+}
+
+.key
+{
+    width:120px;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+{% include "modules/team_nav.html" %}
+
+<div style="text-align:center;width:90%;margin:auto">
+<form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="team" value="{{team.id}}">
+    {% if session.userID and session.beta %}
+    {% if not bookmarked %}
+        <input type="hidden" name="action" value="add_bookmark">
+        <input class="bigButton" type="submit" value="Bookmark Team">
+    {% else %}
+        <input type="hidden" name="action" value="del_bookmark">
+        <input class="bigButton" type="submit" value="Remove Bookmark">
+    {% endif %}
+    {% endif %}
+    {% if yours %}
+        <a href="/logbook/arrange/{{team.id}}/{{team.name|slugify}}" class="bigbutton">Rearrange Logbook</a> 
+        <a href="/logbook/create/{{team.id}}/{{team.name|slugify}}" class="bigbutton">Create a logbook entry</a>
+    {% endif %}
+</form>
+</div>
+
+<h1>Logbook for {{team.name}}</h1>
+
+<table class="dataTable">
+    <tr>
+        <th>Logbook Entry</th>
+        {% if session.admin or yours %}<th>Status</th>{% endif %}
+        {% if session.admin or yours %}<th>Handled By</th>{% endif %}
+        {% if session.admin or yours %}<th>Notes From Staff</th>{% endif %}
+        {% if session.admin %}<th>Admin ONLY Notes</th>{% endif %}
+        {% if yours %}<th>Action</th>{% endif %}
+    </tr>
+    {% for entry in logbook %}
+    <tr>
+        <td class="handwritten">
+            {% if entry.event.key != 'ORIG' %}
+            <div class="key col">{{entry.event.key}}</div> <div class="team_icon col"><img src="/assets/images/sprites/icons/{{entry.event.image}}"></div>
+            <a href="{{entry.url}}" target="_blank">{{entry.event.name}}</a></td>
+            {% else %}
+            <div class="key col">{{entry.event.key}}</div> <div class="team_icon col"><img src="/assets/images/sprites/icons/{{entry.custom_icon}}.png"></div>
+            <a href="{{entry.url}}" target="_blank">{{entry.custom_name|default:'Personal Story'}}</a></td>
+            {% endif %}
+        {% if session.admin or yours %}
+        <td>
+            {% if entry.event.key != "ORIG" %}
+                {% if entry.approved == 1 %}<img src="/assets/images/icons/plus-circle24.png" alt="Staff approved on {{entry.approved_on}}" title="Staff approved on {{entry.approved_on}}">{% endif %}
+                {% if entry.approved == 0 %}<img src="/assets/images/icons/minus-circle24.png" alt="Staff denied" title="Staff denied on {{entry.approved_on}}">{% endif %}
+                {% if entry.approved == None %}<img src="/assets/images/icons/question.png" alt="Not yet verified" title="Not yet verified">{% endif %}
+                {% if entry.rewarded == 1 %}<img src="/assets/images/icons/box-label.png" alt="Received reward {{entry.rewarded_on}}" title="Received reward on {{entry.rewarded_on}}">{% endif %}
+                {% if entry.rewarded == 0 %}<img src="/assets/images/icons/zone.png" alt="Yet to receive reward" title="Yet to receive reward">{% endif %}
+            {% else %}
+                <img src="/assets/images/icons/plus-circle24.png" alt="Automatically approved" title="Automatically approved">
+            {% endif %}            
+        </td>
+        {% endif %}
+        {% if session.admin or yours %}<td>{{entry.handled_by|default:""}}</td>{% endif %}
+        {% if session.admin or yours %}<td>{% if entry.user_note %}<textarea>{{entry.user_note}}</textarea>{% endif %}</td>{% endif %}
+        {% if session.admin %}<td>{% if entry.admin_note %}<textarea>{{entry.admin_note}}</textarea>{% endif %}</td>{% endif %}
+        {% if yours and entry.approved != 1 %}<td><a href="/logbook/delete/{{entry.id}}">Delete</a></td>{% endif %}
+    </tr>
+    {% endfor %}
+</table>
+
+</div>
+{% endblock %}

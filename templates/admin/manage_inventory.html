@@ -1,0 +1,47 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Administration - {% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Administration Functions</h1>
+
+<div class="section">
+    <a href="/admin/reward_teams"><img src="/assets/images/sugimori/225.png"><h2>Reward Teams</h2></a><br>
+    <p>Give a whole lot of teams some kind of reward.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/manage-star-coins"><img src="/assets/images/sugimori/385.png"><h2>Star Coin Management</h2></a><br>
+    <p>Give/Take Star Coins from a Team.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/manage-inventory"><img src="/assets/images/sugimori/215.png"><h2>Inventory Management</h2></a><br>
+    <p>Give/Take Items from a Team. Normally you should just be using rewards. This is more of a way of handling mistakes.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/manage-items"><img src="/assets/images/sugimori/100.png"><h2>Item Management</h2></a><br>
+    <p>Set up items that teams may be able to acquire.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/powerless"><img src="/assets/images/sugimori/129.png"><h2>Powerless View</h2></a><br>
+    <p>This will remove the admin flag from your account temporarily, so you can see the site from the eyes of a regular user. You can regain power by logging out and then back in.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/transaction-log"><img src="/assets/images/sugimori/52.png"><h2>Transaction Log</h2></a><br>
+    <p>Follow the money.</p>
+</div>
+
+<div class="section">
+    <a href="/admin/site-log"><img src="/assets/images/sugimori/137.png"><h2>Site Log</h2></a><br>
+    <p>Follow everything.</p>
+</div>
+
+
+</div>
+{% endblock %}
+

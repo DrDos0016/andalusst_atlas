@@ -1,0 +1,139 @@
+{% extends "main.html" %}
+
+{% block title %}Arrange Logbook - {% endblock %}
+
+{% block css %}
+<link href='http://fonts.googleapis.com/css?family=Reenie+Beanie' rel='stylesheet' type='text/css'>
+<style>
+.dataTable
+{
+    width:100%;
+}
+
+.dataTable th
+{
+    text-align:left;
+}
+
+.handwritten
+{
+    font-size:36px;
+    font-family: 'Reenie Beanie', cursive;
+}
+
+.key
+{
+    width:120px;
+}
+
+.dataTable tr:hover
+{
+    background-color:transparent;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    last = $("td[name=entry]").length - 1;
+    $("input[name=up]").click(function() {
+        var pos = parseInt($(this).data("position"));
+        var new_pos = pos--;
+        console.log("NEW POS" + new_pos);
+        if (new_pos <= 0)
+            return false;
+        
+        a = null;
+        b = null;
+        
+        var count = 0;
+        $("td[name=entry]").each(function (){
+            if (count == pos)
+                a = $(this).html();
+            if (count == new_pos)
+                b = $(this).html();
+            count++;
+        });
+        
+        count = 0;
+        $("td[name=entry]").each(function (){
+            if (count == pos)
+                $(this).html(b);
+            if (count == new_pos)
+                $(this).html(a);
+            count++;
+        });
+    });
+    
+    $("input[name=down]").click(function() {
+        var pos = parseInt($(this).data("position"));
+        var new_pos = pos++;
+        
+        a = null;
+        b = null;
+        console.log("New " + new_pos);
+        if (new_pos >= last)
+            return false;
+        
+        var count = 0;
+        $("td[name=entry]").each(function (){
+            if (count == pos)
+                a = $(this).html();
+            if (count == new_pos)
+                b = $(this).html();
+            count++;
+        });
+        
+        count = 0;
+        $("td[name=entry]").each(function (){
+            if (count == pos)
+                $(this).html(b);
+            if (count == new_pos)
+                $(this).html(a);
+            count++;
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+{% include "modules/team_nav.html" %}
+
+<h1>Logbook Order for {{team.name}}</h1>
+<form method="POST">
+{% csrf_token %}
+<input name="action" type="hidden" value="arrange">
+<table class="dataTable">
+    <tr>
+        <th>Position</th>
+        <th>Logbook Entry</th>
+    </tr>
+    {% for entry in logbook %}
+    <tr name="row">
+        <td>
+        <input type="button" name="up" value="&#9650;" data-position="{{forloop.counter0}}">
+        <input type="button" name="down" value="&#9660;" data-position="{{forloop.counter0}}">
+        </td>
+        <td name="entry" class="handwritten">
+            {% if entry.event.key != 'ORIG' %}
+            <div class="key col">{{entry.event.key}}</div> <div class="team_icon col"><img src="/assets/images/sprites/icons/{{entry.event.image}}"></div>
+            <a href="{{entry.url}}" target="_blank">{{entry.event.name}}</a>
+            {% else %}
+            <div class="key col">{{entry.event.key}}</div> <div class="team_icon col"><img src="/assets/images/sprites/icons/{{entry.custom_icon}}.png"></div>
+            <a href="{{entry.url}}" target="_blank">{{entry.custom_name|default:'Personal Story'}}</a>
+            {% endif %}
+            <input name="logbook_id" value="{{entry.id}}" type="hidden">
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<div class="controls">
+    <input type="submit" class="bigbutton" value="Save Ordering">
+</div>
+</form>
+</div>
+{% endblock %}
+

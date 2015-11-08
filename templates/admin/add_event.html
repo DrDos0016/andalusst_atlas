@@ -1,0 +1,200 @@
+{% extends "main.html" %}
+
+{% block title %}Add Event - {% endblock %}
+
+{% block css %}
+<style>
+.section
+{
+    display:inline-block;
+    vertical-align:top;
+    width:49%;
+}
+
+#select input
+{
+    width:25px;
+    text-align:center;
+}
+
+#reward_table select
+{
+    width:120px;
+}
+
+#reward_table
+{
+    float:right
+}
+
+.del
+{
+    color:red;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var rewards = {"Explorers":[], "Hunters":[], "Researchers":[], "Bonus":[]};
+var item_size = 3;
+
+$(document).ready(function (){
+    $("select[name=image]").change(function (){
+        $("#pokemon_image").attr("src", "/assets/images/sprites/icons/"+$(this).val()+".png");
+    });
+    $("#add_reward").click(function (){
+        add_reward();
+    });
+    
+    $("#set_reward").click(function (){
+        var json_data = JSON.stringify(rewards);
+        $("#custom_reward").val(json_data);
+        $("#custom_preview").val(json_data);
+    });
+});
+
+function add_reward()
+{
+    var guild = $("#for_guild").val();
+    var name = $("#set_name").val();
+    var set = {"name":name, "contents":[]};
+    
+    for (var x = 1; x <= item_size; x++)
+    {
+        if ($("#item"+x).val() != "")
+        {
+            var item = {
+                "item":parseInt($("#item"+x).val()),
+                "quantity":parseInt($("#qty"+x).val()),
+            };
+            if ($("#per"+x).val() != "")
+                item.per = $("#per"+x).val();
+                
+            set["contents"].push(item);
+        }
+        
+    }
+    
+    rewards[guild].push(set);
+    
+    // Write the set to the page
+    var output = "<div>"+name+" ("+guild.substring(0,1)+")</div>";
+    $("#current").html($("#current").html() + output);
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<div class="col">
+<h1>{{msg|default:"Add Event"}}</h1>
+    <form method="POST">
+    {% csrf_token %}
+    <div class="field">
+        <label>Key <input name="key" maxlength="8" style="width:80px"></label><br>
+        <span class="sub">Format: S#E## for errands, S#T##-X# for tasks (X is the guild or G for General), S#D## for dungeons</span>
+    </div>
+    <div class="field">
+        <label>Name <input name="name" maxlength="40"></label>
+    </div>
+    <div class="field">
+        <label>Image <div class="col team_icon" style="float:none"><img src="/assets/images/sprites/icons/460.png" id="pokemon_image"></div>
+        <select name="image">{{pokemon_list|safe}}</select></label>
+    </div>
+    <div class="field">
+        <label>Opens <input name="opens"></label><br>
+        <span class="sub">The date the event is posted to the DA group. YYYY-MM-DD format</span>
+    </div>
+    <div class="field">
+        <label>Closes <input name="closes"></label><br>
+        <span class="sub">The date the event's folder is locked (or submissions are considered late). YYYY-MM-DD format</span>
+    </div>
+    <div class="field">
+        <label>Guilds</label><br>
+        <label><input type="checkbox" name="guild" value="E" checked> <img src="/assets/images/icons/map-pin.png"> Explorers</label><br>
+        <label><input type="checkbox" name="guild" value="H" checked> <img src="/assets/images/icons/sealing-wax.png"> Hunters</label><br>
+        <label><input type="checkbox" name="guild" value="R" checked> <img src="/assets/images/icons/flask.png"> Researchers</label>
+        <br>
+        <span class="sub">Which guilds can submit something for this event?</span>
+    </div>
+    <div class="field">
+        <label>Rewards
+            <select name="reward_template">
+                <option value="none">No Reward</option>
+                <option value="basic_errand">Basic Errand (1 Starcoin)</option>
+                <option value="custom">Use Custom</option>
+            </select>
+        </label>
+    </div>
+    <input type="hidden" value="" name="custom_reward" id="custom_reward">
+    <input type="submit" class="bigbutton" value="Add Event">
+    </form>
+</div>
+<div class="col" style="margin-left:16px;">
+    <h1>Custom Rewards</h1>
+    <div class="field">
+        <label>For Guild <select id="for_guild">
+            <option value="Explorers">Explorers</option>
+            <option value="Hunters">Hunters</option>
+            <option value="Researchers">Researchers</option>
+            <option value="Bonus">BONUS</option>
+        </select></label>
+    </div>
+    <div class="field">
+        <label>Reward Set Name <input id="set_name"><br>
+        <span class="sub">Must be "Bonus" for the bonus reward.</label>
+    </div>
+    <div class="field" style="border:0">
+        <label>Reward Contents</label>
+        <table id="reward_table">
+        <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Per</th>
+        </tr>
+        {% for x in reward_size %}
+        <tr>
+            <td>
+                <select id="item{{forloop.counter}}" style="width:250px">
+                    <option value="">-</option>
+                    <option value="-1">Starcoins</option>
+                    {% for item in items %}
+                    <option value="{{item.id}}">{{item.name}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <input id="qty{{forloop.counter}}" value="1" style="width:25px">
+            </td>
+            <td>
+                <select id="per{{forloop.counter}}">
+                    <option value="">-</option>
+                    <option value="member">Team Member</option>
+                </select>
+            </td>
+        </tr>
+        {% endfor %}
+        </table>
+        
+    </div>
+    <div class="field" style="border-top:1px solid #000;clear:both">
+        <label>Ready? <input type="button" class="bigbutton" value="Add Reward Set" id="add_reward"><br></label><br>
+    </div>
+    <div class="field">
+        <label>Current Sets</label><br>
+        <div id="current">
+        </div>
+    </div>
+    <div class="field">
+        <label>Write Sets <input type="button" class="bigbutton" value="Write Sets" id="set_reward"><br></label><br>
+    </div>
+    <div>
+        <textarea id="custom_preview" style="width:400px;height:150px">This is the JSON Preview. If you don't know what I am, you can ignore me just fine!</textarea>
+    </div>
+    
+    
+</div>
+</div>
+{% endblock %}
+

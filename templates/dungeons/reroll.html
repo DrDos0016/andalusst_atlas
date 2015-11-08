@@ -1,0 +1,45 @@
+﻿{% extends "main.html" %}
+
+{% block title %}FAQ - {% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Reroll Dungeon - {{dungeon_name}} F{{floor}}</h1>
+
+<div style="text-align:center">
+<img src="/assets/images/characters/meowth-angry.png">
+<h2>HOLD IT!</h2>
+</div>
+
+<p>Rerolling a dungeon floor is _only_ for instances where the map that was generated was bugged in some way. Only reroll a dungeon floor if something in the following list is true:</p>
+
+<ul>
+<li>There are rooms which are not connected to the rest of the map</li>
+<li>There are missing entities (such as no traps, resources, or enemies)</li>
+<li>There is no entrance or exit. (Or stairs for a multi-floor dungeon)</li>
+<li>There are doors or doorways which lead to nowhere</li>
+<li>There are multiple traps/resources/enemies stacked on top of each other</li>
+</ul>
+
+<p><b>Do not reroll a dungeon because you are not satisfied with its contents. Dungeons are a way to work with given constraints, 
+and generating new ones repeatedly defeats their purpose.</b></p>
+
+<p><b>Do not reroll a dungeon if you see a checkerboard tile on your map (<img src="/assets/images/dungeons/caves/undefined.png">).</b>
+ It's just a wall that wasn't defined with an image properly. Link your map to an admin and we'll get it fixed.</p>
+
+<p>When you reroll a dungeon floor, the original floor is saved. Dr. Dos will be using it to help debug any issues with the dungeon generator.<br>
+<b>Unecessary rerolls waste staff time!</b></p>
+
+<div style="text-align:center">
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="action" value="reroll">
+<input type="hidden" name="dungeon_id" value="{{dungeon_id}}">
+<input type="submit" class="bigbutton" value="Reroll {{dungeon_name}} F{{floor}}">
+</form>
+</div>
+
+
+</div>
+{% endblock %}
+

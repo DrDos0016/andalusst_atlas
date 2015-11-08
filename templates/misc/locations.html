@@ -1,0 +1,21 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Locations - {% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Locations</h1>
+
+<div class="section">
+    {% if session.userID %}<a href="/shop">{% else %}<a href="/login">{% endif %}<img src="/assets/images/characters/chantelle.png"><h2>Wear and Flair Accessories</h2></a><br>
+    <p>Chantelle's shop where you can purchase various clothes and accessories. Some of which can be customized further!</p>
+</div>
+
+<div class="section">
+    <a href="/storehouse"><img src="/assets/images/sugimori/532.png"><h2>Storehouse</h2></a><br>
+    <p>View the resources that have been successfully salvaged from dungeons.</p>
+</div>
+
+</div>
+{% endblock %}
+

@@ -1,0 +1,12 @@
+# Ignore
+*.pyc
+*.pnws
+*.user
+private_settings.py
+user_settings.py
+assets/images/sprites/*
+assets/images/sugimori/*
+assets/data/logins/*.json
+virt/*
+virt273/*
+tools/twitter_timers.py

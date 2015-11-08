@@ -1,0 +1,114 @@
+<div class="header" data-show="0">
+    <div class="team_icon" style="visibility:hidden"></div>
+    <div class="col">Team Information</div>
+    <div class="arrow" id="arrow-0">-</div>
+</div>
+<div name="team_info">
+    <input name="locked_team" value="1" type="hidden">
+    <div class="col" style="width:176px;text-align:center;">
+        <img id="seal" src="/assets/images/seals/{{team.guild|lower}}_seal.png">
+        <br>
+        <div class="roster">
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{team.pkmn1.species|default:'blank'}}.png"></div>
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{team.pkmn2.species|default:'blank'}}.png"></div>
+            <br>
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{team.pkmn3.species|default:'blank'}}.png"></div>
+            <div class="team_icon"><img src="/assets/images/sprites/icons/{{team.pkmn4.species|default:'blank'}}.png"></div>
+        </div>
+    </div>
+    <div class="col">
+        <table>
+        <tr>
+            <td>Application</td>
+            <td class="value"><a href="{{team.application}}" target="_blank">View</a>
+                <input type="hidden" id="app_link" name="app" class="l" value="{{team.application}}"></td>
+        </tr>
+        <tr>
+            <td>Alt. Application</td>
+            {% if not yours %}
+            <td class="value">
+                {% if team.alt_app %}<a href="{{team.alt_app}}" target="_blank">View</a>{% else %}-{% endif %}
+            </td>
+            {% else %}
+                {% if team.alt_app %}
+                <td class="value"><a href="{{team.alt_app}}" target="_blank">View</a></td>
+                {% else %}
+                <td><input name="alt_app" value="{{team.alt_app}}" placeholder="Optional"></td>
+                {% endif %}
+            {% endif %}
+        </tr>
+        <tr>
+            <td>Team Name</td>
+            <td class="value">{{team.name}}</td>
+        </tr>
+        <tr>
+            <td>Guild</td>
+            <td class="value">{{team.guild}}</td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            {% if not yours %}
+            <td class="value">{{team.teamooc.type}}</td>
+            {% else %}
+            <td>
+                <select name="type">
+                    <option value="Drawn"{% if team.teamooc.type == "Drawn" %} selected{% endif %}>Drawn</option>
+                    <option value="Written"{% if team.teamooc.type == "Written" %} selected{% endif %}>Written</option>
+                    <option value="Hybrid"{% if team.teamooc.type == "Hybrid" %} selected{% endif %}>Hybrid</option>    
+                </select>
+            </td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td>Tumblr</td>
+            {% if not yours %}
+            <td class="value">{% if team.teamooc.tumblr %}<a href="{{team.teamooc.tumblr}}" target="_blank">View</a>{% else %}-{% endif %}</td>
+            {% else %}
+            <td><input name="tumblr" value="{{team.teamooc.tumblr}}" placeholder="Optional"></td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td>Date Joined</td>
+            <td class="value">{{team.joined|date:"N j, Y"}}</td>
+        </tr>
+        <tr>
+            <td>Cameos</td>
+            {% if not yours %}
+            <td class="value">{% if team.cameos == "No" %}Do not cameo{% endif %}
+                {% if team.cameos == "Ask" %}Ask first{% endif %}
+                {% if team.cameos == "Non-speaking" %}Non-speaking{% endif %}
+                {% if team.cameos == "Yes" %}Yes!{% endif %}
+            </td>
+            {% else %}
+            <td><select name="cameos">
+                <option value="No"{% if team.cameos == "No" %} selected{% endif %}>No. Do not give this team a cameo.</option>
+                <option value="Ask"{% if team.cameos == "Ask" %} selected{% endif %}>Ask me about it.</option>
+                <option value="Non-speaking"{% if team.cameos == "Non-speaking" %} selected{% endif %}>Yes, but only in a non-speaking role.</option>
+                <option value="Yes"{% if team.cameos == "Yes" %} selected{% endif %}>Yes!</option>
+            </select></td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td>Merits</td>
+            <td class="value"><img src="/assets/images/icons/tick-circle.png"> x {{team.merits}}</td>
+        </tr>
+        <tr>
+            <td>Strikes</td>
+            <td class="value"><img src="/assets/images/icons/cross-circle.png"> x {{team.strikes}}</td>
+        </tr>
+        <tr>
+            <td>Star Coins</td>
+            <td class="value"><img src="/assets/images/icons/star-piece.png"> x {{team.stars}}</td>
+        </tr>
+        <tr>
+            <td colspan="1" style="text-align:right"><img src="{{team.user.icon}}" class="da_icon" alt="{{team.user.username}}"></td>
+            <td class="value"><a href="http://{{team.user.username}}.deviantart.com" target="_blank">{{team.user.username}}</a></td>
+        </tr>
+        
+        <tr>
+            <td colspan="2" id="team_errors">
+            </td>
+        </tr>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+{% extends "main.html" %}
+
+{% block title %}{{team.name}} Actions - {% endblock %}
+
+{% block css %}
+<style>
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $(".delete").click(function (){
+        if (confirm("WARNING!\n You are about to delete " + $(this).data("msg") + " PERMANENTLY.\nThis cannot be undone."))
+            return true;
+        else
+            return false;
+    });
+    
+});
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+{% include "modules/team_nav.html" %}
+<h1>Actions</h1>
+<hr>
+{% if actions.set_stats %}
+    <h2>Set Pokémon Stats</h2>
+    <ul>
+    {% for poke in no_stats %}
+    <li><a href="/set_stats/{{poke.id}}/{{poke.name|slugify}}">Set Initial Stats for {{poke.name}}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+<h2>Deletion</h2>
+<ul>
+    <li><a href="/team/delete?team_id={{team.id}}" class="delete" data-msg="the team '{{team.name}}'">Delete Team - {{team.name}}</li>
+    {% for poke in pokemon %}
+    <li><a href="/pokemon/delete?pokemon_id={{poke.id}}" class="delete" data-msg="the Pokémon '{{poke.name}}'">Delete Pokémon - {{poke.name}}</li>
+    {% endfor %}
+</ul>
+
+</div>
+{% endblock %}
+

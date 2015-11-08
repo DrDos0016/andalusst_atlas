@@ -1,0 +1,178 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Team Logbook - {% endblock %}
+
+{% block css %}
+<style>
+#personal, #dungeon
+{
+    display:none;
+}
+
+input.xs
+{
+    width:20px;
+}
+
+input.s
+{
+    width:35px;
+}
+
+#resources
+{
+    width:200px;
+    text-align:right;
+    border-collapse:collapse;
+    margin-left:10px;
+}
+
+#resources th
+{
+    border-bottom:1px solid #000;
+}
+
+#resources td
+{
+    font-weight:normal;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="/assets/scripts/validation.js"></script>
+<script>
+$(document).ready(function (){
+    $("select[name=event]").change(function (){
+        if (parseInt($(this).val()) < 0)
+            $("#personal").show();
+        else
+            $("#personal").hide();
+            
+        if ($("select[name=event] option:selected").text().match(/^\[S[0-9]D[0-9]+\]/))
+        {
+            // Pull your dungeon map ID (if there is one)
+            var key = $("select[name=event] option:selected").text().match(/^\[S[0-9]D[0-9]+\]/)[0].replace("[", "").replace("]", "")
+            console.log("Pulling your teams ({{team.id}}) dungeon map ID for event " + $("select[name=event] option:selected").val());
+            
+            $.ajax({
+                url: "/ajax/get_teams_map/{{team.id}}/"+key,
+                data: {},
+                type: "GET",
+                async: false,
+                success: function(ret) {
+                    data = JSON.parse(ret);
+                    if (data.success)
+                    {
+                        $("input[name='dungeon_map']").val(data.key);
+                        load_resources();
+                    }
+                }
+            });
+            
+            $("#dungeon").show();
+        }
+        else
+        {
+            $("#dungeon").hide();
+        }
+        
+        
+    });
+    
+    $("input[name='dungeon_map']").change(function (){
+        load_resources();
+    });
+    
+    $('#submit').click(function (){
+        var success = (is_fav_me("url"));
+        return success;
+    });
+    
+});
+
+function load_resources()
+{
+    $.ajax({
+        url: "/ajax/get_resources/"+$("input[name='dungeon_map']").val(),
+        data: {},
+        type: "GET",
+        async: false,
+        success: function(ret) {
+            data = JSON.parse(ret);
+            if (data.success)
+            {
+                console.log(ret);
+                var table = '<tr><th>Resource</th><th>Qty.</th></tr>';
+                for (var x = 0; x < data.entities.length; x++)
+                {
+                    table += '<tr><td><input name="resource_id" value="'+data.entities[x].id+'" type="hidden">'+data.entities[x].name+'</td><td><input name="resource_qty" class="xs"></td></tr>';
+                }
+                $("#resources").html(table);
+            }
+        }
+    });
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+{% include "modules/team_nav.html" %}
+
+<h1>Logbook for {{team.name}}</h1>
+
+<form method="POST">
+{% csrf_token %}
+<div class="field">
+    <label>Event 
+    <input type="hidden" name="action" value="create">
+    <select name="event">
+        {% for event in events %}
+            <option value="{{event.id}}">[{{event.key}}] - {{event.name}}</option>
+        {% endfor %}
+        <option value="-1">[ORIG] - Personal Story</option>
+    </select>
+    <br>
+    <span class="sub">Which event did your team participate in? Only events you haven't made a log entry for are listed.</span></label>
+</div>
+<div class="field">
+    <label>Submission Link <input name="url" id="url" maxlength="150" value="{{default}}"><br>
+    <span class="sub">The <b>fav.me</b> link to the first page for your team's submission</span></label>
+</div>
+<div id="personal">
+    <div class="field">
+        <label>Personal Story Name <input name="custom_name" maxlength="40"<br>
+        <span class="sub">The name this story will be filed under in your logbook.</span></label>
+    </div>
+    <div class="field">
+        <label>Personal Story Icon <select name="custom_icon">{{icons|safe}}</select><br>
+        <span class="sub">The Pokémon icon that will display in your logbook representing your story.</span></label>
+    </div>
+</div>
+<div id="dungeon">
+    <div class="field">
+        <label>Dungeon Map ID<input name="dungeon_map" maxlength="5" value="" class="s"><br>
+        <span class="sub">The ID of the Dungeon Map used for this logbook. If this isn't a collab, leave this setting as is.<br>
+        You can find this number by looking at the first floor of the map to use just above the map legend.</span></label>
+    </div>
+    <div class="field">
+        <label for="multiple">Resource Collection
+        <div>
+            <table id="resources">
+            </table>
+        </div>
+        <br>
+        <span class="sub">You may take <b>3</b> resources per floor for the dungeon to return to the guilds. Please select how much of each resource to take.</span>
+        </label>
+    </div>
+</div>
+<br>
+<input type="submit" id="submit" value="Submit Logbook Entry" class="bigbutton">
+<p>Once your entry has been submitted, the staff will be able to mark it as approved or not. If approved you should receive any applicable reward soon after.
+If not approved, you'll be able to see why. You'll have the option to delete the logbook entry and resubmit it again when it meets the requirements.</p>
+</form>
+
+</div>
+{% endblock %}
+

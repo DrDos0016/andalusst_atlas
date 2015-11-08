@@ -1,0 +1,176 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Create Pokémon - {% endblock %}
+
+{% block css %}
+<style>
+.teammate
+{
+    display:inline-block;
+    margin-right:48px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="/assets/scripts/common.js"></script>
+<script>
+$(document).ready(function (){
+    
+    $('#app_link').blur(function (){
+        var url = $(this).val();
+        get_app($(this).val(), "app_img", "app_txt");
+    });
+    
+    $('#delete').click(function (){
+        var conf = confirm("This will remove the team, all pokemon within it, their items, their starcoins PERMANENTLY.\nIt _cannot_ be undone. Are you absolutely sure you wish to delete this team?");
+        if (! conf)
+            return false;
+    });
+    
+    $("#species1").change(function (){ move_ref(1); });
+    
+    get_app($('#app_link').val(), "app_img", "app_txt");
+    move_ref(1);
+    
+});
+
+function have_app(data)
+{
+    return true;
+}
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="add_pokemon">
+    <input type="hidden" name="application" id="app_link" maxlength="150" value="{{team.application}}">
+    
+    <div class="col" id="side_app">
+        <img src="" alt="&nbsp;" id="app_img" style="" alt="Your application should display here">
+    </div>
+    
+    <br>
+    <div class="teammate">
+        <h1>Team Member Information</h1>
+        <div class="field">
+            <label>Pokémon Name <input name="pkmn_name" maxlength="80"></label><br>
+        </div>
+        <div class="field">
+            <label>Pokémon Species 
+                <select name="species" id="species1">
+                    {{pokemon_select|safe}}
+                </select><br>
+                <span class="sub">Please note that options for eggs and other can be found at the end of the list.</span>
+            </label>
+        </div>
+        <div class="field">
+            <label>Shiny Pokémon
+                <select name="shiny{{forloop.counter}}">
+                    <option value="1">Yes</option>
+                    <option value="0" selected>No</option>
+                </select>
+            </label>
+        </div>
+        <div class="field">
+            <label>Gender <input name="gender" maxlength="20"><br>
+            <span class="sub">Your character may identify however they choose.</span></label>
+        </div>
+        <div class="field">
+            <label>Ability <input name="ability" value="" maxlength="30"><br>
+            <span class="sub"><a href="#" target="_blank" tabindex="-1" id="ability_ref1">Reference</a></span></label>
+        </div>
+        <div class="field">
+            <label>Nature 
+                <select name="nature">
+                    <option>Adamant</option>
+                    <option>Bashful</option>
+                    <option>Bold</option>
+                    <option>Brave</option>
+                    <option>Calm</option>
+                    <option>Careful</option>
+                    <option>Docile</option>
+                    <option>Gentle</option>
+                    <option>Hardy</option>
+                    <option>Hasty</option>
+                    <option>Impish</option>
+                    <option>Jolly</option>
+                    <option>Lax</option>
+                    <option>Lonely</option>
+                    <option>Mild</option>
+                    <option>Modest</option>
+                    <option>Naive</option>
+                    <option>Naughty</option>
+                    <option>Quiet</option>
+                    <option>Quirky </option>
+                    <option>Rash</option>
+                    <option>Relaxed</option>
+                    <option>Sassy</option>
+                    <option>Serious</option>
+                    <option>Timid</option>
+                </select><br>
+                <span class="sub"><a href="http://veekun.com/dex/natures" target="_blank" tabindex="-1">Reference</a></span>
+            </label>
+        </div>
+        <div class="field">
+            <label>Trait 
+                <select name="trait">
+                    <option>A little quick tempered</option>
+                    <option>Alert to sounds</option>
+                    <option>Capable of taking hits</option>
+                    <option>Good endurance</option>
+                    <option>Good perseverance</option>
+                    <option>Hates to lose</option>
+                    <option>Highly curious</option>
+                    <option>Highly persistent</option>
+                    <option>Impetuous and silly</option>
+                    <option>Likes to fight</option>
+                    <option>Likes to relax</option>
+                    <option>Likes to run</option>
+                    <option>Likes to thrash about</option>
+                    <option>Loves to eat</option>
+                    <option>Mischievous</option>
+                    <option>Nods off a lot</option>
+                    <option>Often lost in thought</option>
+                    <option>Proud of its power</option>
+                    <option>Quick tempered</option>
+                    <option>Quick to flee</option>
+                    <option>Scatters things often</option>
+                    <option>Somewhat of a clown</option>
+                    <option>Somewhat stubborn</option>
+                    <option>Somewhat vain</option>
+                    <option>Strong willed</option>
+                    <option>Strongly defiant</option>
+                    <option>Sturdy body</option>
+                    <option>Takes plenty of siestas</option>
+                    <option>Thoroughly cunning</option>
+                    <option>Very finicky</option>
+                </select><br>
+                <span class="sub"><a href="http://veekun.com/dex/natures#phenotypes" target="_blank" tabindex="-1">Reference</a></span>
+            </label>
+        </div>
+        <div class="field">
+            <label>Move 1 <input name="move1" value="-" maxlength="20"><br>
+            <span class="sub"><a id="move_ref1" href="#" tabindex="-1" target="_blank">Reference</a></span></label>
+        </div>
+        <div class="field">
+            <label>Move 2 <input name="move2" value="-" maxlength="20"></label>
+        </div>
+        <div class="field">
+            <label>Move 3 <input name="move3" value="-" maxlength="20"></label>
+        </div>
+        <div class="field">
+            <label>Move 4 <input name="move4" value="-" maxlength="20"></label>
+        </div>
+    </div>
+    
+    <br>
+    <input type="submit" value="Create Pokémon" class="bigbutton">
+    <div style="clear:both">&nbsp;</div>
+</form>
+</div>
+{% endblock %}
+

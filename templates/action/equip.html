@@ -1,0 +1,31 @@
+﻿{% extends "main.html" %}
+
+
+{% block title %}Equip Team - {% endblock %}
+
+{% block css %}
+<style>
+
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+<h1>Equip Team</h1>
+
+{% for poke in pokemon %}
+{{poke.name}} - {{poke.equipped|default:"Nothing"}}<br>
+{% endfor %}
+
+{% for item in inventory %}
+{{item.item.name}}<br>
+{% endfor %}
+
+</div>
+{% endblock %}
+

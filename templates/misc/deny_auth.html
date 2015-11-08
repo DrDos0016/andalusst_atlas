@@ -1,0 +1,47 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Denied Authorization - {% endblock %}
+
+{% block main %}
+<div id="content">
+
+<div class="item_details">
+    <div class="col image"><img src="/assets/images/characters/meowth-shy.png"></div>
+    <div class="desc">
+        <h1>Alexander</h1>
+        <div class="description"><br>
+            &ldquo;Don't get cold feet or nothin'!<br>
+            <br>
+            It's safe to login! We take your name, and your avatar, and that's all. I know it says stuff about sta.sh, and that can sound scary, but we throw away 
+            our access to that stuff straight away. We just want to know who you are, and nothin' more!&rdquo;
+        </div>
+    </div>
+</div>
+<br>
+<div class="item_details">
+        <h1 style="text-align:center">The Andalusst Atlas and Your DeviantArt Account</h1>
+        <p>Here's how it works:</p>
+        
+        <ol>
+            <li>You click that Authorize button.</li>
+            <li>DeviantArt sends the Atlas a token to give us access limited data about your account.</li>
+            <li>We run a "WhoamI" request on your account and get back something like this:<br>
+            {<br>
+    "username": "dr-dos",<br>
+    "userid": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",<br>
+    "symbol": "",<br>
+    "usericon": "http://a.deviantart.net/avatars/d/r/dr-dos.gif",<br>
+    "usericonurl": "http://a.deviantart.net/avatars/d/r/dr-dos.gif"<br>
+}
+            <br></li>
+            <li>We pull your username and avatar from that, and know that it's you.</li>
+        </ol>
+        
+        And that's all! At no point is your sta.sh touched, nor will it ever be. We're unable to prevent that Sta.sh access, but we can promise that it is not used.
+</div>
+
+
+<br>
+</div>
+{% endblock %}
+

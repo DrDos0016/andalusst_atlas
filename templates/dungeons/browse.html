@@ -1,0 +1,111 @@
+{% extends "main.html" %}
+
+{% block title %}Browse Dungeons - {% endblock %}
+
+{% block css %}
+<link href='http://fonts.googleapis.com/css?family=Reenie+Beanie' rel='stylesheet' type='text/css'>
+<style>
+.event_list
+{
+    
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+}
+
+.event
+{
+    padding:4px;
+    clear:both;
+    text-align:left;
+    margin:auto;
+    font-size:36px;
+    font-family: 'Reenie Beanie', cursive;
+    color:#000;
+}
+
+.event .team_icon
+{
+    margin-right:10px;
+}
+
+a .event:hover
+{
+    background-color:#E6D298;
+}
+
+.key
+{
+    width:120px;
+}
+
+#results .team_col
+{
+    margin-bottom:20px;
+}
+.explorers, .undecided
+{
+    border:2px solid #9F5145;
+    background-color:#E6D298;
+}
+
+.researchers
+{
+    border:2px solid #4B7148;
+    background-color:#8CAE86;
+}
+
+.hunters
+{
+    border:2px solid #DBC85E;
+    background-color:#161B22;
+    color: #FFF;
+}
+
+.hunters a
+{
+    color:#EAD459;
+}
+
+.bookmarks
+{
+    width:40px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+});
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+
+<h1>Known Dungeons</h1>
+{% for dungeon in dungeons %}
+<a href="/dungeon/explore/{{dungeon.id}}/{{dungeon.name|slugify}}">
+<div class="event">
+    {% if not dungeon.public %}
+    <s>{{dungeon.name}}</s>
+    {% else %}
+    {{dungeon.name}}
+    {% endif %}
+</div>
+</a>
+{% empty %}
+<div class="item_details">
+    <div class="col image"><img src="/assets/images/characters/meowth-angry.png"></div>
+    <div class="desc">
+        <div class="description">
+            <br>
+            <h1>Where are the maps?</h1>
+            &ldquo;They're on the way! Be patient! I mean, what kind of an Atlas wouldn't have any maps?&rdquo;
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endblock %}
+

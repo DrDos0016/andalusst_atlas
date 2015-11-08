@@ -1,0 +1,126 @@
+﻿{% extends "main.html" %}
+
+{% block title %}Manage Team - {% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("input[name=set_active]").click(function (){
+        window.location = "/team/set/"+$(this).data("team");
+    });
+});
+</script>
+{% endblock %}
+
+{% block css %}
+<style>
+.active_team
+{
+    background-color:#FFE8AA;
+}
+
+.team_name
+{
+    text-align:center;
+    margin:2px;
+}
+
+.guild
+{
+    text-align:center;
+    font-size:10pt;
+}
+
+.member
+{
+    padding-left:8px;
+    padding-bottom:2px;
+    border-top:1px solid transparent;
+    border-bottom:1px solid transparent;
+    text-align:left;
+    color:#000;
+}
+
+/*.member:hover
+{
+    background-color:#D1AD7E;
+    border-top:1px solid #9F5145;
+    border-bottom:1px solid #9F5145;
+}*/
+
+.teammate
+{
+    display:inline-block;
+    position:relative;
+    top:-6px;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+    <div style="width:100%;text-align:center;">
+    <h2>{{success}}</h2>
+    {% for team in teams %}
+        <div class="team_frame{% if session.teamID == team.id %} active_team{% endif %}">
+            <h1 class="team_name"><a href="/team/view/{{team.id}}/{{team.urlname}}">{{team.name}}</a></h1>
+            <div class="guild">- <img src="/assets/images/icons/{{team.guild_icon}}" alt="{{team.guild}}"> {{team.guild}} -</div>
+            <div class="member">
+                <div class="team_icon">
+                    <img src="/assets/images/sprites/icons/{{team.pkmn1.species|default:"blank"}}.png">
+                </div>
+                <div class="teammate">
+                    {{team.pkmn1.name}}<br>
+                </div>
+            </div>
+            <div class="member">
+                <div class="team_icon">
+                    <img src="/assets/images/sprites/icons/{{team.pkmn2.species|default:"blank"}}.png">
+                </div>
+                <div class="teammate">
+                    {{team.pkmn2.name}}
+                </div>
+            </div>
+            <div class="member">
+                <div class="team_icon">
+                    <img src="/assets/images/sprites/icons/{{team.pkmn3.species|default:"blank"}}.png">
+                </div>
+                <div class="teammate">
+                    {{team.pkmn3.name}}
+                </div>
+            </div>
+            <div class="member">
+                <div class="team_icon">
+                    <img src="/assets/images/sprites/icons/{{team.pkmn4.species|default:"blank"}}.png">
+                </div>
+                <div class="teammate">
+                    {{team.pkmn4.name}}
+                </div>
+            </div>
+            
+            <div class="team_numbers">
+                <div class="col" title="Star Coins"><img src="/assets/images/icons/star-piece.png" alt="Star Coins">x <span id="header_stars">{{team.stars}}</span></div>
+                <div class="col" title="Merits"><img src="/assets/images/icons/tick-circle.png" alt="Merits">x {{team.merits}}</div>
+                <div class="col" title="Strikes"><img src="/assets/images/icons/cross-circle.png" alt="Strikes">x {{team.strikes}}</div>
+                <div class="col" title="Inventory"><a href="/team/inventory/{{team.id}}/{{team.name|slugify}}"><img src="/assets/images/icons/drawer-open.png" alt="inventory"></a></div>
+                <div class="col" title="Logbook"><a href="/logbook/view/{{team.id}}/{{team.name|slugify}}"><img src="/assets/images/icons/book-open-text.png" alt="inventory"></a></div>
+            </div>
+            
+            <a href="/team/{{team.id}}/{{team.urlname}}">Edit Team</a> &bull; <a href="/team/actions/{{team.id}}/{{team.urlname}}">Team Actions</a><br>
+            
+            {% if session.teamID != team.id %}<input type="button" name="set_active" data-team="{{team.id}}" value="Set as active team">{% else %}<br>{% endif %}
+        </div>
+    {% endfor %}
+    
+        <a href="/team" style="color:#222">
+        <div class="team_frame" style="border: 2px dashed #999;background-color:#CCC;">
+            <h1 class="team_name">Create a New Team</h1>
+            <div class="guild">- Click to get started -</div>
+            <img src="/assets/images/seals/explorers_seal.png" class="grayscale" alt="Explorers Seal"><br>
+            <img src="/assets/images/seals/hunters_seal.png" class="grayscale" alt="Hunters Seal"> <img src="/assets/images/seals/researchers_seal.png" class="grayscale" alt="Researchers Seal">
+        </div>
+        </a>
+    </div>
+</div>
+{% endblock %}
+

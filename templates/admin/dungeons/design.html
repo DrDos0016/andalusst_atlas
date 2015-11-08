@@ -1,0 +1,174 @@
+{% extends "main.html" %}
+
+{% block title %}Dungeon Design - {% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function (){
+    $("#dungeon").change(function (){
+        window.location = "/admin/dungeons/design?dungeon="+$(this).val();
+    });
+    
+    $("input[name=preview]").click(function (){
+        seed = Math.floor(Math.random()*1001) + 1001;
+        var f = $(this).data("f");
+        params = "&seed="+seed;
+        params += "&style=" + $("form[name=f"+f+"]").find("select[name=style]").val();
+        params += "&min_rooms=" + $("form[name=f"+f+"]").find("input[name=min_rooms]").val();
+        params += "&max_rooms=" + $("form[name=f"+f+"]").find("input[name=max_rooms]").val();
+        params += "&min_room_size=" + $("form[name=f"+f+"]").find("input[name=min_room_size]").val();
+        params += "&max_room_size=" + $("form[name=f"+f+"]").find("input[name=max_room_size]").val();
+        params += "&door_chance=" + $("form[name=f"+f+"]").find("input[name=door_percent]").val();
+        params += "&min_danger_level=" + $("form[name=f"+f+"]").find("input[name=min_danger_level]").val();
+        params += "&max_danger_level=" + $("form[name=f"+f+"]").find("input[name=max_danger_level]").val();
+        params += "&trap_ratio=" + $("form[name=f"+f+"]").find("input[name=trap_ratio]").val();
+        params += "&resource_ratio=" + $("form[name=f"+f+"]").find("input[name=resource_ratio]").val();
+        params += "&enemy_ratio=" + $("form[name=f"+f+"]").find("input[name=enemy_ratio]").val();
+        window.open("/dungeon/view/0/0/0/?debug=1"+params);
+    });
+});
+</script>
+{% endblock %}
+
+{% block css %}
+<style>
+#blueprints
+{
+    border-collapse:collapse;
+}
+#blueprints th, #blueprints td
+{
+    border:2px solid #9F5145;
+    text-align:center;
+}
+
+.table
+{
+    padding:4px;
+    border-bottom:2px solid #9F5145;
+}
+
+.table div.col
+{
+    width:80px;
+    text-align:center;
+}
+
+input.xs
+{
+    width:25px;
+}
+</style>
+{% endblock %}
+
+{% block main %}
+<div id="content">
+
+<h1><a href="/admin/dungeons">Dungeon Master</a> - Dungeon Designer - {{wip.name|default:"New Dungeon"}} - {{msg}}</h1>
+<br>
+<div class="col">
+    <div class="field">
+    <label>Current Dungeon</label>
+    <select id="dungeon">
+        <option value="0">New Dungeon</option>
+    {% for dungeon in dungeons %}
+        <option value="{{dungeon.id}}"{% if wip.id == dungeon.id %} selected{% endif %}>{{dungeon.name}}</option>
+    {% endfor %}
+    </select>
+    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <input name="action" type="hidden" value="save_dungeon">
+        <input name="id" type="hidden" value="{{wip.id|default:0}}">
+        
+        <div class="field">
+            <label>Name</label>
+            <input name="name" value="{{wip.name}}">
+        </div>
+        <div class="field">
+            <label>Key</label>
+            <input name="key" value="{{wip.key}}">
+        </div>
+        <div class="field">
+            <label>Tileset</label>
+            <select name="tileset">
+                {% for tile in tilesets %}
+                <option value="{{tile|slice:'46:'}}"{% if tile|slice:'46:' == wip.tileset %} selected{% endif %}>{{tile|slice:'46:'|title}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="field">
+            <label>Floors</label>
+            <input name="floors" value="{{wip.floors}}">
+        </div>
+        <div class="field">
+            <label>Public</label>
+            <input name="public" type="checkbox" value="1"{% if wip.public %} checked{% endif %}>
+        </div>
+        <input type="submit" value="Save Dungeon" class="bigbutton"><br>
+        <p>This only saves the above settings and does NOT save any information on the floors contained in this dungeon!!</p>
+    </form>
+</div>
+<hr>
+{% if wip.id > -1 %}
+<h2>Floor Blueprints - {{msg2}}</h2>
+<div id="blueprints" class="col">
+<div class="table col">
+    <div class="col">Flr.</div>
+    <div class="col">Style</div>
+    <div class="col">Min Rooms</div>
+    <div class="col">Max Rooms</div>
+    <div class="col">Min Size</div>
+    <div class="col">Max Size</div>
+    <div class="col">Door %</div>
+    <div class="col">Min Danger</div>
+    <div class="col">Max Danger</div>
+    <div class="col">Trap Ratio</div>
+    <div class="col">Resource Ratio</div>
+    <div class="col">Enemy Ratio</div>
+    <div class="col">Preview</div>
+    <div class="col">Save</div>
+</div>
+<br>
+{% for blueprint in blueprints %}
+
+<div class="table col">
+    <form method="POST" name="f{{forloop.counter}}">
+    <div class="col">
+        {{blueprint.floor}}
+        <input name="floor" value="{{blueprint.floor}}" type="hidden">
+        <input name="id" value="{{blueprint.id|default:''}}" type="hidden">
+        <input name="key" value="{{wip.id|default:''}}" type="hidden">
+    </div>
+    <div class="col">
+        <select name="style">
+            <option value="dungeon"{% if blueprint.style == "dungeon" %} selected{% endif %}>Dungeon</option>
+            <option value="tunnel"{% if blueprint.style == "tunnel" %} selected{% endif %}>Tunnel</option>
+        </select>
+    </div>
+    <div class="col"><input class="xs" name="min_rooms" value="{{blueprint.min_rooms}}"></div>
+    <div class="col"><input class="xs" name="max_rooms" value="{{blueprint.max_rooms}}"></div>
+    <div class="col"><input class="xs" name="min_room_size" value="{{blueprint.min_room_size}}"></div>
+    <div class="col"><input class="xs" name="max_room_size" value="{{blueprint.max_room_size}}"></div>
+    <div class="col"><input class="xs" name="door_percent" value="{{blueprint.door_chance}}"></div>
+    <div class="col"><input class="xs" name="min_danger_level" value="{{blueprint.min_danger_level}}"></div>
+    <div class="col"><input class="xs" name="max_danger_level" value="{{blueprint.max_danger_level}}"></div>
+    <div class="col"><input class="xs" name="trap_ratio" value="{{blueprint.trap_ratio}}"></div>
+    <div class="col"><input class="xs" name="resource_ratio" value="{{blueprint.resource_ratio}}"></div>
+    <div class="col"><input class="xs" name="enemy_ratio" value="{{blueprint.enemy_ratio}}"></div>
+    <div class="col"><input name="preview" type="button" value="Preview" data-f="{{forloop.counter}}"></div>
+    <div class="col">
+        <input type="submit" value="Save">
+        <input type="hidden" name="action" value="save_floor">
+        {% csrf_token %}
+    </div>
+    </form>
+</div>
+<br>
+{% endfor %}
+</div>
+<b>Modifying an existing dungeon floor will not alter dungeons which have already been generated for a user!</b>
+{% endif %}
+</div>
+{% endblock %}
+
