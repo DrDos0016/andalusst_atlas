@@ -156,7 +156,9 @@ def open_item(request, inv_id):
         42:[{"item":25, "qty":1}, {"item":26, "qty":1}], 
         43:[{"item":27, "qty":1}, {"item":28, "qty":1}], 
         44:[{"item":29, "qty":1}, {"item":30, "qty":1}], 
-        45:[{"item":31, "qty":1}, {"item":32, "qty":1}]
+        45:[{"item":31, "qty":1}, {"item":32, "qty":1}],
+        66:[{"item":62, "qty":1}, {"item":63, "qty":1}],
+        65:[{"item":56, "qty":1}, {"item":54, "qty":3}, {"item":55, "qty":1}]
     }
     
     choices = rewards[item.item.id]
