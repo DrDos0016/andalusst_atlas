@@ -4,6 +4,7 @@
 *.user
 private_settings.py
 user_settings.py
+animations/*
 assets/images/sprites/*
 assets/images/sugimori/*
 assets/data/logins/*.json
