@@ -133,10 +133,8 @@ $(document).ready(function (){
                 var type = $("#type-"+id).val();
                 if (type == 15)
                     $("#action").html("<h3>Action:</h3><a href='/evolve/"+$("#id-"+id).val()+"' class='bigbutton'>Evolve Teammate</a>");
-                else if (type == 47)
-                    $("#action").html("<h3>Action:</h3><a href='/ability/"+$("#id-"+id).val()+"' class='bigbutton'>Change Ability</a>");
-                else if (type == 48 || type == 49)
-                    $("#action").html("<h3>Action:</h3><a href='/tm/"+$("#id-"+id).val()+"' class='bigbutton'>Change Moveset</a>");
+                else if (type == 53)
+                    $("#action").html("<h3>Action:</h3><a href='/recruit/"+$("#id-"+id).val()+"' class='bigbutton'>Recruit Teammate</a>");
             }
         }
         

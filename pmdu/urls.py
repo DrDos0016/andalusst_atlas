@@ -63,6 +63,7 @@ urlpatterns = patterns('',
     url(r'^ability/(?P<inv_id>[0-9]+)$', 'pmdunity.views.ability'),
     url(r'^evolve/(?P<inv_id>[0-9]+)$', 'pmdunity.views.evolve'),
     url(r'^open/(?P<inv_id>[0-9]+)$', 'pmdunity.views.open_item'),
+    url(r'^recruit/(?P<inv_id>[0-9]+)$', 'pmdunity.views.recruit_teammate'),
     url(r'^set_stats/(?P<pokemon_id>[0-9]+)/(.*)$', 'pmdunity.views.set_stats'),
     url(r'^tm/(?P<inv_id>[0-9]+)$', 'pmdunity.views.tm'),
     

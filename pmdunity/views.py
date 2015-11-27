@@ -55,7 +55,8 @@ def error(request, type="Unknown"):
     "insufficient-funds":"You can't afford that!",
     "team-create":"Could not create team!<br>Make sure you are using a <b>fav.me</b> link for you team's application. This is required to submit a team.",
     "oauth-error":"Failed to retrieve data from DeviantArt! You may be unable to login until DA fixes the issue.",
-    "resource-error":"You provided invalid values for dungeon resources! The total must be no more than 3 per floor of the dungeon"
+    "resource-error":"You provided invalid values for dungeon resources! The total must be no more than 3 per floor of the dungeon",
+    "too-many-teammates":"Your team already has four members!"
     }
 
     data = {"session":request.session}

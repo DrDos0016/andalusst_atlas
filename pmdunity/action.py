@@ -198,6 +198,51 @@ def open_item(request, inv_id):
             return redirect("/")
         return redirect("/team/inventory/"+str(team_id)+"/")
         
+def recruit_teammate(request, inv_id):
+    data = {"session":request.session}
+    if not request.session.get("userID"):
+        return redirect("/login")
+        
+    # Get the item
+    item = get_object_or_404(Inventory, pk=inv_id)
+    
+    # Confirm it's yours
+    if (item.team.user_id != request.session.get("userID")):
+        return redirect("/")
+        
+    # Confirm it's a recruitment slip
+    if (item.item.id != 53):
+        return redirect("/")
+    
+    # Confirm you have no more than 4 teammates already
+    if (item.team.pkmn1_id and item.team.pkmn2_id and item.team.pkmn3_id and item.team.pkmn4_id):
+        return redirect("/error/too-many-teammates")
+    
+    # Create a blank teammate
+    team_id = item.team.id
+    tomorrow = datetime.now() + timedelta(days=1)
+    recruit = Pokemon(team=item.team, species=-1, lock_time=tomorrow)
+    recruit.save()
+    
+    if not item.team.pkmn1_id:
+        item.team.pkmn1 = recruit
+    elif not item.team.pkmn2_id:
+        item.team.pkmn2 = recruit
+    elif not item.team.pkmn3_id:
+        item.team.pkmn3 = recruit
+    elif not item.team.pkmn4_id:
+        item.team.pkmn4 = recruit
+        
+    # Remove the item
+    try:
+        item.team.save()
+        item.delete()
+        log(request, "[NEW RECRUIT] PKMN ID: " + str(recruit.id) + " ON TEAM ID: " + str(recruit.team.id))
+        return redirect("/team/"+str(recruit.team.id))
+    except:
+        log(request, "[NEW RECRUIT] FAILURE FOR TEAM " + str(team_id))
+        raise Http404
+
 def set_stats(request, pokemon_id):
     data = {"session":request.session}
     if not request.session.get("userID"):
