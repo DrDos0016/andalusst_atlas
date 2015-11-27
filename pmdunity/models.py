@@ -132,6 +132,7 @@ class Event(models.Model):
     guilds      = models.CharField(max_length=8, default="EHR") # The guilds which can participate in the event.
     rewards     = models.TextField(default="{}")            # The rewards to be given for completing the event. JSON format to be determined later.
     #auto_accept = models.BooleanField(default=True)         # Automatically accept and reward logbooks for this event.
+    order       = models.IntegerField(default=999)          # Used for ordering of events
 
 class Logbook(models.Model):
     team        = models.ForeignKey(Team)                   # The teamID for the logbook event

@@ -56,7 +56,7 @@ def logbook_browse(request, key=None):
     results_size = request.session.get("results", RESULTS)
     data["key"] = request.GET.get("key", key) # Backwards compat with old GET param
     if not data["key"]:
-        data["events"] = Event.objects.filter(pk__gte=2)
+        data["events"] = Event.objects.filter(pk__gte=2).order_by("order", "id")
     else:
         if re.match(r"S[0-9+]D[0-9]+", data["key"]):
             data["dungeon"] = True
@@ -141,7 +141,7 @@ def logbook_create(request, id):
         return redirect("/logbook/view/"+str(data["team"].id)+"/")
     
     data["logbook"] = Logbook.objects.filter(team__id=id)
-    events = Event.objects.exclude(id__in=data["logbook"].values_list("event__id", flat=True))
+    events = Event.objects.exclude(id__in=data["logbook"].values_list("event__id", flat=True)).order_by("order", "id")
     
     data["events"] = []
     for event in events:
@@ -190,7 +190,7 @@ def logbook_view(request, id):
     elif request.POST.get("action") == "del_bookmark" and request.session.get("userID"):
         Bookmark.objects.filter(team_id=team.id, user_id=request.session.get("userID")).delete()
     
-    data["logbook"] = Logbook.objects.filter(team__id=id).order_by("order", "event")
+    data["logbook"] = Logbook.objects.filter(team__id=id).order_by("order", "event__order")
     if data["logbook"] and request.session.get("userID"):
         data["bookmarked"] = Bookmark.objects.filter(team_id=team.id, user_id=request.session.get("userID")).count()
         
