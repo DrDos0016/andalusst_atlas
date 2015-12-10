@@ -233,6 +233,18 @@ def recruit_teammate(request, inv_id):
     elif not item.team.pkmn4_id:
         item.team.pkmn4 = recruit
         
+    # Give a voucher
+    guild = item.team.guild
+    if guild == "Explorers":
+        item_id = 12
+    elif guild == "Hunters":
+        item_id = 13
+    elif guild == "Researchers":
+        item_id = 14
+    
+    voucher = Inventory(team_id=item.team_id, item_id=item_id)
+    voucher.save()
+        
     # Remove the item
     try:
         item.team.save()

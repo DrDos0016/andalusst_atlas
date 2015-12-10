@@ -95,7 +95,7 @@ def login(request):
     code = request.GET["code"]
     try:
         url = "https://www.deviantart.com/oauth2/draft15/token?client_id="+CLIENT_ID+"&client_secret="+CLIENT_SECRET+"&grant_type=authorization_code&code="+request.GET["code"]+"&redirect_uri="+uri
-        if ENV == "DEV":
+        if ENV == "DEV" or True:
             # Standard
             response = urllib2.urlopen(url)
             data = json.load(response)
@@ -103,7 +103,7 @@ def login(request):
             token = data["access_token"]
             response = urllib2.urlopen("https://www.deviantart.com/api/v1/oauth2/user/whoami?access_token="+token)
             data = json.load(response)
-        else:
+        else: # This is thankfully deprecated, but I'll let it linger for a bit.
             # Ext script
             os.system("/usr/local/bin/python2.7.10 /var/projects/pmdu.org/pmdunity/login.py " + request.META.get("REMOTE_ADDR").replace(".", "") + " \"" + url + "\"")
             # Read file
