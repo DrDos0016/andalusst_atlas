@@ -332,6 +332,7 @@ def team(request, team_id=0, read_only=False):
     data["now"] = datetime.now()
     data["natures"] = NATURES
     data["traits"] = TRAITS
+    data["years"] = range(2013, int(data["now"].year)+1)
     
     lock_temp = datetime.now() + timedelta(days=1)
     action = request.POST.get("action")
