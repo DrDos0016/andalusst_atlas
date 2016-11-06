@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
 import random
 from datetime import datetime
 #random.seed("1-1-S1D01")

@@ -1,5 +1,11 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
 import os
-from user_settings import *
+from .user_settings import *
 
 MANAGERS = ADMINS
 SERVER_EMAIL = "pmdu@pmdunity.org"

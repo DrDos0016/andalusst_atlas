@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-from common import *
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
+from .common import *
 from django.views.decorators.csrf import csrf_exempt
 from cgi import escape
 
@@ -69,12 +74,10 @@ def get_team_map(request, team_id, key_id):
 def submit_approval(request):
     data = json.loads(request.POST["data"])
     today = str(datetime.now())[:10]
-    #{"entry":"14","key":"S1M01","status":"1","reward":"full","u_note":"N/A","s_note":"N/A","size":"2"}                                                                                                                                                        :"N/A","size":"2"}
-    #print request.POST["data"]
+    #{"entry":"14","key":"S1M01","status":"1","reward":"full","u_note":"N/A","s_note":"N/A","size":"2"}
+
     if not request.session.get("admin"):
         return HttpResponse("FAILURE")
-    
-    #print request.POST["data"]
     
     try:
         # Get the approval entry
@@ -148,7 +151,7 @@ def validate_logbook(request):
                         reward_set = rewards["contents"]
                         break
                 if not reward_set:
-                    print "Reward set: " + data.get("reward") + " not found!"
+                    print("Reward set: " + data.get("reward") + " not found!")
                     ret = "FAILURE"
                 else:
                     note += "Giving reward set: " + data.get("reward") + "\n"

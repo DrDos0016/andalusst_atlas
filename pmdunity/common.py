@@ -1,8 +1,13 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
 # ♀♂
 from django.http import HttpResponse, Http404
 from django.template import RequestContext
-from django.shortcuts import render_to_response, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count, Avg, Sum, Q, F, Max
 from django.contrib.auth import logout, authenticate, login as auth_login
 from django.core.exceptions import ValidationError
@@ -14,7 +19,7 @@ from glob import glob
 from pmdu.user_settings import *
 #from twitter import *
 import os, math, random
-import urllib, json, re, codecs, cPickle, urllib2
+import urllib, json, re, codecs, pickle
 
 ADMINS = ["dr-dos", "ChillySunDance", "Buwaya", "luvaci", "teamnerium", "cailas-moon", "clockword-andy", "InlineMantine", "Chobin-Hood", "TheTravelinBuizel", "Durkasao", "jasonRDT"]
 
@@ -60,9 +65,7 @@ EVENTS = {
 }
 
 def clear_session(request):
-    for key in request.session.keys():
-        del request.session[key]
-    
+    request.session.flush()
     request.session["teamID"] = 0
     request.session["team_owner"] = ""
     request.session["team_name"] = ""
@@ -194,10 +197,10 @@ def form_select_pokemon(selected="", list="all"):
         list = PMDU_STARTERS
     
     for poke in list:
-        if poke != selected and unicode(NAMES[poke]) != selected:
-            output += "<option value='"+unicode(NAMES[poke])+"'>"+poke+"</option>\n"
+        if poke != selected and NAMES[poke] != selected:
+            output += "<option value='"+str(NAMES[poke])+"'>"+poke+"</option>\n"
         else:
-            output += "<option value='"+unicode(NAMES[poke])+"' selected>"+poke+"</option>\n"
+            output += "<option value='"+str(NAMES[poke])+"' selected>"+poke+"</option>\n"
     
     if selected != "-1":
         output += "<option value='-1'>-- Egg --</option>\n"
@@ -226,7 +229,7 @@ def log_post(request):
     fname = now.strftime("%Y-%m-%d") + "_post.log"
     prefix = now.strftime("%H:%M:%S") + " - " + request.session.get("username", "???") + " [" + request.META["REMOTE_ADDR"] + "] : "
     #try:
-    text = unicode(request.POST)
+    text = request.POST
     fh = codecs.open(os.path.join(SITE_ROOT, "assets", "data", fname), encoding='utf-8', mode='a')
     fh.write(prefix + text + "\n")
     fh.close()

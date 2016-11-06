@@ -1,5 +1,11 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
 """
-WSGI config for blankproj project.
+WSGI config for pmdu project.
 
 This module contains the WSGI application used by Django's development server
 and any production WSGI deployments. It should expose a module-level variable

@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-from common import *
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+from .common import *
 from pmdunity.admin import *
 from pmdunity.shop import *
 from pmdunity.logbook import *
@@ -33,23 +37,23 @@ def account_manage(request):
         data["user"].save()
         data["msg"] = "Settings applied!"
     
-    return render_to_response("account_manage.html", data, context_instance=RequestContext(request))
+    return render(request, "account_manage.html", data)
 
 def contributors(request):
     data = {"session":request.session}
     data["users"] = User.objects.all().order_by("username")
     data["count"] = len(data["users"])
-    return render_to_response("misc/contributors.html", data)
+    return render(request, "misc/contributors.html", data)
 
 def credits(request):
     data = {"session":request.session}
-    return render_to_response("misc/credits.html", data)
+    return render(request, "misc/credits.html", data)
 
 def error(request, type="Unknown"):
     errors = {"purchase-error":"Something went wrong when attempting to purchase an item.",
     "invalid-team":"Team not found!",
     "team-full":"Your team appears to be full already!",
-    "invalid-pokemon":"Pokémon not found!",
+    "invalid-pokemon":"PokÃ©mon not found!",
     "team-edit":"Could not edit team!",
     "customization-error":"You can't customize that!",
     "insufficient-funds":"You can't afford that!",
@@ -62,14 +66,14 @@ def error(request, type="Unknown"):
     data = {"session":request.session}
     data["error"] = type.replace("-", " ")
     data["error_message"] = errors.get(type, "An unknown error occurred!")
-    return render_to_response("error/error.html", data)
+    return render(request, "error/error.html", data)
 
 def error500(request):
-    return render_to_response("500.html")
+    return render(request, "500.html")
 
 def generic(request, template):
     data = {"session":request.session}
-    return render_to_response(template, data)
+    return render(request, template, data)
 
 def index(request):
     if request.session.get("teamID"):
@@ -82,11 +86,11 @@ def index(request):
     
     # Load data for frontpage modules
     
-    return render_to_response("index.html", data) 
+    return render(request, "index.html", data)
 
 def login(request):
     if request.GET.get("error") == "access_denied":
-        return render_to_response("misc/deny_auth.html")
+        return render(request, "misc/denu_auth.html")
 
     uri = LOGIN_REDIRECT
     if not request.GET.get("code"):
@@ -95,23 +99,12 @@ def login(request):
     code = request.GET["code"]
     try:
         url = "https://www.deviantart.com/oauth2/draft15/token?client_id="+CLIENT_ID+"&client_secret="+CLIENT_SECRET+"&grant_type=authorization_code&code="+request.GET["code"]+"&redirect_uri="+uri
-        if ENV == "DEV" or True:
-            # Standard
-            response = urllib2.urlopen(url)
-            data = json.load(response)
-            #print data
-            token = data["access_token"]
-            response = urllib2.urlopen("https://www.deviantart.com/api/v1/oauth2/user/whoami?access_token="+token)
-            data = json.load(response)
-        else: # This is thankfully deprecated, but I'll let it linger for a bit.
-            # Ext script
-            os.system("/usr/local/bin/python2.7.10 /var/projects/pmdu.org/pmdunity/login.py " + request.META.get("REMOTE_ADDR").replace(".", "") + " \"" + url + "\"")
-            # Read file
-            file_data = open("/var/projects/pmdu.org/assets/data/logins/"+request.META.get("REMOTE_ADDR").replace(".", "")+".json").read()
-            data = json.loads(file_data)
-            if data:
-                os.remove("/var/projects/pmdu.org/assets/data/logins/"+request.META.get("REMOTE_ADDR").replace(".", "")+".json")
-            print data
+        response = urllib.request.urlopen(url)
+        content = response.read().decode("utf-8")
+        data = json.loads(content)
+        token = data["access_token"]
+        response = urllib.request.urlopen("https://www.deviantart.com/api/v1/oauth2/user/whoami?access_token="+token)
+        data = json.loads(response.read().decode("utf-8"))
         
         username = data["username"]
         if data.get("usericonurl"):
@@ -170,7 +163,7 @@ def logout(request):
     
 def misc(request):
     data = {"session":request.session}
-    return render_to_response("misc/misc.html", data)
+    return render(request, "misc/misc.html", data)
 
 def pokemon_delete(request):
     data = {"session":request.session}
@@ -249,7 +242,6 @@ def search(request):
         if data["type"] != "":
             results = results.filter(teamooc__type=data["type"])
         if data["active"]:
-            print "Filtering by active"
             results = results.filter(active=True)
         if data["sort"] == "newest":
             results = results.order_by("-id")
@@ -284,18 +276,7 @@ def search(request):
     data["url"] += "guild="+data["guild"]+"&" if data["guild"] else ""
     data["url"] += "sort="+data["sort"]+"&" if data["sort"] else ""
     data["url"] += "page="
-    return render_to_response("search.html", data)
-
-def stats(request):
-    data = {"session":request.session}
-    
-    species = Pokemon.objects.values('species').annotate(species_count=Count('species')).order_by("-species_count", "species")
-    data["species"] = []
-    for s in species:
-        data["species"].append({"name":NUMBERS[s["species"]], "count":s["species_count"], "dex":s["species"]})
-        
-    data["species"] = sorted(data["species"], key=lambda k: (-1 * k["count"], k["name"].lower()))
-    return render_to_response("stats/pokemon_population.html", data)
+    return render(request, "search.html", data)
 
 def storehouse(request):
     data = {"session":request.session}
@@ -323,7 +304,7 @@ def storehouse(request):
                 data["food"] += resource.quantity
             elif resource.entity == 7:
                 data["spool"] += resource.quantity
-    return render_to_response("misc/storehouse.html", data)
+    return render(request, "misc/storehouse.html", data)
 
 def team(request, team_id=0, read_only=False):
     if not request.session.get("userID") and not read_only:
@@ -339,7 +320,6 @@ def team(request, team_id=0, read_only=False):
     
     # POST
     if action == "create" or action == "edit":
-        #print request.POST
         valid_team = True
         valid_pokemon = True
         has_ooc = False
@@ -352,7 +332,6 @@ def team(request, team_id=0, read_only=False):
             team = get_object_or_404(Team, pk=team_id)
         
         if (team.lock_time and team.lock_time > data["now"]):
-            #print "Unlocked team"
             team.application    = request.POST.get("app")
             team.alt_app        = request.POST.get("alt_app", "")
             team.name           = request.POST.get("team_name", "").strip()
@@ -367,8 +346,8 @@ def team(request, team_id=0, read_only=False):
             try:
                 team.full_clean(exclude=["alt_app", "pkmn1", "pkmn2", "pkmn3", "pkmn4"])
             except ValidationError as e:
-                print "============== TEAM ERRORS"
-                print e
+                print("============== TEAM ERRORS")
+                print(e)
                 valid_team = False
                 
         else: # Only non-lockable fields
@@ -387,13 +366,13 @@ def team(request, team_id=0, read_only=False):
         try:
             ooc.full_clean(exclude=["team", "tumblr"])
         except ValidationError as e:
-            print "============== TEAM OOC ERRORS"
-            print e
+            print("============== TEAM OOC ERRORS")
+            print(e)
             valid_team = False
             
         # Load Pokemon
         all_pokemon = []
-        for i in xrange(0, len(request.POST.getlist("species"))):
+        for i in range(0, len(request.POST.getlist("species"))):
             poke = Pokemon.objects.filter(pk=request.POST.getlist("pokemon_id", [])[i])
             if len(poke) == 1:
                 poke = poke[0]
@@ -431,28 +410,6 @@ def team(request, team_id=0, read_only=False):
                 poke.gender         = request.POST.getlist("gender")[i]
                 poke.nature         = request.POST.getlist("nature")[i]
                 poke.trait          = request.POST.getlist("trait")[i]
-                """
-                if request.POST.getlist("move1")[i] != "N/A":
-                    poke.move1          = request.POST.getlist("move1")[i]
-                if request.POST.getlist("move2")[i] != "N/A":
-                    poke.move2          = request.POST.getlist("move2")[i]
-                if request.POST.getlist("move3")[i] != "N/A":
-                    poke.move3          = request.POST.getlist("move3")[i]
-                if request.POST.getlist("move4")[i] != "N/A":
-                    poke.move4          = request.POST.getlist("move4")[i]
-                """
-            
-            """
-            # Clean up move dashes
-            if poke.move1 != "-" and poke.move1[0] == "-":
-                poke.move1 = poke.move1[1:]
-            if poke.move2 != "-" and poke.move2[0] == "-":
-                poke.move2 = poke.move2[1:]
-            if poke.move3 != "-" and poke.move3[0] == "-":
-                poke.move3 = poke.move3[1:]
-            if poke.move4 != "-" and poke.move4[0] == "-":
-                poke.move4 = poke.move4[1:]
-            """
             
             if poke.gender == "":
                 poke.gender = "Not specified"
@@ -461,8 +418,8 @@ def team(request, team_id=0, read_only=False):
                 poke.full_clean(exclude=["comments", "team"])
                 all_pokemon.append(poke)
             except ValidationError as e:
-                print "============== POKEMON "+str(i)+" ERRORS"
-                print e
+                print("============== POKEMON "+str(i)+" ERRORS")
+                print(e)
                 valid_pokemon = False
             
         # Save
@@ -489,7 +446,6 @@ def team(request, team_id=0, read_only=False):
                     team.pkmn4 = poke
             if all_pokemon:
                 team.save()
-            #print "SAVED ALL"
             
             # Submit app to logbook
             if action == "create":
@@ -560,7 +516,7 @@ def team(request, team_id=0, read_only=False):
         data["pokemon"] = [temp_poke, temp_poke]
         data["yours"] = True
     
-    return render_to_response("team/team.html", data, context_instance=RequestContext(request))
+    return render(request, "team/team.html", data)
 
 def team_actions(request, team_id):
     if not request.session.get("userID"):
@@ -584,7 +540,7 @@ def team_actions(request, team_id):
     data["team"] = team
     data["pokemon"] = Pokemon.objects.filter(team_id=team.id)
     
-    return render_to_response("team/team_actions.html", data)
+    return render(request, "team/team_actions.html", data)
 
 def team_delete(request):
     data = {"session":request.session}
@@ -611,7 +567,7 @@ def team_inventory(request, id):
     
     data["inventory"] = Inventory.objects.filter(team_id=team).order_by("item__name")
     data["blank"] = range(0, INV_PAGE - len(data["inventory"]))
-    return render_to_response("team/team_inventory.html", data, context_instance=RequestContext(request))
+    return render(request, "team/team_inventory.html", data)
 
 def team_manage(request):
     if not request.session.get("userID"):
@@ -639,7 +595,7 @@ def team_manage(request):
             team.pkmn4.get_urlname()
     data["teams"] = teams
     
-    return render_to_response("team/team_manage.html", data)
+    return render(request, "team/team_manage.html", data)
     
 def team_set(request, id):
     if not request.session.get("userID"):
@@ -705,7 +661,7 @@ def team_view(request, id):
         team.pkmn4.species_name = NUMBERS[team.pkmn4.species]
         data["pokemon"].append(team.pkmn4)
     
-    return render_to_response("team/team_view.html", data)
+    return render(request, "team/team_view.html", data)
 
 def test(request):
     data = {"session":request.session, "version":VERSION}
@@ -734,4 +690,4 @@ def test(request):
         # Other Teams
         data["other_teams"] = Team.objects.filter(user=data["spotlight"].team.user).exclude(id=data["spotlight"].team_id).order_by("guild", "name")
     
-    return render_to_response("test.html", data)
+    return render(request, "test.html", data)

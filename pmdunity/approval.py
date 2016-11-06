@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-from common import *
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
+from .common import *
 
 def resubmit(request):
     id = request.GET.get("id")
@@ -44,7 +49,6 @@ def undo(request):
         is_customized = False
         for x in reversed(range(0,len(details["history"]))):
             if details["history"][x]["action"] == "customization" and not deleted:
-                print "Deleting history :O"
                 del details["history"][x]
                 deleted = True
             elif details["history"][x]["action"] == "customization" and deleted:

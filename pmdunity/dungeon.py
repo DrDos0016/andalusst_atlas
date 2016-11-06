@@ -1,5 +1,10 @@
-﻿# -*- coding: utf-8 -*-
-from common import *
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
+from .common import *
 from datetime import datetime
 
 ROOT = SITE_ROOT
@@ -320,8 +325,8 @@ class Dungeon(object):
         if origin_x <= 0 or origin_y <= 0 or (origin_x+size_x > 23) or (origin_y+size_y > 23): # These 23s might need to be 24s?
             return False
         # Check for overlap
-        for y in xrange(0,size_y):
-            for x in xrange(0,size_x):
+        for y in range(0,size_y):
+            for x in range(0,size_x):
                 pt_y = origin_y+y
                 pt_x = origin_x+x
                 if self.map[pt_y][pt_x] != -1:
@@ -334,8 +339,8 @@ class Dungeon(object):
         #print "\tSIZE  :", room["size"]
         
         # Write the room
-        for y in xrange(0,size_y):
-            for x in xrange(0,size_x):
+        for y in range(0,size_y):
+            for x in range(0,size_x):
                 pt_y = origin_y+y
                 pt_x = origin_x+x
                 self.map[pt_y][pt_x] = 1
@@ -365,8 +370,8 @@ class Dungeon(object):
         
         
         # Write the walls
-        for y in xrange(-1,size_y+1):
-            for x in xrange(-1,size_x+1):
+        for y in range(-1,size_y+1):
+            for x in range(-1,size_x+1):
                 if y == -1 or x == -1 or y == size_y or x == size_x:
                     pt_y = origin_y+y
                     pt_x = origin_x+x
@@ -390,7 +395,8 @@ class Dungeon(object):
         
         # Pick a direction
         if self.rooms[room_num]["edges"].keys():
-            dir = random.choice(self.rooms[room_num]["edges"].keys())
+            dict_keys = list(self.rooms[room_num]["edges"].keys())
+            dir = random.choice(dict_keys)
             #print "\tDIR", dir
         else:
             #print "ROOM DUMP"
@@ -423,7 +429,8 @@ class Dungeon(object):
         while True:
             # Pick a direction
             if self.rooms[room_num]["edges"].keys():
-                dir = random.choice(self.rooms[room_num]["edges"].keys())
+                dict_keys = list(self.rooms[room_num]["edges"].keys())
+                dir = random.choice(dict_keys)
             else:
                 room_num += 1
                 continue
@@ -524,11 +531,11 @@ class Dungeon(object):
             return false
             
         """ This should be baked in some way """
-        levels = self.spawns[type].keys()
+        levels = list(self.spawns[type].keys())
         levels.sort(reverse=True)
         marbles = []
         bias = [65,20,10,5,1,1,1,1,1,1,1,1,1,1,1]
-        for x in xrange(0,len(levels)):
+        for x in range(0,len(levels)):
             marbles += [levels[x]]*bias[x]
         #print marbles
         
@@ -543,9 +550,9 @@ class Dungeon(object):
         elif type == "enemy":
             ratio = self.enemy_ratio
         goal = int(ratio * self.room_goal)
-        room_pool = range(0,len(self.rooms))    
+        room_pool = list(range(0,len(self.rooms)))
         while goal > len(room_pool):
-            room_pool += range(0,len(self.rooms))
+            room_pool += list(range(0,len(self.rooms)))
         rooms = random.sample(room_pool, goal)
         
         for room in rooms:
@@ -568,9 +575,9 @@ class Dungeon(object):
 
     def text_map(self):
         text = ""
-        for y in xrange(0,len(self.map)):
+        for y in range(0,len(self.map)):
             row = ""
-            for x in xrange(0,len(self.map[0])):
+            for x in range(0,len(self.map[0])):
                 if self.map[y][x] == VOID:
                     row += "&nbsp;"
                 elif self.map[y][x] == WALL:
@@ -595,7 +602,7 @@ class Dungeon(object):
         x_offset = 0
         y_offset = 0
         remove = []
-        for x in xrange(0, len(self.map)):
+        for x in range(0, len(self.map)):
             if self.map[x] == self.empty_row:
                 y_offset -= 1
                 remove.append(x)
@@ -609,17 +616,17 @@ class Dungeon(object):
             
         # Now loop until you find an empty row
         dungeon_height = 0
-        for x in xrange(0, len(self.map)):
+        for x in range(0, len(self.map)):
             if self.map[x] != self.empty_row:
                 dungeon_height += 1
             else:
                 break
         
         
-        adjust = ((24 - dungeon_height) / 2)
+        adjust = ((24 - dungeon_height) // 2)
         y_offset += adjust
         
-        for x in xrange(0,adjust):
+        for x in range(0,adjust):
             self.map.insert(0, self.empty_row)
         
         if adjust != 0:
@@ -627,8 +634,8 @@ class Dungeon(object):
         
         # Horizontal centering
         has_floors = []
-        for x in xrange(0, len(self.map[0])):
-            for y in xrange(0, len(self.map)):
+        for x in range(0, len(self.map[0])):
+            for y in range(0, len(self.map)):
                 if self.map[y][x] != VOID:
                     if x not in has_floors:
                         has_floors.append(x)
@@ -642,8 +649,8 @@ class Dungeon(object):
                 blank_right += 1
                 to_adjust += 1
             
-            for x in xrange(0,to_adjust):
-                for col in xrange(0, len(self.map)):
+            for x in range(0,to_adjust):
+                for col in range(0, len(self.map)):
                     self.map[col].pop(0)
                     self.map[col].append(VOID)
             x_offset = -1 * to_adjust
@@ -654,8 +661,8 @@ class Dungeon(object):
                 blank_right -= 1
                 to_adjust += 1
             
-            for x in xrange(0,to_adjust):
-                for col in xrange(0, len(self.map)):
+            for x in range(0,to_adjust):
+                for col in range(0, len(self.map)):
                     self.map[col].pop()
                     self.map[col].insert(0,VOID)
             x_offset = to_adjust
@@ -713,7 +720,7 @@ def dungeon_browse(request):
         data["dungeons"] = Dungeon_List.objects.all().order_by("-id")
     else:
         data["dungeons"] = Dungeon_List.objects.filter(public=True).order_by("-id")
-    return render_to_response("dungeons/browse.html", data)
+    return render(request, "dungeons/browse.html", data)
 
 def dungeon_explore(request, dungeon_id, variation="0001"):
     data = {"session":request.session, "version":VERSION}
@@ -769,7 +776,7 @@ def dungeon_explore(request, dungeon_id, variation="0001"):
         enemy_ratio         = blueprint.enemy_ratio
     
         dungeon = Dungeon(name, blueprint.key.floors, seed, floor, variation, tileset, style, min_rooms, max_rooms, min_room_size, max_room_size, door_chance, min_danger_level, max_danger_level, trap_ratio, resource_ratio, enemy_ratio)
-        storage = Team_Dungeon(team_id=team_id, key_id=dungeon_id, floor=floor, dive=dive, seed=dungeon.seed, data=cPickle.dumps(dungeon))
+        storage = Team_Dungeon(team_id=team_id, key_id=dungeon_id, floor=floor, dive=dive, seed=dungeon.seed, data=pickle.dumps(dungeon).decode("latin-1"))
         if not request.GET.get("nosave"):
             storage.save()
             #print "SAVING DUNGEON"    
@@ -796,7 +803,7 @@ def dungeon_view(request, team_id=4, dungeon_id=1, dive=1, map_id=0):
             #dungeon_storage = Team_Dungeon.objects.get(pk=map_id)
             dungeon_storage = get_object_or_404(Team_Dungeon, pk=map_id)
             data["minimal"] = int(request.GET.get("minimal", 0))
-        dungeon = cPickle.loads(str(dungeon_storage.data))
+        dungeon = pickle.loads(dungeon_storage.data.encode("latin-1"))
         if data["tileset"] == "parent":
             data["tileset"] = dungeon.tileset
         
@@ -835,7 +842,7 @@ def dungeon_view(request, team_id=4, dungeon_id=1, dive=1, map_id=0):
         data["floors"]      = range(1,1)
         data["descriptions"]= dungeon.descriptions
     
-    return render_to_response("dungeons/view.html", data)
+    return render(request, "dungeons/view.html", data)
 
 def dungeon_reroll(request):
     data = {"session":request.session, "version":VERSION}
@@ -851,37 +858,17 @@ def dungeon_reroll(request):
     
     if request.POST.get("action") == "reroll":
         # Erase the stored floor of the dungeon
-        dungeon = cPickle.loads(str(dungeon_storage.data))
+        dungeon = pickle.loads(dungeon_storage.data.encode("latin-1"))
         
-        reroll_log = open("/var/projects/pmdu.org/assets/data/rerolls.log", "wa")
+        reroll_log = open("/var/projects/pmdu.org/assets/data/rerolls.log", "a")
         reroll_log.write("==== BEGIN REROLL FOR " + str(team_id) + " DUNGEON " + str(request.GET.get("dungeon")) + " FLOOR " + str(floor) + " @ " + str(datetime.now()) + "====\n")
         reroll_log.write(str(dungeon_storage.data) + "\n")
         reroll_log.write("==== END REROLL ====\n")
         reroll_log.close()
-        """
-        print "-----"*5
-        print dungeon.name
-        print dungeon.floors
-        print dungeon.raw_seed
-        print dungeon.floor
-        print dungeon.variation
-        print dungeon.tileset
-        print dungeon.style
-        print dungeon.min_rooms
-        print dungeon.max_rooms
-        print dungeon.min_room_size
-        print dungeon.max_room_size
-        print dungeon.door_chance
-        print dungeon.min_danger_level
-        print dungeon.max_danger_level
-        print dungeon.trap_ratio
-        print dungeon.resource_ratio
-        print dungeon.enemy_ratio
-        print "-----"*5
-        """
+
         new_variation = str(int(dungeon.variation)+1).zfill(4)
         new_dungeon = Dungeon(dungeon.name, dungeon.floors, dungeon.raw_seed, dungeon.floor, new_variation, dungeon.tileset, dungeon.style, dungeon.min_rooms, dungeon.max_rooms, dungeon.min_room_size, dungeon.max_room_size, dungeon.door_chance, dungeon.min_danger_level, dungeon.max_danger_level, dungeon.trap_ratio, dungeon.resource_ratio, dungeon.enemy_ratio)
-        dungeon_storage.data = cPickle.dumps(new_dungeon)
+        dungeon_storage.data = pickle.dumps(new_dungeon).decode("latin-1")
         dungeon_storage.timestamp = datetime.now()
         dungeon_storage.save()
         return redirect("/dungeon/view/"+request.GET.get("dungeon")+"/"+str(team_id)+"/"+str(dungeon_storage.dive))
@@ -890,4 +877,4 @@ def dungeon_reroll(request):
     data["dungeon_name"] = dungeon_storage.key.name
     data["floor"] = floor
     
-    return render_to_response("dungeons/reroll.html", data, context_instance=RequestContext(request))
+    return render(request, "dungeons/reroll.html", data)

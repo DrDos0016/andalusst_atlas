@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
 import os
 """
 This file contains additional settings to be used in settings.py, split by developer environment.

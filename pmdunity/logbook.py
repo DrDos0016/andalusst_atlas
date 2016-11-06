@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-from common import *
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
+from .common import *
 
 def logbook_arrange(request, id):
     data = {"session":request.session}
@@ -15,7 +20,7 @@ def logbook_arrange(request, id):
     # Add entry
     if request.POST.get("action") == "arrange":
         logbook_ids = request.POST.getlist("logbook_id")
-        for x in xrange(0, len(logbook_ids)):
+        for x in range(0, len(logbook_ids)):
             entry = Logbook.objects.get(pk=logbook_ids[x])
             entry.order = x
             entry.save()
@@ -38,7 +43,7 @@ def logbook_arrange(request, id):
         #    print "Skipping ", event.key
         
     data["icons"] = form_select_pokemon("Ditto")
-    return render_to_response("logbook/logbook_arrange.html", data, context_instance=RequestContext(request))
+    return render(request, "logbook/logbook_arrange.html", data)
 
 def logbook_bookmarks(request):
     data = {"session":request.session}
@@ -49,7 +54,7 @@ def logbook_bookmarks(request):
     teams = Bookmark.objects.filter(user_id=request.session.get("userID")).values_list('team_id', flat=True)
     data["logbooks"] = Logbook.objects.filter(team__id__in=teams).order_by("-event__id", "team__name").exclude(event__key="APP")[:100]
     
-    return render_to_response("logbook/logbook_bookmarks.html", data)
+    return render(request, "logbook/logbook_bookmarks.html", data)
 
 def logbook_browse(request, key=None):
     data = {"session":request.session}
@@ -79,7 +84,7 @@ def logbook_browse(request, key=None):
         results = results.order_by("-id")
         results = results[(int(data["page"])-1)*results_size:int(data["page"])*results_size]
         data["results"] = results
-    return render_to_response("logbook/logbook_browse.html", data)
+    return render(request, "logbook/logbook_browse.html", data)
 
 def logbook_create(request, id):
     data = {"session":request.session}
@@ -106,11 +111,11 @@ def logbook_create(request, id):
             total = 0
             resource_ids = request.POST.getlist("resource_id")
             resource_qtys = request.POST.getlist("resource_qty")
-            for x in xrange(0, len(resource_qtys)): # Sigh
+            for x in range(0, len(resource_qtys)): # Sigh
                 if resource_qtys[x] == "":
                     resource_qtys[x] = 0
             
-            for x in xrange(0, len(resource_ids)):
+            for x in range(0, len(resource_ids)):
                 json_resources[resource_ids[x]] = int(resource_qtys[x])
                 total += int(resource_qtys[x])
             json_resources = json.dumps(json_resources)
@@ -157,7 +162,7 @@ def logbook_create(request, id):
         #    print "Skipping ", event.key
         
     data["icons"] = form_select_pokemon("Ditto")
-    return render_to_response("logbook/logbook_create.html", data, context_instance=RequestContext(request))
+    return render(request, "logbook/logbook_create.html", data)
     
 def logbook_delete(request, id):
     data = {"session":request.session}
@@ -194,4 +199,4 @@ def logbook_view(request, id):
     if data["logbook"] and request.session.get("userID"):
         data["bookmarked"] = Bookmark.objects.filter(team_id=team.id, user_id=request.session.get("userID")).count()
         
-    return render_to_response("logbook/logbook_view.html", data, context_instance=RequestContext(request))   
+    return render(request, "logbook/logbook_view.html", data)

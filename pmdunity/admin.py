@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
-from common import *
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
+from .common import *
 
 def admin(request):
     data = {"session":request.session}
     is_admin(request.session.get("admin"))
-    return render_to_response("admin/admin.html", data)
+    return render(request, "admin/admin.html", data)
 
 def account_transfer(request):
     data = {"session":request.session}
@@ -31,7 +36,7 @@ def account_transfer(request):
             data["result"] = "Changes saved!"
             
             
-    return render_to_response("admin/account_transfer.html", data, context_instance=RequestContext(request))
+    return render(request, "admin/account_transfer.html", data)
 
 def add_event(request):
     data = {"session":request.session}
@@ -60,7 +65,7 @@ def add_event(request):
         #except:
             #data["msg"] = "An error occurred! Event not added!"
     
-    return render_to_response("admin/add_event.html", data, context_instance=RequestContext(request))
+    return render(request, "admin/add_event.html", data)
     
 def approvals(request):
     data = {"session":request.session}
@@ -75,13 +80,13 @@ def approvals(request):
     data["types"] = types
     data["type"] = request.GET.get("type", "Customization")
 
-    return render_to_response("admin/approvals.html", data, context_instance=RequestContext(request))
+    return render(request, "admin/approvals.html", data)
     
 def dungeons(request):
     data = {"session":request.session}
     is_admin(request.session.get("admin"))
     
-    return render_to_response("admin/dungeons/dungeons.html", data, context_instance=RequestContext(request))
+    return render(request, "admin/dungeons/dungeons.html", data)
 
 def dungeon_design(request):
     data = {"session":request.session}
@@ -161,7 +166,7 @@ def dungeon_design(request):
             data["blueprints"].append(Blueprint(floor=len(data["blueprints"])+1))
     
     
-    return render_to_response("admin/dungeons/design.html", data, context_instance=RequestContext(request))
+    return render(request, "admin/dungeons/design.html", data)
 
 def dungeon_entity(request):
     data = {"session":request.session}
@@ -192,14 +197,13 @@ def dungeon_entity(request):
     if request.GET.get("entity") and request.GET.get("entity") != "0":
         data["wip"] = Entity.objects.get(pk=request.GET["entity"])
     
-    return render_to_response("admin/dungeons/entity.html", data, context_instance=RequestContext(request))
+    return render(request, "admin/dungeons/entity.html", data)
     
 def manage_items(request, item_id=None):
     data = {"session":request.session}
     is_admin(request.session.get("admin"))
     
     if request.POST.get("name"):
-        print "Making item"
         item = Item()
         item.name = request.POST.get("name", "No Name")
         item.cost = int(request.POST.get("cost", -1))
@@ -229,7 +233,6 @@ def manage_items(request, item_id=None):
             attributes.append({attrib:True})
         item.attributes = json.dumps(attributes, sort_keys=True)
         
-        print "Saving!"
         item.save()
         item_id = None
     
@@ -257,12 +260,12 @@ def manage_items(request, item_id=None):
     
     data["appears"] = str(datetime.now())
     
-    return render_to_response("admin/manage_items.html", data, context_instance=RequestContext(request))
+    return render(request, "admin/manage_items.html", data)
 
 def manage_inventory(request, team_id=None):
     data = {"session":request.session}
     is_admin(request.session.get("admin"))
-    return render_to_response("admin/manage_inventory.html", data)
+    return render(request, "admin/manage_inventory.html", data)
 
 def manage_merits_strikes(request):
     data = {"session":request.session}
@@ -287,7 +290,7 @@ def manage_merits_strikes(request):
         log(request, "Manually adjusted Merits/Strikes for: ("+request.GET.get("team_id")+") " + data["team"].name + " (M:"+str(merits)+" S:"+str(strikes)+")")
         data["message"] = "Merits/Strikes have been adjusted successfully"
     
-    return render_to_response("admin/manage_merits_strikes.html", data, context_instance=RequestContext(request))
+    return render(request, "admin/manage_merits_strikes.html", data)
 
 def manage_star_coins(request, team=None):
     data = {"session":request.session}
@@ -313,8 +316,8 @@ def manage_star_coins(request, team=None):
         transaction(data["team"].id, -1, request.session["username"], "Manually set Starcoins to "+coins+" (from "+request.POST.get("original_starcoins", "unknown")+")")
         log(request, "Manually adjusted Starcoins for: ("+unicode(data["team"].id)+") " + data["team"].name)
         data["message"] = "Starcoins have been adjusted successfully"
-        
-    return render_to_response("admin/manage_star_coins.html", data, context_instance=RequestContext(request))
+
+    return render(request, "admin/manage_star_coins.html", data)
 
 def powerless(request):
     data = {"session":request.session}
@@ -343,7 +346,7 @@ def reward_teams(request):
                 item_id = int(key.replace("item-", ""))
                 objs = []
                 for team in team_objs:
-                    for x in xrange(0,int(request.POST.get(key))):
+                    for x in range(0,int(request.POST.get(key))):
                         objs.append(Inventory(item_id=item_id, team=team))
                 Inventory.objects.bulk_create(objs)
         log(request)
@@ -356,7 +359,7 @@ def reward_teams(request):
     data["items"] = items
     if request.POST.get("log"):
         data["log"] = "Gave" + request.POST["log"][4:]
-    return render_to_response("admin/reward_teams.html", data, context_instance=RequestContext(request))
+    return render(request, "admin/reward_teams.html", data)
     
 def site_log(request):
     data = {"session":request.session}
@@ -381,7 +384,7 @@ def site_log(request):
     
     site_log = site_log[offset:30+offset]
     data["logs"] = site_log
-    return render_to_response("admin/site_log.html", data)
+    return render(request, "admin/site_log.html", data)
 
 def timeline(request):
     data = {"session":request.session}
@@ -393,11 +396,10 @@ def timeline(request):
         events = glob(os.path.join(SITE_ROOT, "assets", "data", "timeline", "*.json"))
         sorted(events)
         data["events"] = []
-        print events
         for e in events:
             key = os.path.basename(e)[:-5]
             data["events"].append({"key":key, "name":EVENTS[key]})
-        return render_to_response("admin/timeline.html", data)
+        return render(request, "admin/timeline.html", data)
 
     # Load the submission data
     data["info"] = json.loads(open(os.path.join(SITE_ROOT, "assets", "data", "timeline", data["event"]+".json")).read())
@@ -411,10 +413,8 @@ def timeline(request):
     # Get the teams for those who contributed
     teams = Team.objects.all().order_by("user__username")
     #for row in data["info"]:
-        
-    
-    
-    return render_to_response("admin/timeline.html", data)
+
+    return render(request, "admin/timeline.html", data)
 
 def transaction_log(request):
     data = {"session":request.session}
@@ -439,32 +439,7 @@ def transaction_log(request):
     
     t_log = t_log[offset:30+offset]
     data["transactions"] = t_log
-    return render_to_response("admin/transaction_log.html", data)
-
-"""
-def twitter(request):
-    data = {"session":request.session}
-    is_admin(request.session.get("admin"))
-    
-    utc_now = datetime.utcnow()
-    now = int(utc_now.strftime("%s"))
-    timers = Timer.objects.filter(end_time__gt=now).order_by("-id")
-    data["now"] = now
-    data["now_dt"] = datetime.fromtimestamp(now) 
-    data["timers"] = []
-    
-    if request.POST.get("tweet"):
-        twitter = Twitter(auth=OAuth(TWITTER_OAUTH_TOKEN, TWITTER_OAUTH_SECRET, TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET))
-        resp = twitter.statuses.update(status=request.POST.get("tweet"))
-        data["msg"] = "Sent tweet!"
-    
-    for timer in timers:
-        timer.dt = datetime.fromtimestamp(timer.end_time) 
-        print timer.dt.tzinfo
-        data["timers"].append(timer)
-    
-    return render_to_response("admin/twitter.html", data, context_instance=RequestContext(request))
-"""
+    return render(request, "admin/transaction_log.html", data)
 
 def verify_logbooks(request):
     data = {"session":request.session}
@@ -478,4 +453,4 @@ def verify_logbooks(request):
     data["events"] = events
     data["event"] = events.filter(key=request.GET.get("key", "APP"))[0]
 
-    return render_to_response("admin/verify_logbooks.html", data, context_instance=RequestContext(request))
+    return render(request, "admin/verify_logbooks.html", data)

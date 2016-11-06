@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-from common import *
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
+from .common import *
 
 def buy(request, item_id):
     data = {"session":request.session}
@@ -46,7 +51,7 @@ def buy(request, item_id):
         else:
             log(request, sale.msg)
             return redirect("/error/"+sale.error)   
-    return render_to_response("shop/buy.html", data, context_instance=RequestContext(request))
+    return render(request, "shop/buy.html", data)
 
 def customization(request, store_id="wear_and_flair"):
     data = {"session":request.session}
@@ -98,10 +103,7 @@ def customization(request, store_id="wear_and_flair"):
         else:
             log(request, custom.msg)
             return redirect("/error/"+custom.error)
-            
-
-    
-    return render_to_response("shop/customization.html", data, context_instance=RequestContext(request))
+    return render(request, "shop/customization.html", data)
 
 def shop(request, store_id="wear_and_flair"):
     data = {"session":request.session}
@@ -130,4 +132,4 @@ def shop(request, store_id="wear_and_flair"):
     if request.GET.get("select"):
         data["select"] = request.GET["select"]
     
-    return render_to_response("shop/shop.html", data)
+    return render(request, "shop/shop.html", data)

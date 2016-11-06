@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-from common import *
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
+
+
+from .common import *
 
 def logbooks(request):
     data = {"session":request.session}
@@ -26,14 +31,12 @@ def logbooks(request):
         if (stat["approved"] == True) or (stat["approved"] == False) :
             wip["handled"] += stat["entry_count"]
         wip["total"] += stat["entry_count"]
-        #print str(stat["approved"]) + " Handled", wip["handled"], "Total", wip["total"]
         
     # Write the last one
     wip["percent"] = int((1.0 * wip["handled"] / max(wip["total"],1)) * 100)
     data["stats"].append(wip)
-    #print data["stats"]
     
-    return render_to_response("stats/logbook_stats.html", data)
+    return render(request, "stats/logbook_stats.html", data)
 
 def population(request):
     data = {"session":request.session}
@@ -51,7 +54,6 @@ def population(request):
             active_dict[a.species] = 1
             
     for s in species:
-        print s
         data["species"].append({"name":NUMBERS[s["species"]], "count":s["species_count"], "active":active_dict.get(s["species"], 0), "dex":s["species"]})
         
     if request.GET.get("sort") == "species":
@@ -60,6 +62,4 @@ def population(request):
         data["species"] = sorted(data["species"], key=lambda k: (-1 * k["active"], k["name"].lower()))
     else:
         data["species"] = sorted(data["species"], key=lambda k: (-1 * k["count"], k["name"].lower()))
-    return render_to_response("stats/pokemon_population.html", data)
-    
-    
+    return render(request, "stats/pokemon_population.html", data)
