@@ -56,8 +56,8 @@ EVOLUTIONS = {1:[2], 2:[3], 4:[5], 5:[6], 7:[8], 8:[9], 10:[11], 11:[12], 13:[14
 # Acceptable team members
 PMDU_STARTERS = ["Abomasnow", "Abra", "Absol", "Accelgor", "Aerodactyl", "Aipom", "Alomomola", "Altaria", "Amaura", "Ambipom", "Amoonguss", "Anorith", "Arbok", "Arcanine", "Archen", "Archeops", "Ariados", "Armaldo", "Aromatisse", "Aron", "Audino", "Aurorus", "Avalugg", "Axew", "Azumarill", "Azurill", "Bagon", "Baltoy", "Banette", "Barbaracle", "Barboach", "Basculin", "Bastiodon", "Bayleef", "Beartic", "Beheeyem", "Beldum", "Bellsprout", "Bergmite", "Bibarel", "Bidoof", "Binacle", "Bisharp", "Blissey", "Blitzle", "Boldore", "Bonsly", "Bouffalant", "Braixen", "Braviary", "Breloom", "Bronzong", "Bronzor", "Budew", "Buizel", "Bulbasaur", "Buneary", "Bunnelby", "Burmy", "Cacnea", "Cacturne", "Camerupt", "Carbink", "Carnivine", "Carracosta", "Carvanha", "Cascoon", "Castform", "Caterpie", "Chansey", "Charmander", "Charmeleon", "Chatot", "Cherrim", "Cherubi", "Chespin", "Chikorita", "Chimchar", "Chimecho", "Chinchou", "Chingling", "Cinccino", "Clamperl", "Clauncher", "Clawitzer", "Claydol", "Clefable", "Clefairy", "Cleffa", "Cloyster", "Cofagrigus", "Combee", "Combusken", "Corphish", "Corsola", "Cottonee", "Cradily", "Cranidos", "Crawdaunt", "Croagunk", "Croconaw", "Crustle", "Cryogonal", "Cubchoo", "Cubone", "Cyndaquil", "Darmanitan", "Darumaka", "Dedenne", "Deerling", "Deino", "Delcatty", "Delibird", "Dewgong", "Dewott", "Diggersby", "Diglett", "Ditto", "Dodrio", "Doduo", "Donphan", "Doublade", "Dragalge", "Dragonair", "Drapion", "Dratini", "Drifblim", "Drifloon", "Drilbur", "Drowzee", "Druddigon", "Ducklett", "Dugtrio", "Dunsparce", "Duosion", "Durant", "Dusclops", "Duskull", "Dwebble", "Eelektrik", "Eevee", "Ekans", "Electabuzz", "Electivire", "Electrike", "Electrode", "Elekid", "Elgyem", "Emolga", "Escavalier", "Espeon", "Espurr", "Excadrill", "Exeggcute", "Exeggutor", "Farfetch'd", "Fearow", "Feebas", "Fennekin", "Ferroseed", "Ferrothorn", "Finneon", "Flaaffy", u"Flabébé", "Flareon", "Fletchinder", "Fletchling", "Floatzel", "Floette", "Foongus", "Forretress", "Fraxure", "Frillish", "Froakie", "Frogadier", "Froslass", "Furfrou", "Furret", "Gabite", "Galvantula", "Garbodor", "Gastly", "Gastrodon", "Geodude", "Gible", "Girafarig", "Glaceon", "Glalie", "Glameow", "Gligar", "Gliscor", "Gloom", "Gogoat", "Golbat", "Goldeen", "Golduck", "Golett", "Golurk", "Goomy", "Gorebyss", "Gothita", "Gothorita", "Gourgeist", "Granbull", "Graveler", "Grimer", "Grotle", "Grovyle", "Growlithe", "Grumpig", "Gulpin", "Gurdurr", "Gyarados", "Happiny", "Hariyama", "Haunter", "Hawlucha", "Heatmor", "Heliolisk", "Helioptile", "Heracross", "Herdier", "Hippopotas", "Hippowdon", "Hitmonchan", "Hitmonlee", "Hitmontop", "Honchkrow", "Honedge", "Hoothoot", "Hoppip", "Horsea", "Houndoom", "Houndour", "Huntail", "Hypno", "Igglybuff", "Illumise", "Inkay", "Ivysaur", "Jellicent", "Jigglypuff", "Jolteon", "Joltik", "Jynx", "Kabuto", "Kabutops", "Kadabra", "Kakuna", "Kangaskhan", "Karrablast", "Kecleon", "Kingler", "Kirlia", "Klang", "Klefki", "Klink", "Koffing", "Krabby", "Kricketot", "Kricketune", "Krokorok", "Lairon", "Lampent", "Lanturn", "Lapras", "Larvesta", "Larvitar", "Leafeon", "Ledian", "Ledyba", "Lickilicky", "Lickitung", "Liepard", "Lileep", "Lilligant", "Lillipup", "Linoone", "Litleo", "Litwick", "Lombre", "Lopunny", "Lotad", "Loudred", "Lucario", "Lumineon", "Lunatone", "Luvdisc", "Luxio", "Machoke", "Machop", "Magby", "Magcargo", "Magikarp", "Magmar", "Magmortar", "Magnemite", "Magneton", "Makuhita", "Malamar", "Mandibuzz", "Manectric", "Mankey", "Mantine", "Mantyke", "Maractus", "Mareep", "Marill", "Marowak", "Marshtomp", "Masquerain", "Mawile", "Medicham", "Meditite", "Meowstic", "Meowth", "Metang", "Metapod", "Mienfoo", "Mienshao", "Mightyena", "Milotic", "Miltank", "Mime Jr.", "Minccino", "Minun", "Misdreavus", "Mismagius", "Monferno", "Mothim", "Mr. Mime", "Mudkip", "Muk", "Munchlax", "Munna", "Murkrow", "Musharna", "Natu", u"Nidoran♀", u"Nidoran♂", "Nidorina", "Nidorino", "Nincada", "Ninetales", "Ninjask", "Noctowl", "Noibat", "Noivern", "Nosepass", "Numel", "Nuzleaf", "Octillery", "Oddish", "Omanyte", "Omastar", "Onix", "Oshawott", "Pachirisu", "Palpitoad", "Pancham", "Pangoro", "Panpour", "Pansage", "Pansear", "Paras", "Parasect", "Patrat", "Pawniard", "Pelipper", "Persian", "Petilil", "Phanpy", "Phantump", "Pichu", "Pidgeotto", "Pidgey", "Pidove", "Pignite", "Pikachu", "Piloswine", "Pineco", "Pinsir", "Piplup", "Plusle", "Poliwag", "Poliwhirl", "Ponyta", "Poochyena", "Porygon", "Porygon2", "Primeape", "Prinplup", "Probopass", "Psyduck", "Pumpkaboo", "Pupitar", "Purrloin", "Purugly", "Pyroar", "Quagsire", "Quilava", "Quilladin", "Qwilfish", "Raichu", "Ralts", "Rampardos", "Rapidash", "Raticate", "Rattata", "Relicanth", "Remoraid", "Rhydon", "Rhyhorn", "Riolu", "Roggenrola", "Roselia", "Roserade", "Rotom", "Rufflet", "Sableye", "Sandile", "Sandshrew", "Sandslash", "Sawk", "Sawsbuck", "Scatterbug", "Scizor", "Scrafty", "Scraggy", "Scyther", "Seadra", "Seaking", "Sealeo", "Seedot", "Seel", "Sentret", "Servine", "Seviper", "Sewaddle", "Sharpedo", "Shedinja", "Shelgon", "Shellder", "Shellos", "Shelmet", "Shieldon", "Shinx", "Shroomish", "Shuckle", "Shuppet", "Sigilyph", "Silcoon", "Simipour", "Simisage", "Simisear", "Skarmory", "Skiddo", "Skiploom", "Skitty", "Skorupi", "Skrelp", "Skuntank", "Slakoth", "Sliggoo", "Slowbro", "Slowking", "Slowpoke", "Slugma", "Slurpuff", "Smeargle", "Smoochum", "Sneasel", "Snivy", "Snorlax", "Snorunt", "Snover", "Snubbull", "Solosis", "Solrock", "Spearow", "Spewpa", "Spheal", "Spinarak", "Spinda", "Spiritomb", "Spoink", "Spritzee", "Squirtle", "Stantler", "Staravia", "Starly", "Starmie", "Staryu", "Steelix", "Stunfisk", "Stunky", "Sudowoodo", "Sunflora", "Sunkern", "Surskit", "Swablu", "Swadloon", "Swalot", "Swanna", "Swellow", "Swinub", "Swirlix", "Swoobat", "Sylveon", "Taillow", "Tangela", "Tangrowth", "Tauros", "Teddiursa", "Tentacool", "Tentacruel", "Tepig", "Throh", "Timburr", "Tirtouga", "Togekiss", "Togepi", "Togetic", "Torchic", "Torkoal", "Totodile", "Toxicroak", "Tranquill", "Trapinch", "Treecko", "Trevenant", "Tropius", "Trubbish", "Turtwig", "Tympole", "Tynamo", "Tyrantrum", "Tyrogue", "Tyrunt", "Umbreon", "Unown", "Ursaring", "Vanillish", "Vanillite", "Vaporeon", "Venipede", "Venomoth", "Venonat", "Vespiquen", "Vibrava", "Vigoroth", "Volbeat", "Volcarona", "Voltorb", "Vullaby", "Vulpix", "Wailmer", "Wailord", "Wartortle", "Watchog", "Weavile", "Weedle", "Weepinbell", "Weezing", "Whimsicott", "Whirlipede", "Whiscash", "Whismur", "Wigglytuff", "Wingull", "Wobbuffet", "Woobat", "Wooper", "Wormadam", "Wurmple", "Wynaut", "Xatu", "Yamask", "Yanma", "Yanmega", "Zangoose", "Zebstrika", "Zigzagoon", "Zoroark", "Zorua", "Zubat", "Zweilous"]
 PMDU_GEN7 = [
-    "Rowlet", "Dartrix", "Decidueye", "Litten", "Torracat", "Incineroar", 
-    "Popplio", "Brionne", "Primarina", "Pikipek", "Trumbeak", "Toucannon", 
+    "Rowlet", "Dartrix", "Decidueye", "Litten", "Torracat", "Incineroar",
+    "Popplio", "Brionne", "Primarina", "Pikipek", "Trumbeak", "Toucannon",
     "Yungoos", "Gumshoos", "Grubbin", "Charjabug", "Vikavolt", "Crabrawler",
     "Crabominable", "Oricorio", "Cutiefly", "Ribombee", "Rockruff", "Lycanroc",
     "Wishiwashi", "Mareanie", "Toxapex", "Mudbray", "Mudsdale", "Dewpider",
@@ -101,17 +101,17 @@ def delete_team(id, session):
         id = int(id)
     except:
         return False
-        
+
     team = Team.objects.filter(pk=id)
     if len(team) != 1:
         return False
-        
+
     team = team[0]
-    
+
     # Confirm the team is yours or you're an admin.
     if (team.user.id == session["userID"]) or session["admin"]:
         team.delete()
-    
+
     return True
 
 def delete_pokemon(id, session):
@@ -119,23 +119,23 @@ def delete_pokemon(id, session):
         id = int(id)
     except:
         return False
-        
+
     poke = Pokemon.objects.filter(pk=id)
     if len(poke) != 1:
         return False
-        
+
     poke = poke[0]
-    
-    
+
+
     # Confirm the team is yours or you're an admin.
     if (poke.team.user.id == session["userID"]) or session["admin"]:
         if poke.team.id == session["teamID"]:
             active = poke.team.id
         else:
             active = 0
-                
+
         poke.delete()
-        # Rearrange the team's roster if needed. 
+        # Rearrange the team's roster if needed.
         team = Team.objects.get(pk=poke.team.id)
         new_roster = []
         if team.pkmn1:
@@ -152,7 +152,7 @@ def delete_pokemon(id, session):
         team.pkmn3 = new_roster[2]
         team.pkmn4 = new_roster[3]
         team.save()
-        
+
     else:
         return False
     return active
@@ -162,66 +162,66 @@ def get_team(id, session, public=False):
         id = int(id)
     except:
         return False
-        
+
     team = Team.objects.filter(pk=id)
     if len(team) != 1:
         return False
-        
+
     team = team[0]
-    
+
     # Confirm the team is yours or you're an admin.
     if public or (team.user.id == session.get("userID")) or session.get("admin"):
         return team
-    
+
     return False
-    
+
 def get_pokemon(id, session):
     try:
         id = int(id)
     except:
         return False
-        
+
     poke = Pokemon.objects.filter(pk=id)
     if len(poke) != 1:
         return False
-        
+
     poke = poke[0]
-    
+
     # Confirm the Pokemon is yours or you're an admin.
     if (poke.team.user.id == session["userID"]) or session["admin"]:
         return poke
-    
+
     return False
-    
+
 def get_starcoins(id):
     team = Team.objects.filter(pk=id)
     if len(team) != 1:
         return 0
     else:
         return {"starcoins":team[0].stars, "merits":team[0].merits, "strikes":team[0].strikes}
-    
+
 def get_inventory(team_id, filter=None, unique=False):
     inv = Inventory.objects.filter(team_id=team_id).order_by("item__name")
     if filter == "can_customize":
         inv = inv.filter(item__attributes__icontains="can_customize")
-        
+
     inventory = inv
     return inventory
-    
+
 def form_select_pokemon(selected="", list="all"):
     output = ""
-    
+
     if list == "all":
         list = POKEMON
     elif list == "pmdu_starters":
         list = PMDU_STARTERS
-    
+
     for poke in list:
         if poke != selected and NAMES[poke] != selected:
             output += "<option value='"+str(NAMES[poke])+"'>"+poke+"</option>\n"
         else:
             output += "<option value='"+str(NAMES[poke])+"' selected>"+poke+"</option>\n"
-    
+
     if selected != "-1":
         output += "<option value='-1'>-- Egg --</option>\n"
     else:
@@ -231,7 +231,7 @@ def form_select_pokemon(selected="", list="all"):
     else:
         output += "<option value='-2' selected>-- Other --</option>\n"
     return output
-    
+
 def is_admin(admin):
     if not admin:
         return redirect("/")
@@ -241,7 +241,7 @@ def log(request, action=""):
         action = request.POST.get("log")
     log_row = Log(username=request.session["username"], ip=request.META["REMOTE_ADDR"], action=action)
     log_row.save()
-    
+
 def log_post(request):
     if not LOG_POSTS:
         return False
@@ -249,14 +249,14 @@ def log_post(request):
     fname = now.strftime("%Y-%m-%d") + "_post.log"
     prefix = now.strftime("%H:%M:%S") + " - " + request.session.get("username", "???") + " [" + request.META["REMOTE_ADDR"] + "] : "
     #try:
-    text = request.POST
+    text = str(request.POST)
     fh = codecs.open(os.path.join(SITE_ROOT, "assets", "data", fname), encoding='utf-8', mode='a')
     fh.write(prefix + text + "\n")
     fh.close()
     #except:
     #print "LOG POST FAILED"
     return True
-    
+
 def transaction(team_id, change, username, desc):
     trans = Transaction(team_id=team_id, change=change, username=username, description=desc)
     trans.save()

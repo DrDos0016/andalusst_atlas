@@ -8,6 +8,8 @@ animations/*
 assets/images/sprites/*
 assets/images/sugimori/*
 assets/data/logins/*.json
+assets/data/rerolls.log
+venv/
 virt/*
 virt273/*
 tools/twitter_timers.py
