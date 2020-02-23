@@ -21,7 +21,7 @@ class User(models.Model):
     last_login  = models.DateTimeField(auto_now=True, null=True)        # The last time this user logged in
 
 class Pokemon(models.Model):
-    team        = models.ForeignKey("Team", on_delete=models.SET_NULL)                     # The teamID of the pokemon
+    team        = models.ForeignKey("Team", on_delete=models.SET_NULL, null=True)                     # The teamID of the pokemon
     name        = models.CharField(max_length=80, db_index=True)# The name of the pokemon
     species     = models.IntegerField(default=0, db_index=True) # The name of the pokemon's species
     shiny       = models.BooleanField(default=False)            # Is the pokemon shiny?
@@ -51,7 +51,7 @@ class Pokemon(models.Model):
         self.urlname     = re.sub('[^0-9a-zA-Z_]+', '-', self.name.replace(" ", "-").lower())
 
 class Team(models.Model):
-    user        = models.ForeignKey(User, on_delete=models.SET_NULL)                               # The user who created this team
+    user        = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)                               # The user who created this team
     name        = models.CharField(max_length=80, db_index=True)        # The name of the team
     application = models.CharField(max_length=150)                      # The URL of the team's application
     alt_app     = models.URLField(default="", null=True)                # Alt app for hybrid teams
@@ -79,7 +79,7 @@ class Team(models.Model):
         self.urlname     = re.sub('[^0-9a-zA-Z_]+', '-', self.name.replace(" ", "-").lower())
 
 class TeamOOC(models.Model):
-    team        = models.OneToOneField("Team", primary_key=True, on_delete=models.SET_NULL)        # TeamID
+    team        = models.OneToOneField("Team", primary_key=True, on_delete=models.DO_NOTHING)        # TeamID
     tumblr      = models.URLField(default="")                           # Tumblr URL for team
     type        = models.CharField(max_length=10, default="Drawn")      # Drawn, Written, or Hybrid
 
@@ -94,8 +94,8 @@ class Item(models.Model):
     attributes  = models.TextField(null=True)
 
 class Inventory(models.Model):
-    team        = models.ForeignKey(Team, on_delete=models.SET_NULL)                   # The teamID that owns an item.
-    item        = models.ForeignKey(Item, on_delete=models.SET_NULL)                   # The itemID of what the team now has.
+    team        = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)                   # The teamID that owns an item.
+    item        = models.ForeignKey(Item, on_delete=models.SET_NULL, null=True)                   # The itemID of what the team now has.
     details     = models.TextField(null=True)
     #equipped    = models.ForeignKey("Pokemon", null=True, default=None) # This field does not want to be deleted in the database. Whatever~
     approval    = models.ForeignKey("Approval", null=True, default=None, on_delete=models.SET_NULL)
@@ -115,7 +115,7 @@ class Inventory(models.Model):
         self.details = json.dumps(details)
 
 class Transaction(models.Model):
-    team        = models.ForeignKey(Team, on_delete=models.SET_NULL)                   # The team that made the purchase
+    team        = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)                   # The team that made the purchase
     change      = models.IntegerField(default=0)            # The increase/decrease in stars
     username    = models.CharField(max_length=20)           # The user that created the transaction
     description = models.TextField()                        # An explanation of the transaction
@@ -139,8 +139,8 @@ class Event(models.Model):
     order       = models.IntegerField(default=999)          # Used for ordering of events
 
 class Logbook(models.Model):
-    team        = models.ForeignKey(Team, on_delete=models.SET_NULL)                   # The teamID for the logbook event
-    event       = models.ForeignKey(Event, on_delete=models.SET_NULL)                  # The event participated in
+    team        = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)                   # The teamID for the logbook event
+    event       = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True)                  # The event participated in
     url         = models.URLField()                         # The first page of the submission that shows completion of this event
     custom_name = models.CharField(max_length=40, default="")        # Name for peronsal story
     custom_icon = models.IntegerField(default=0)            # Name for personal story
@@ -162,7 +162,7 @@ class Timer(models.Model):
     what        = models.CharField(max_length=20)           # What ends
 
 class Approval(models.Model):
-    user        = models.ForeignKey(User, on_delete=models.SET_NULL)
+    user        = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     team        = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL)        # The teamID the approval is for
     pokemon     = models.ForeignKey(Pokemon, null=True, on_delete=models.SET_NULL)     # The pokemon the approval is for
     type        = models.CharField(max_length=40, db_index=True)
@@ -176,12 +176,12 @@ class Approval(models.Model):
     data        = models.TextField(default="{}")
 
 class Bookmark(models.Model):
-    user        = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL)    # This user
-    team        = models.ForeignKey(Team, on_delete=models.SET_NULL)                   # Is watching this team
+    user        = models.ForeignKey(User, db_index=True, on_delete=models.SET_NULL, null=True)    # This user
+    team        = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)                   # Is watching this team
 
 class Resource(models.Model):  # This table got made early and probably needs to be dropped
-    team         = models.ForeignKey(Team, on_delete=models.SET_NULL)               # The team that acquired the resource
-    logbook      = models.ForeignKey(Logbook, on_delete=models.SET_NULL)            # The logbook where the resource was acquired
+    team         = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)               # The team that acquired the resource
+    logbook      = models.ForeignKey(Logbook, on_delete=models.SET_NULL, null=True)            # The logbook where the resource was acquired
     entity       = models.IntegerField()                 # The resource itself
     quantity     = models.IntegerField(default=1)        # The amount collected
 
@@ -193,7 +193,7 @@ class Dungeon_List(models.Model):
     public          = models.BooleanField(default=False)    # Show up on the list of dungeons
 
 class Blueprint(models.Model):
-    key             = models.ForeignKey("Dungeon_List", db_index=True, on_delete=models.SET_NULL)     # The dungeon identifier
+    key             = models.ForeignKey("Dungeon_List", db_index=True, on_delete=models.SET_NULL, null=True)     # The dungeon identifier
     floor           = models.IntegerField(default=1)        # Rules are for this floor
     style           = models.CharField(max_length=20)       # Dungeon Generation Style
     min_rooms       = models.IntegerField(default=5)        # Min. # of rooms to try to make
@@ -218,8 +218,8 @@ class Entity(models.Model):
     collectible     = models.BooleanField(default=False)            # Can this resource be taken from the dungeon?
 
 class Team_Dungeon(models.Model):
-    team            = models.ForeignKey(Team, db_index=True, on_delete=models.SET_NULL)                               # The team who has this dungeon
-    key             = models.ForeignKey("Dungeon_List", db_index=True, on_delete=models.SET_NULL)      # The dungeon identifier
+    team            = models.ForeignKey(Team, db_index=True, on_delete=models.SET_NULL, null=True)                               # The team who has this dungeon
+    key             = models.ForeignKey("Dungeon_List", db_index=True, on_delete=models.SET_NULL, null=True)      # The dungeon identifier
     floor           = models.IntegerField(default=1)                        # Dungeon Floor
     dive            = models.IntegerField(default=1)                        # What trip into the dungeon this is
     seed            = models.CharField(max_length=32)                       # The seed used that generated the dungeon
@@ -228,7 +228,7 @@ class Team_Dungeon(models.Model):
     timestamp       = models.DateTimeField(auto_now_add=True)               # When the Dungeon was saved
 
 class Spotlight(models.Model):
-    team            = models.ForeignKey(Team, on_delete=models.SET_NULL)                       # Team to be featured
+    team            = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True)                       # Team to be featured
     image           = models.URLField(null=True)                    # Thumbnail image to display. Pull from DA API to get the url for this.
     text            = models.TextField(null=True)                   # Text to display if the team has no drawn portion
     summary         = models.TextField()                            # The text to accompany the team

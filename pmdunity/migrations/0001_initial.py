@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('details', models.TextField(null=True)),
-                ('approval', models.ForeignKey(default=None, to='pmdunity.Approval', null=True)),
+                ('approval', models.ForeignKey(default=None, to='pmdunity.Approval', null=True, on_delete=models.SET_NULL)),
             ],
         ),
         migrations.CreateModel(
@@ -139,7 +139,7 @@ class Migration(migrations.Migration):
                 ('submitted', models.DateField(auto_now_add=True)),
                 ('dungeon_map', models.IntegerField(default=0)),
                 ('resources', models.CharField(default='{}', max_length=100)),
-                ('event', models.ForeignKey(to='pmdunity.Event')),
+                ('event', models.ForeignKey(to='pmdunity.Event', on_delete=models.SET_NULL, null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -175,7 +175,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('entity', models.IntegerField()),
                 ('quantity', models.IntegerField(default=1)),
-                ('logbook', models.ForeignKey(to='pmdunity.Logbook')),
+                ('logbook', models.ForeignKey(to='pmdunity.Logbook', on_delete=models.SET_NULL, null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -215,7 +215,7 @@ class Migration(migrations.Migration):
                 ('data', models.TextField(default='')),
                 ('completed', models.BooleanField(default=False)),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('key', models.ForeignKey(to='pmdunity.Dungeon_List')),
+                ('key', models.ForeignKey(to='pmdunity.Dungeon_List', on_delete=models.SET_NULL, null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -253,7 +253,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TeamOOC',
             fields=[
-                ('team', models.OneToOneField(primary_key=True, serialize=False, to='pmdunity.Team')),
+                ('team', models.OneToOneField(primary_key=True, serialize=False, to='pmdunity.Team', on_delete=models.SET_NULL, null=True)),
                 ('tumblr', models.URLField(default='')),
                 ('type', models.CharField(default='Drawn', max_length=10)),
             ],
@@ -261,12 +261,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='transaction',
             name='team',
-            field=models.ForeignKey(to='pmdunity.Team'),
+            field=models.ForeignKey(to='pmdunity.Team', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='team_dungeon',
             name='team',
-            field=models.ForeignKey(to='pmdunity.Team'),
+            field=models.ForeignKey(to='pmdunity.Team', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='team',
@@ -291,66 +291,66 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='team',
             name='user',
-            field=models.ForeignKey(to='pmdunity.User'),
+            field=models.ForeignKey(to='pmdunity.User', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='spotlight',
             name='team',
-            field=models.ForeignKey(to='pmdunity.Team'),
+            field=models.ForeignKey(to='pmdunity.Team', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='resource',
             name='team',
-            field=models.ForeignKey(to='pmdunity.Team'),
+            field=models.ForeignKey(to='pmdunity.Team', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='pokemon',
             name='team',
-            field=models.ForeignKey(to='pmdunity.Team'),
+            field=models.ForeignKey(to='pmdunity.Team', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='logbook',
             name='team',
-            field=models.ForeignKey(to='pmdunity.Team'),
+            field=models.ForeignKey(to='pmdunity.Team', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='inventory',
             name='item',
-            field=models.ForeignKey(to='pmdunity.Item'),
+            field=models.ForeignKey(to='pmdunity.Item', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='inventory',
             name='team',
-            field=models.ForeignKey(to='pmdunity.Team'),
+            field=models.ForeignKey(to='pmdunity.Team', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='bookmark',
             name='team',
-            field=models.ForeignKey(to='pmdunity.Team'),
+            field=models.ForeignKey(to='pmdunity.Team', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='bookmark',
             name='user',
-            field=models.ForeignKey(to='pmdunity.User'),
+            field=models.ForeignKey(to='pmdunity.User', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='blueprint',
             name='key',
-            field=models.ForeignKey(to='pmdunity.Dungeon_List'),
+            field=models.ForeignKey(to='pmdunity.Dungeon_List', on_delete=models.SET_NULL, null=True),
         ),
         migrations.AddField(
             model_name='approval',
             name='pokemon',
-            field=models.ForeignKey(to='pmdunity.Pokemon', null=True),
+            field=models.ForeignKey(to='pmdunity.Pokemon', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='approval',
             name='team',
-            field=models.ForeignKey(to='pmdunity.Team', null=True),
+            field=models.ForeignKey(to='pmdunity.Team', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='approval',
             name='user',
-            field=models.ForeignKey(to='pmdunity.User'),
+            field=models.ForeignKey(to='pmdunity.User', on_delete=models.SET_NULL, null=True),
         ),
     ]
