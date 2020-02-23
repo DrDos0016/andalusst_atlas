@@ -6,14 +6,14 @@ from __future__ import unicode_literals
 
 from .common import *
 from django.views.decorators.csrf import csrf_exempt
-from cgi import escape
+from html import escape
 
 # Incomplete
 def get_item(request):
     if not request.POST.get("inventory_id"):
         return HttpResponse("{}")
     inv = Inventory.objects.get(pk=request.POST.get("inventory_id"))
-    
+
     output = {
         "inventory_id": inv.id,
         "item_id": inv.item.id,
@@ -25,9 +25,9 @@ def get_item(request):
         "item_exp": inv.item.explanation,
         "item_attr": inv.item.attributes
     }
-    
+
     output = json.dumps(output)
-    
+
     return HttpResponse(output)
 
 def get_resources(request, map_id):
@@ -53,7 +53,7 @@ def get_species(request, species_id):
     output = []
     for pkmn in pokemon:
         output.append({"name":escape(pkmn.name), "shiny":pkmn.shiny, "gender":escape(pkmn.gender), "team_id":pkmn.team.id, "team_name":escape(pkmn.team.name), "guild":pkmn.team.guild})
-        
+
     output = json.dumps(output)
     return HttpResponse(output)
 
@@ -78,7 +78,7 @@ def submit_approval(request):
 
     if not request.session.get("admin"):
         return HttpResponse("FAILURE")
-    
+
     try:
         # Get the approval entry
         approval = Approval.objects.get(pk=int(data["entry"]))
@@ -101,7 +101,7 @@ def submit_approval(request):
     except:
         note = "Approval Submission Failure!\nData: " + request.POST["data"]
         ret = "FAILURE"
-        
+
     log(request, note)
     return HttpResponse(ret)
 
@@ -117,16 +117,16 @@ def validate_logbook(request):
     #print request.POST["data"]
     if not request.session.get("admin"):
         return HttpResponse("FAILURE")
-    
+
     note = ""
     try:
         logbook = Logbook.objects.get(pk=int(data["entry"]))
-        
+
         logbook.approved = int(data["status"])
         logbook.approved_on = today
         logbook.handled_by = request.session.get("username")
         ret = "SUCCESS"
-        
+
         # Rewarding
         if logbook.approved == 1:
             note += "["+data["key"]+"] - APPROVED team #"+str(logbook.team.id) + " ("+logbook.team.name+").\n"
@@ -138,7 +138,7 @@ def validate_logbook(request):
                 logbook.team.save()
             logbook.rewarded = 1
             logbook.rewarded_on = today
-            
+
             if data["reward"] == "None": # Nothing to do
                 note += "No reward given."
             else:
@@ -155,7 +155,7 @@ def validate_logbook(request):
                     ret = "FAILURE"
                 else:
                     note += "Giving reward set: " + data.get("reward") + "\n"
-                    
+
                     # Give the reward
                     for prize in reward_set:
                         if prize["item"] == -1:
@@ -174,7 +174,7 @@ def validate_logbook(request):
                                         note += inv.item.name + ", "
                                         inv.save()
                     note += "\n"
-                
+
                     # Give the BONUS if applicable
                     if data["bonus"] == 1 and len(all_rewards.get("Bonus", [])) != 0:
                         note += "Giving Bonus rewards:\n"
@@ -200,8 +200,8 @@ def validate_logbook(request):
             logbook.user_note = data["u_note"]
             logbook.admin_note = data["s_note"]
             note += "["+data["key"]+"] - REJECTED team #"+str(logbook.team.id) + " ("+logbook.team.name+").\n"
-            
-            
+
+
         # Resource collection
         collected = []
         if logbook.approved and logbook.resources != "" and logbook.resources != "{}":
@@ -211,8 +211,8 @@ def validate_logbook(request):
                 res = Resource(team=logbook.team, logbook=logbook, entity=int(resource), quantity=int(resources[resource]))
                 res_note += str(resources[resource]) + " of resource # " + resource + "\n"
                 collected.append(res)
-            
-            
+
+
         log(request, note)
         logbook.save()
         log(request, res_note)
